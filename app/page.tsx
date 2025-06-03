@@ -1,7 +1,7 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { Plus, Search, Calendar, User, Tag, AlertCircle, Edit, Save, X, Download, ChevronUp, ChevronDown } from "lucide-react"
+import { useState, useEffect, useRef } from "react"
+import { Plus, Search, Calendar, User, Tag, AlertCircle, Edit, Save, X, Download, ChevronUp, ChevronDown, Upload } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -54,9 +54,8 @@ const priorityLabels = {
 
 export default function SOPManager() {
   const { isSignedIn, isLoaded } = useUser();
-  if (!isLoaded) return <div>Chargement...</div>;
-  if (!isSignedIn) return <div className="flex justify-center items-center h-[60vh]">Veuillez vous connecter pour accéder à l'application.</div>;
 
+  // TOUS les hooks doivent être ici, avant tout return
   const [sops, setSops] = useState<SOP[]>([])
   const [filteredSops, setFilteredSops] = useState<SOP[]>([])
   const [searchTerm, setSearchTerm] = useState("")
@@ -72,8 +71,6 @@ export default function SOPManager() {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
   const [sopToDelete, setSopToDelete] = useState<SOP | null>(null)
   const { toast } = useToast()
-
-  // Form state
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -84,9 +81,9 @@ export default function SOPManager() {
     tags: "",
   })
   const [steps, setSteps] = useState<{ text: string; image: string }[]>([])
-
-  // Ajout de l'état pour la liste des utilisateurs
   const [users, setUsers] = useState<{ id: string; name: string }[]>([])
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Charger les SOP depuis l'API au montage
   useEffect(() => {
@@ -374,6 +371,49 @@ export default function SOPManager() {
     })
   }
 
+  // Handler upload markdown
+  const handleMarkdownUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    const formData = new FormData();
+    formData.append('file', file);
+    try {
+      const res = await fetch('/api/sops/upload', {
+        method: 'POST',
+        body: formData,
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        toast({
+          title: 'Erreur',
+          description: data.error || 'Erreur lors de l\'import du markdown',
+          variant: 'destructive',
+        });
+        return;
+      }
+      const sop = await res.json();
+      setSops(prev => [sop, ...prev]);
+      toast({
+        title: 'SOP importé',
+        description: 'Le markdown a été converti et ajouté avec succès',
+      });
+    } catch (err) {
+      toast({
+        title: 'Erreur',
+        description: 'Erreur lors de l\'import du markdown',
+        variant: 'destructive',
+      });
+    } finally {
+      setUploading(false);
+      e.target.value = '';
+    }
+  };
+
+  // Les return conditionnels après les hooks
+  if (!isLoaded) return <div>Chargement...</div>;
+  if (!isSignedIn) return <div className="flex justify-center items-center h-[60vh]">Veuillez vous connecter pour accéder à l'application.</div>;
+
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-7xl mx-auto">
@@ -553,6 +593,28 @@ export default function SOPManager() {
                 </div>
               </DialogContent>
             </Dialog>
+
+            {/* Upload Markdown Button */}
+            <>
+              <Button
+                type="button"
+                variant="secondary"
+                className="flex items-center gap-2"
+                disabled={uploading}
+                onClick={() => fileInputRef.current?.click()}
+              >
+                <Upload className="h-4 w-4" />
+                {uploading ? 'Import...' : 'Importer un markdown'}
+              </Button>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept=".md, .markdown, text/markdown"
+                className="hidden"
+                onChange={handleMarkdownUpload}
+                disabled={uploading}
+              />
+            </>
           </div>
 
           {/* Filters */}

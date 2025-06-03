@@ -1,5 +1,9 @@
 import { NextResponse } from 'next/server';
 import { PrismaClient } from '@/lib/generated/prisma';
+import markdownIt from 'markdown-it';
+import { NextRequest } from 'next/server';
+import { parseSopMarkdown } from '@/lib/parseSopMarkdown';
+import crypto from 'crypto';
 
 const prisma = new PrismaClient();
 
@@ -23,4 +27,4 @@ export async function POST(req: Request) {
     ...sop,
     author: sop.user?.name || sop.authorId,
   });
-} 
+}
