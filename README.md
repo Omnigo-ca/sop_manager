@@ -103,4 +103,4 @@ sop-manager/
 
 ## 📝 Licence
 
-Tous droits réservés. Ce logiciel est la propriété de l'entreprise. 
+Tous droits réservés. Ce logiciel est la propriété de l'entreprise.

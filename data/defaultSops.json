@@ -189,5 +189,461 @@
       { "text": "Analyser les stratégies des concurrents", "image": "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=600&q=80" },
       { "text": "Identifier les sites cibles par thématique", "image": "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=600&q=80" }
     ]
+  },
+  {
+    "id": "sop-011",
+    "title": "Optimisation de la vitesse de chargement d'un site web",
+    "description": "Méthode complète pour améliorer les performances et la vitesse de chargement d'un site web",
+    "instructions": "1. Audit initial des performances\n   - Mesurer les performances avec PageSpeed Insights et GTmetrix\n   - Identifier les ressources bloquantes et lourdes\n   - Analyser les temps de chargement sur mobile et desktop\n   - Établir un benchmark par rapport aux concurrents\n\n2. Optimisation des images\n   - Compresser toutes les images avec TinyPNG ou ShortPixel\n   - Implémenter le lazy loading pour les images\n   - Utiliser les formats modernes (WebP, AVIF) avec fallbacks\n   - Dimensionner correctement les images selon les dispositifs\n\n3. Optimisation du code\n   - Minifier CSS, JavaScript et HTML\n   - Éliminer les ressources bloquant le rendu\n   - Implémenter la mise en cache du navigateur\n   - Réduire les requêtes HTTP par concatenation\n\n4. Configuration serveur\n   - Activer la compression GZIP/Brotli\n   - Configurer l'expiration des en-têtes\n   - Implémenter un CDN si nécessaire\n   - Optimiser la base de données et les requêtes\n\n5. Tests et validation\n   - Refaire les tests de performance\n   - Vérifier la compatibilité sur tous les navigateurs\n   - Mesurer l'amélioration des Core Web Vitals\n   - Documenter les gains de performance obtenus",
+    "author": "Sophie Martin",
+    "category": "SEO",
+    "priority": "high",
+    "tags": ["performance", "vitesse", "core-web-vitals", "technique"],
+    "createdAt": "2024-02-16T10:20:00.000Z",
+    "updatedAt": "2024-02-16T10:20:00.000Z",
+    "steps": [
+      { "text": "Mesurer les performances avec PageSpeed Insights et GTmetrix", "image": "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Compresser toutes les images avec TinyPNG ou ShortPixel", "image": "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Minifier CSS, JavaScript et HTML", "image": "https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Activer la compression GZIP/Brotli", "image": "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Mesurer l'amélioration des Core Web Vitals", "image": "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=600&q=80" }
+    ]
+  },
+  {
+    "id": "sop-012",
+    "title": "Migration SEO d'un site web",
+    "description": "Procédure détaillée pour réaliser une migration de site web en préservant le référencement",
+    "instructions": "1. Préparation et planification\n   - Réaliser un audit complet du site actuel\n   - Cartographier toutes les URLs importantes\n   - Établir un plan de redirection (mapping 301)\n   - Définir le calendrier précis de migration\n\n2. Configuration technique pré-migration\n   - Mettre en place un environnement de staging\n   - Configurer les outils d'analyse (Search Console, Analytics)\n   - Vérifier la structure du nouveau site\n   - Préparer le fichier .htaccess ou nginx pour les redirections\n\n3. Processus de migration\n   - Mettre le site en maintenance pendant la migration\n   - Implémenter les redirections 301\n   - Mettre à jour les liens internes\n   - Vérifier les balises canoniques et hreflang\n\n4. Vérifications post-migration\n   - Tester toutes les redirections importantes\n   - Soumettre le nouveau sitemap à Google Search Console\n   - Demander l'indexation des pages prioritaires\n   - Vérifier le fonctionnement des scripts d'analyse\n\n5. Suivi et ajustements\n   - Surveiller quotidiennement le trafic et les positions\n   - Identifier et corriger les erreurs d'exploration\n   - Ajuster les redirections si nécessaire\n   - Documenter les résultats de la migration",
+    "author": "Vincent Moreau",
+    "category": "SEO",
+    "priority": "critical",
+    "tags": ["migration", "redirection", "301", "technique"],
+    "createdAt": "2024-02-20T08:15:00.000Z",
+    "updatedAt": "2024-02-20T08:15:00.000Z",
+    "steps": [
+      { "text": "Réaliser un audit complet du site actuel", "image": "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Cartographier toutes les URLs importantes", "image": "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Établir un plan de redirection (mapping 301)", "image": "https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Implémenter les redirections 301", "image": "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Soumettre le nouveau sitemap à Google Search Console", "image": "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=600&q=80" }
+    ]
+  },
+  {
+    "id": "sop-013",
+    "title": "Optimisation SEO pour le E-commerce",
+    "description": "Guide complet pour optimiser le référencement naturel d'un site e-commerce",
+    "instructions": "1. Structure du site et architecture\n   - Optimiser la hiérarchie des catégories et sous-catégories\n   - Mettre en place une architecture en silo\n   - Configurer correctement le fil d'Ariane\n   - Optimiser la pagination avec rel=\"prev/next\"\n\n2. Optimisation des fiches produits\n   - Créer des descriptions uniques pour chaque produit\n   - Optimiser les titres avec mots-clés pertinents\n   - Enrichir le contenu avec des caractéristiques détaillées\n   - Implémenter les données structurées (Schema.org)\n\n3. Optimisation technique\n   - Gérer les produits en rupture de stock (HTTP 200 avec notification)\n   - Configurer les URL canoniques pour les filtres et variantes\n   - Optimiser les temps de chargement des pages produits\n   - Mettre en place l'indexation incrémentale\n\n4. Contenu et maillage interne\n   - Créer des guides d'achat et contenus informatifs\n   - Optimiser les pages catégories avec du contenu unique\n   - Mettre en place un maillage de produits associés\n   - Développer des pages de contenu pour les requêtes informationnelles\n\n5. Suivi et optimisation continue\n   - Analyser les performances des pages produits\n   - Identifier les opportunités de mots-clés longue traîne\n   - Améliorer le taux de conversion des pages produits\n   - Optimiser pour les recherches vocales et mobiles",
+    "author": "Sophie Martin",
+    "category": "SEO",
+    "priority": "high",
+    "tags": ["e-commerce", "produits", "fiches-produits", "catégories"],
+    "createdAt": "2024-02-25T09:45:00.000Z",
+    "updatedAt": "2024-02-25T09:45:00.000Z",
+    "steps": [
+      { "text": "Optimiser la hiérarchie des catégories et sous-catégories", "image": "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Créer des descriptions uniques pour chaque produit", "image": "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Implémenter les données structurées (Schema.org)", "image": "https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Configurer les URL canoniques pour les filtres et variantes", "image": "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Créer des guides d'achat et contenus informatifs", "image": "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=600&q=80" }
+    ]
+  },
+  {
+    "id": "sop-014",
+    "title": "Stratégie de marketing d'influence sur Instagram",
+    "description": "Processus complet pour élaborer et exécuter une campagne avec des influenceurs sur Instagram",
+    "instructions": "1. Définition des objectifs et KPIs\n   - Déterminer les objectifs précis (notoriété, trafic, ventes)\n   - Établir un budget par influenceur et global\n   - Définir les indicateurs de performance à suivre\n   - Établir le calendrier de la campagne\n\n2. Recherche et sélection d'influenceurs\n   - Identifier les influenceurs pertinents avec des outils comme HypeAuditor\n   - Analyser leur audience (démographie, engagement, authenticité)\n   - Vérifier leur historique de collaboration avec des marques\n   - Créer une shortlist par niveau d'influence (nano, micro, macro)\n\n3. Approche et négociation\n   - Rédiger un brief clair expliquant les attentes\n   - Contacter les influenceurs via DM ou email professionnel\n   - Négocier les tarifs et les livrables\n   - Établir un contrat détaillant droits et obligations\n\n4. Gestion de la campagne\n   - Fournir un briefing détaillé des produits/services\n   - Réviser et valider le contenu avant publication\n   - Coordonner le calendrier de publication\n   - S'assurer du respect des mentions #sponsorisé ou #partenariat\n\n5. Mesure et analyse\n   - Collecter les métriques d'engagement par post\n   - Suivre le trafic et les conversions via UTMs dédiés\n   - Calculer le ROI par influenceur\n   - Documenter les bonnes pratiques pour les futures campagnes",
+    "author": "Thomas Dubois",
+    "category": "Social Media",
+    "priority": "medium",
+    "tags": ["influence", "instagram", "collaboration", "ugc"],
+    "createdAt": "2024-03-01T13:30:00.000Z",
+    "updatedAt": "2024-03-01T13:30:00.000Z",
+    "steps": [
+      { "text": "Déterminer les objectifs précis (notoriété, trafic, ventes)", "image": "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Identifier les influenceurs pertinents avec des outils comme HypeAuditor", "image": "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Rédiger un brief clair expliquant les attentes", "image": "https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Réviser et valider le contenu avant publication", "image": "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Calculer le ROI par influenceur", "image": "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=600&q=80" }
+    ]
+  },
+  {
+    "id": "sop-015",
+    "title": "Animation d'une communauté LinkedIn",
+    "description": "Guide pour créer et animer une communauté professionnelle engagée sur LinkedIn",
+    "instructions": "1. Création et configuration\n   - Définir l'objectif et la proposition de valeur de la communauté\n   - Créer une page entreprise optimisée (logo, bannière, description)\n   - Établir une charte de publication et règles de communauté\n   - Définir le ton et l'identité visuelle des publications\n\n2. Stratégie de contenu\n   - Planifier un calendrier éditorial hebdomadaire\n   - Alterner entre contenu éducatif, informatif et promotionnel\n   - Préparer des formats récurrents (interviews, études de cas)\n   - Créer du contenu spécifique à LinkedIn (carrousels, documents)\n\n3. Développement de l'audience\n   - Inviter les employés à devenir ambassadeurs\n   - Mettre en place un programme d'employee advocacy\n   - Participer activement aux conversations du secteur\n   - Utiliser les hashtags stratégiques et groupes pertinents\n\n4. Animation et engagement\n   - Répondre aux commentaires dans les 24h maximum\n   - Poser des questions ouvertes pour stimuler l'engagement\n   - Organiser des événements live ou webinaires\n   - Mettre en avant les membres actifs de la communauté\n\n5. Analyse et optimisation\n   - Suivre les métriques d'engagement hebdomadaires\n   - Analyser les types de contenu les plus performants\n   - Ajuster la stratégie selon les insights obtenus\n   - Établir un rapport mensuel de croissance",
+    "author": "Claire Moreau",
+    "category": "Social Media",
+    "priority": "medium",
+    "tags": ["linkedin", "b2b", "communauté", "professionnel"],
+    "createdAt": "2024-03-05T10:15:00.000Z",
+    "updatedAt": "2024-03-05T10:15:00.000Z",
+    "steps": [
+      { "text": "Définir l'objectif et la proposition de valeur de la communauté", "image": "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Établir une charte de publication et règles de communauté", "image": "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Planifier un calendrier éditorial hebdomadaire", "image": "https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Inviter les employés à devenir ambassadeurs", "image": "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Répondre aux commentaires dans les 24h maximum", "image": "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=600&q=80" }
+    ]
+  },
+  {
+    "id": "sop-016",
+    "title": "Création de contenu vidéo pour TikTok",
+    "description": "Méthodologie pour concevoir, produire et optimiser des vidéos virales sur TikTok",
+    "instructions": "1. Recherche et idéation\n   - Analyser les tendances actuelles avec TikTok Creative Center\n   - Identifier les sons et hashtags viraux pertinents\n   - Étudier les performances des concurrents\n   - Développer 3-5 concepts alignés avec la marque\n\n2. Préparation du tournage\n   - Préparer un storyboard simplifié\n   - Rassembler l'équipement nécessaire (smartphone, micro-cravate, lumière)\n   - Définir les cadrages et transitions\n   - Préparer les produits ou éléments à mettre en scène\n\n3. Production\n   - Tourner en format vertical (9:16)\n   - Enregistrer plusieurs prises par séquence\n   - Créer des hooks accrocheurs (5 premières secondes)\n   - Privilégier des vidéos de 15 à 30 secondes\n\n4. Montage et post-production\n   - Monter directement dans l'app TikTok ou avec CapCut\n   - Ajouter des textes, effets et transitions tendance\n   - Synchroniser le contenu avec la musique\n   - Optimiser le contraste et la luminosité\n\n5. Publication et promotion\n   - Rédiger une description avec call-to-action\n   - Utiliser 3-5 hashtags pertinents (dont 1-2 de niche)\n   - Publier aux heures de forte audience\n   - Interagir avec les commentaires dans l'heure suivant la publication",
+    "author": "Thomas Dubois",
+    "category": "Social Media",
+    "priority": "high",
+    "tags": ["tiktok", "vidéo", "tendances", "viral"],
+    "createdAt": "2024-03-10T15:45:00.000Z",
+    "updatedAt": "2024-03-10T15:45:00.000Z",
+    "steps": [
+      { "text": "Analyser les tendances actuelles avec TikTok Creative Center", "image": "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Préparer un storyboard simplifié", "image": "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Tourner en format vertical (9:16)", "image": "https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Monter directement dans l'app TikTok ou avec CapCut", "image": "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Rédiger une description avec call-to-action", "image": "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=600&q=80" }
+    ]
+  },
+  {
+    "id": "sop-017",
+    "title": "Configuration de campagnes Facebook Ads",
+    "description": "Procédure détaillée pour créer et optimiser des campagnes publicitaires sur Facebook et Instagram",
+    "instructions": "1. Préparation et stratégie\n   - Définir les objectifs de campagne (trafic, conversion, notoriété)\n   - Établir le budget et la durée de la campagne\n   - Créer les personas cibles détaillés\n   - Configurer le pixel Facebook sur le site\n\n2. Structure de la campagne\n   - Créer une structure en campagne/ensemble d'annonces/annonces\n   - Segmenter les ensembles d'annonces par audience\n   - Configurer le budget au niveau ensemble ou campagne\n   - Définir les enchères selon l'objectif\n\n3. Ciblage des audiences\n   - Créer des audiences personnalisées (site web, CRM)\n   - Développer des audiences similaires (lookalike)\n   - Définir le ciblage démographique et comportemental\n   - Exclure les audiences converties si pertinent\n\n4. Création des annonces\n   - Respecter les spécifications de format par placement\n   - Créer 3-5 variantes créatives par ensemble d'annonces\n   - Rédiger des accroches claires avec appel à l'action\n   - Tester différentes propositions de valeur\n\n5. Lancement et optimisation\n   - Démarrer avec une phase d'apprentissage (3-4 jours)\n   - Analyser les premiers résultats (CTR, CPM, CPC)\n   - Désactiver les annonces sous-performantes\n   - Augmenter progressivement le budget des ensembles performants",
+    "author": "Marie Leroy",
+    "category": "PPC",
+    "priority": "high",
+    "tags": ["facebook-ads", "instagram", "publicité", "social-ads"],
+    "createdAt": "2024-03-15T11:30:00.000Z",
+    "updatedAt": "2024-03-15T11:30:00.000Z",
+    "steps": [
+      { "text": "Définir les objectifs de campagne (trafic, conversion, notoriété)", "image": "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Créer une structure en campagne/ensemble d'annonces/annonces", "image": "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Créer des audiences personnalisées (site web, CRM)", "image": "https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Créer 3-5 variantes créatives par ensemble d'annonces", "image": "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Analyser les premiers résultats (CTR, CPM, CPC)", "image": "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=600&q=80" }
+    ]
+  },
+  {
+    "id": "sop-018",
+    "title": "Mise en place de campagnes LinkedIn Ads",
+    "description": "Guide pour créer et gérer des campagnes publicitaires B2B performantes sur LinkedIn",
+    "instructions": "1. Préparation et stratégie\n   - Définir les objectifs B2B (génération de leads, brand awareness)\n   - Déterminer le budget (minimum 50€/jour recommandé)\n   - Identifier les cibles professionnelles précises\n   - Installer le Insight Tag sur le site web\n\n2. Configuration du compte publicitaire\n   - Créer une page entreprise optimisée\n   - Configurer le gestionnaire de campagnes\n   - Définir les paramètres de facturation\n   - Configurer les conversions à suivre\n\n3. Structure et ciblage\n   - Choisir le format adapté (Sponsored Content, Message Ads, etc.)\n   - Définir le ciblage par fonction, secteur, taille d'entreprise\n   - Utiliser les audiences Website Demographics\n   - Estimer la taille d'audience (25 000+ recommandé)\n\n4. Création des annonces\n   - Rédiger des titres orientés bénéfices (max 150 caractères)\n   - Créer des visuels professionnels respectant les dimensions\n   - Inclure un call-to-action clair\n   - Préparer la page de destination optimisée pour la conversion\n\n5. Gestion et optimisation\n   - Surveiller le taux de clics et d'engagement\n   - Optimiser pour le coût par lead\n   - Ajuster les enchères selon la performance\n   - Tester de nouvelles audiences et messages régulièrement",
+    "author": "Marie Leroy",
+    "category": "PPC",
+    "priority": "medium",
+    "tags": ["linkedin-ads", "b2b", "lead-generation", "social-ads"],
+    "createdAt": "2024-03-20T09:15:00.000Z",
+    "updatedAt": "2024-03-20T09:15:00.000Z",
+    "steps": [
+      { "text": "Définir les objectifs B2B (génération de leads, brand awareness)", "image": "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Installer le Insight Tag sur le site web", "image": "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Définir le ciblage par fonction, secteur, taille d'entreprise", "image": "https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Rédiger des titres orientés bénéfices (max 150 caractères)", "image": "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Optimiser pour le coût par lead", "image": "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=600&q=80" }
+    ]
+  },
+  {
+    "id": "sop-019",
+    "title": "Configuration de campagnes YouTube Ads",
+    "description": "Méthodologie complète pour créer et optimiser des campagnes vidéo sur YouTube",
+    "instructions": "1. Préparation et planification\n   - Définir les objectifs de la campagne vidéo\n   - Analyser les performances des concurrents sur YouTube\n   - Définir les audiences cibles et personas\n   - Planifier le budget et la durée de campagne\n\n2. Préparation du contenu vidéo\n   - Créer une vidéo avec accroche dans les 5 premières secondes\n   - Adapter le format selon le type d'annonce (skippable, bumper)\n   - Inclure le nom de la marque dans les 5 premières secondes\n   - Préparer les call-to-action et écrans finaux\n\n3. Configuration dans Google Ads\n   - Créer une campagne vidéo dans Google Ads\n   - Choisir le type d'annonce adapté aux objectifs\n   - Configurer le ciblage (démographique, centres d'intérêt, placement)\n   - Définir les enchères et le budget quotidien\n\n4. Paramétrage avancé\n   - Configurer les exclusions de placement si nécessaire\n   - Mettre en place le suivi des conversions\n   - Créer des listes de remarketing vidéo\n   - Définir la fréquence de diffusion par utilisateur\n\n5. Analyse et optimisation\n   - Suivre le taux de vue et d'engagement\n   - Analyser les performances par placement\n   - Optimiser le ciblage selon les conversions\n   - Tester différentes variantes créatives",
+    "author": "Marie Leroy",
+    "category": "PPC",
+    "priority": "medium",
+    "tags": ["youtube", "video-ads", "google-ads", "branding"],
+    "createdAt": "2024-03-25T14:20:00.000Z",
+    "updatedAt": "2024-03-25T14:20:00.000Z",
+    "steps": [
+      { "text": "Définir les objectifs de la campagne vidéo", "image": "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Créer une vidéo avec accroche dans les 5 premières secondes", "image": "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Créer une campagne vidéo dans Google Ads", "image": "https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Configurer les exclusions de placement si nécessaire", "image": "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Suivre le taux de vue et d'engagement", "image": "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=600&q=80" }
+    ]
+  },
+  {
+    "id": "sop-020",
+    "title": "Création de contenu interactif",
+    "description": "Guide complet pour concevoir et mettre en œuvre du contenu interactif performant",
+    "instructions": "1. Définition des objectifs\n   - Déterminer le but du contenu (engagement, génération de leads, éducation)\n   - Identifier l'audience cible et ses préférences\n   - Définir les KPIs à suivre (temps passé, taux de complétion, partages)\n   - Établir le budget et les ressources nécessaires\n\n2. Sélection du format interactif\n   - Choisir le format adapté aux objectifs (quiz, calculateur, configurateur, etc.)\n   - Benchmarker les contenus interactifs du secteur\n   - Évaluer la faisabilité technique\n   - Identifier la plateforme de création à utiliser\n\n3. Conception et création\n   - Développer un concept original et engageant\n   - Créer un storyboard détaillant l'expérience utilisateur\n   - Rédiger le contenu et les questions/réponses\n   - Concevoir les visuels et l'interface utilisateur\n\n4. Développement et tests\n   - Implémenter le contenu sur la plateforme choisie\n   - Tester l'expérience sur différents appareils et navigateurs\n   - Vérifier la fluidité de l'interaction\n   - Mettre en place le tracking des interactions\n\n5. Promotion et analyse\n   - Intégrer le contenu sur le site web et les réseaux sociaux\n   - Promouvoir via les canaux appropriés (email, paid media)\n   - Analyser les métriques d'engagement\n   - Itérer et améliorer en fonction des résultats",
+    "author": "Julien Rousseau",
+    "category": "Content Marketing",
+    "priority": "medium",
+    "tags": ["interactif", "engagement", "quiz", "innovation"],
+    "createdAt": "2024-04-01T10:30:00.000Z",
+    "updatedAt": "2024-04-01T10:30:00.000Z",
+    "steps": [
+      { "text": "Déterminer le but du contenu (engagement, génération de leads, éducation)", "image": "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Choisir le format adapté aux objectifs", "image": "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Développer un concept original et engageant", "image": "https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Tester l'expérience sur différents appareils", "image": "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Analyser les métriques d'engagement", "image": "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=600&q=80" }
+    ]
+  },
+  {
+    "id": "sop-021",
+    "title": "Création d'une stratégie de content marketing",
+    "description": "Processus complet pour élaborer une stratégie de contenu efficace et alignée avec les objectifs business",
+    "instructions": "1. Audit et analyse de l'existant\n   - Inventorier les contenus existants\n   - Analyser les performances (trafic, engagement, conversion)\n   - Étudier la concurrence et ses stratégies de contenu\n   - Identifier les opportunités et les lacunes\n\n2. Définition des objectifs et cibles\n   - Aligner les objectifs de contenu avec la stratégie globale\n   - Développer les personas détaillés\n   - Cartographier le parcours client\n   - Définir les KPIs pour chaque étape du tunnel\n\n3. Planification des thématiques et formats\n   - Identifier les sujets pertinents pour l'audience\n   - Définir les piliers de contenu\n   - Sélectionner les formats adaptés par canal\n   - Créer un calendrier éditorial sur 3-6 mois\n\n4. Processus de production\n   - Établir un workflow de création de contenu\n   - Définir les standards de qualité et le tone of voice\n   - Mettre en place les processus de validation\n   - Identifier les ressources internes et externes nécessaires\n\n5. Distribution et promotion\n   - Planifier la stratégie de distribution multicanal\n   - Définir les tactiques de promotion par type de contenu\n   - Établir un plan de recyclage et mise à jour\n   - Mettre en place les outils de mesure et reporting",
+    "author": "Julien Rousseau",
+    "category": "Content Marketing",
+    "priority": "high",
+    "tags": ["stratégie", "contenu", "planning", "editorial"],
+    "createdAt": "2024-04-05T09:15:00.000Z",
+    "updatedAt": "2024-04-05T09:15:00.000Z",
+    "steps": [
+      { "text": "Inventorier les contenus existants", "image": "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Développer les personas détaillés", "image": "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Identifier les piliers de contenu", "image": "https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Établir un workflow de création de contenu", "image": "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Planifier la stratégie de distribution multicanal", "image": "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=600&q=80" }
+    ]
+  },
+  {
+    "id": "sop-022",
+    "title": "Création de podcasts d'entreprise",
+    "description": "Méthodologie complète pour concevoir, produire et promouvoir un podcast professionnel",
+    "instructions": "1. Conception et stratégie\n   - Définir le concept et la ligne éditoriale\n   - Identifier le format optimal (interview, storytelling, débat)\n   - Planifier la fréquence et durée des épisodes\n   - Définir l'identité sonore (jingle, musique, ton)\n\n2. Préparation technique\n   - Sélectionner l'équipement audio nécessaire\n   - Aménager un espace d'enregistrement adapté\n   - Choisir les logiciels d'enregistrement et montage\n   - Réaliser des tests techniques\n\n3. Production de contenu\n   - Rédiger les scripts ou guides d'entretien\n   - Préparer les invités avec un briefing détaillé\n   - Enregistrer les épisodes\n   - Réaliser le montage et post-production\n\n4. Distribution et hébergement\n   - Choisir une plateforme d'hébergement (Anchor, Buzzsprout)\n   - Publier sur les principales plateformes (Spotify, Apple Podcasts)\n   - Créer des visuels cohérents pour chaque épisode\n   - Rédiger des descriptions optimisées\n\n5. Promotion et analyse\n   - Créer un plan de promotion cross-canal\n   - Extraire des snippets pour les réseaux sociaux\n   - Analyser les performances (téléchargements, rétention)\n   - Recueillir les feedbacks pour améliorer les prochains épisodes",
+    "author": "Julien Rousseau",
+    "category": "Content Marketing",
+    "priority": "medium",
+    "tags": ["podcast", "audio", "interview", "contenu"],
+    "createdAt": "2024-04-10T14:45:00.000Z",
+    "updatedAt": "2024-04-10T14:45:00.000Z",
+    "steps": [
+      { "text": "Définir le concept et la ligne éditoriale", "image": "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Sélectionner l'équipement audio nécessaire", "image": "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Rédiger les scripts ou guides d'entretien", "image": "https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Publier sur les principales plateformes", "image": "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Extraire des snippets pour les réseaux sociaux", "image": "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=600&q=80" }
+    ]
+  },
+  {
+    "id": "sop-023",
+    "title": "Mise en place d'une stratégie d'email automation",
+    "description": "Guide complet pour créer et déployer des parcours email automatisés performants",
+    "instructions": "1. Définition des objectifs et parcours\n   - Identifier les objectifs business (conversion, rétention, upsell)\n   - Cartographier les parcours clients à automatiser\n   - Définir les triggers et points de contact\n   - Établir les KPIs pour chaque séquence\n\n2. Segmentation et personnalisation\n   - Créer des segments basés sur le comportement et profil\n   - Définir les règles de scoring et qualification\n   - Planifier la personnalisation dynamique du contenu\n   - Établir les règles de suppression et exclusion\n\n3. Conception des séquences\n   - Créer des workflows pour chaque parcours\n   - Définir la cadence et timing optimal des emails\n   - Rédiger les contenus avec une progression logique\n   - Concevoir des templates responsives et personnalisés\n\n4. Configuration technique\n   - Sélectionner l'outil d'automation (Mailchimp, HubSpot, ActiveCampaign)\n   - Mettre en place les intégrations avec le CRM et site web\n   - Configurer les triggers et conditions\n   - Tester les parcours de bout en bout\n\n5. Optimisation continue\n   - Mettre en place un tableau de bord de suivi\n   - Analyser les performances par séquence\n   - Réaliser des tests A/B sur les éléments clés\n   - Affiner les parcours selon les résultats",
+    "author": "Antoine Bernard",
+    "category": "Email Marketing",
+    "priority": "high",
+    "tags": ["automation", "nurturing", "workflow", "personnalisation"],
+    "createdAt": "2024-04-15T11:00:00.000Z",
+    "updatedAt": "2024-04-15T11:00:00.000Z",
+    "steps": [
+      { "text": "Cartographier les parcours clients à automatiser", "image": "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Créer des segments basés sur le comportement et profil", "image": "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Créer des workflows pour chaque parcours", "image": "https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Configurer les triggers et conditions", "image": "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Réaliser des tests A/B sur les éléments clés", "image": "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=600&q=80" }
+    ]
+  },
+  {
+    "id": "sop-024",
+    "title": "Optimisation de la délivrabilité des emails",
+    "description": "Méthodologie pour améliorer le taux de délivrabilité et éviter les dossiers spam",
+    "instructions": "1. Audit de la délivrabilité actuelle\n   - Analyser les taux de délivrabilité par domaine\n   - Vérifier la réputation des IPs d'envoi\n   - Contrôler les scores de spam avec des outils dédiés\n   - Identifier les causes potentielles de problèmes\n\n2. Configuration technique\n   - Mettre en place les enregistrements SPF, DKIM et DMARC\n   - Configurer le feedback loop avec les FAI majeurs\n   - Mettre en place une IP dédiée si volume important\n   - Vérifier la configuration du reverse DNS\n\n3. Optimisation de la liste de contacts\n   - Nettoyer régulièrement la base (bounces, inactifs)\n   - Mettre en place un processus de double opt-in\n   - Segmenter selon l'engagement et la fréquence\n   - Implémenter une stratégie de réengagement\n\n4. Amélioration du contenu\n   - Équilibrer le ratio texte/image\n   - Éviter les mots déclencheurs de spam\n   - Optimiser l'objet et le préheader\n   - S'assurer que les liens sont légitimes et fonctionnels\n\n5. Monitoring et maintenance\n   - Suivre les métriques clés (taux d'ouverture, plaintes)\n   - Tester régulièrement avec des outils de délivrabilité\n   - Mettre en place des alertes en cas de baisse soudaine\n   - Maintenir une cadence d'envoi régulière",
+    "author": "Antoine Bernard",
+    "category": "Email Marketing",
+    "priority": "high",
+    "tags": ["délivrabilité", "spam", "réputation", "technique"],
+    "createdAt": "2024-04-20T15:30:00.000Z",
+    "updatedAt": "2024-04-20T15:30:00.000Z",
+    "steps": [
+      { "text": "Analyser les taux de délivrabilité par domaine", "image": "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Mettre en place les enregistrements SPF, DKIM et DMARC", "image": "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Nettoyer régulièrement la base (bounces, inactifs)", "image": "https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Équilibrer le ratio texte/image", "image": "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Suivre les métriques clés (taux d'ouverture, plaintes)", "image": "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=600&q=80" }
+    ]
+  },
+  {
+    "id": "sop-025",
+    "title": "Création et gestion d'une newsletter",
+    "description": "Guide complet pour créer, lancer et gérer une newsletter engageante",
+    "instructions": "1. Définition du concept\n   - Identifier l'objectif de la newsletter\n   - Définir la ligne éditoriale et le ton\n   - Choisir la fréquence optimale\n   - Déterminer le format et la structure\n\n2. Design et mise en page\n   - Créer un template responsive et adapté à la marque\n   - Définir une structure modulaire et réutilisable\n   - Optimiser les CTA et la hiérarchie visuelle\n   - Adapter le design pour les principaux clients mail\n\n3. Création de contenu\n   - Planifier les thématiques en avance\n   - Rédiger des titres accrocheurs\n   - Préparer un mix de contenus originaux et curatés\n   - Adapter le contenu aux attentes des abonnés\n\n4. Croissance et acquisition\n   - Créer des formulaires d'inscription optimisés\n   - Mettre en place des incentives d'inscription\n   - Promouvoir la newsletter sur tous les canaux\n   - Mesurer et optimiser le taux de conversion\n\n5. Analyse et optimisation\n   - Suivre les métriques clés (taux d'ouverture, clics, désabonnements)\n   - Recueillir les feedbacks des abonnés\n   - Tester différentes approches éditoriales\n   - Ajuster la stratégie selon les performances",
+    "author": "Antoine Bernard",
+    "category": "Email Marketing",
+    "priority": "medium",
+    "tags": ["newsletter", "audience", "rédaction", "engagement"],
+    "createdAt": "2024-04-25T09:45:00.000Z",
+    "updatedAt": "2024-04-25T09:45:00.000Z",
+    "steps": [
+      { "text": "Identifier l'objectif de la newsletter", "image": "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Créer un template responsive et adapté à la marque", "image": "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Planifier les thématiques en avance", "image": "https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Créer des formulaires d'inscription optimisés", "image": "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Suivre les métriques clés (taux d'ouverture, clics, désabonnements)", "image": "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=600&q=80" }
+    ]
+  },
+  {
+    "id": "sop-026",
+    "title": "Gestion des clients difficiles",
+    "description": "Protocole pour gérer efficacement les situations de tension avec des clients exigeants ou mécontents",
+    "instructions": "1. Identification et prévention\n   - Reconnaître les signes avant-coureurs de mécontentement\n   - Identifier les types de clients difficiles (agressifs, indécis, etc.)\n   - Mettre en place des points de contrôle préventifs\n   - Documenter les interactions problématiques\n\n2. Écoute active et empathie\n   - Laisser le client exprimer pleinement son mécontentement\n   - Pratiquer l'écoute active sans interruption\n   - Reformuler pour confirmer la compréhension\n   - Exprimer de l'empathie sans admettre de tort prématurément\n\n3. Résolution de problème\n   - Analyser objectivement la situation\n   - Proposer des solutions concrètes et réalistes\n   - Définir clairement les délais de résolution\n   - Impliquer les décisionnaires si nécessaire\n\n4. Suivi et réconciliation\n   - Mettre en place un suivi rapproché\n   - Tenir le client informé des avancées\n   - Solliciter un feedback après résolution\n   - Identifier les apprentissages pour l'équipe\n\n5. Documentation et prévention\n   - Mettre à jour le CRM avec les détails de l'incident\n   - Partager les leçons apprises avec l'équipe\n   - Adapter les processus pour éviter la récurrence\n   - Évaluer les risques de churn et mettre en place des actions préventives",
+    "author": "Sarah Petit",
+    "category": "Client Management",
+    "priority": "high",
+    "tags": ["conflit", "résolution", "satisfaction", "relation-client"],
+    "createdAt": "2024-05-01T10:30:00.000Z",
+    "updatedAt": "2024-05-01T10:30:00.000Z",
+    "steps": [
+      { "text": "Reconnaître les signes avant-coureurs de mécontentement", "image": "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Pratiquer l'écoute active sans interruption", "image": "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Proposer des solutions concrètes et réalistes", "image": "https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Tenir le client informé des avancées", "image": "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Mettre à jour le CRM avec les détails de l'incident", "image": "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=600&q=80" }
+    ]
+  },
+  {
+    "id": "sop-027",
+    "title": "Reporting client mensuel",
+    "description": "Procédure détaillée pour préparer et présenter des rapports d'activité mensuels aux clients",
+    "instructions": "1. Collecte et préparation des données\n   - Extraire les données des outils d'analyse et de suivi\n   - Vérifier l'exactitude et la cohérence des informations\n   - Identifier les tendances et variations significatives\n   - Préparer les comparaisons avec les périodes précédentes\n\n2. Structuration du rapport\n   - Utiliser le template standardisé de l'agence\n   - Personnaliser selon les KPIs spécifiques du client\n   - Inclure un résumé exécutif clair et concis\n   - Organiser par objectifs et canaux\n\n3. Analyse et insights\n   - Analyser les performances par rapport aux objectifs\n   - Expliquer les écarts et leurs causes\n   - Formuler des recommandations concrètes\n   - Quantifier l'impact des actions entreprises\n\n4. Préparation de la présentation\n   - Créer un support visuel clair et synthétique\n   - Anticiper les questions et objections\n   - Préparer des réponses aux points sensibles\n   - Limiter la présentation à 45 minutes maximum\n\n5. Réunion de présentation\n   - Commencer par les points positifs et réussites\n   - Présenter les chiffres clés de manière pédagogique\n   - Obtenir la validation des prochaines actions\n   - Établir les priorités pour le mois suivant",
+    "author": "Sarah Petit",
+    "category": "Client Management",
+    "priority": "medium",
+    "tags": ["reporting", "présentation", "performance", "analyse"],
+    "createdAt": "2024-05-05T14:15:00.000Z",
+    "updatedAt": "2024-05-05T14:15:00.000Z",
+    "steps": [
+      { "text": "Extraire les données des outils d'analyse et de suivi", "image": "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Personnaliser selon les KPIs spécifiques du client", "image": "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Analyser les performances par rapport aux objectifs", "image": "https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Créer un support visuel clair et synthétique", "image": "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Établir les priorités pour le mois suivant", "image": "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=600&q=80" }
+    ]
+  },
+  {
+    "id": "sop-028",
+    "title": "Fidélisation et upsell client",
+    "description": "Stratégie pour développer la relation client, augmenter la rétention et accroître le panier moyen",
+    "instructions": "1. Segmentation et analyse client\n   - Classifier les clients selon leur valeur et potentiel\n   - Analyser l'historique d'achat et comportement\n   - Identifier les opportunités d'upsell/cross-sell\n   - Évaluer le risque de churn par segment\n\n2. Programme de fidélisation\n   - Concevoir un programme d'avantages progressifs\n   - Mettre en place des communications personnalisées\n   - Créer un calendrier d'actions relationnelles\n   - Définir des jalons et célébrations (anniversaires, etc.)\n\n3. Stratégie d'upsell\n   - Identifier les moments clés pour proposer des services complémentaires\n   - Préparer des arguments de vente adaptés à chaque segment\n   - Former l'équipe aux techniques de vente additionnelle\n   - Créer des offres packagées incitatives\n\n4. Gestion proactive de la relation\n   - Planifier des revues stratégiques trimestrielles\n   - Anticiper les besoins futurs du client\n   - Proposer des idées innovantes non sollicitées\n   - Organiser des événements exclusifs pour les clients fidèles\n\n5. Mesure et optimisation\n   - Suivre les indicateurs de fidélisation (LTV, taux de rétention)\n   - Mesurer le taux de conversion des actions d'upsell\n   - Recueillir les feedbacks sur la satisfaction client\n   - Ajuster la stratégie selon les résultats obtenus",
+    "author": "Sarah Petit",
+    "category": "Client Management",
+    "priority": "high",
+    "tags": ["fidélisation", "upsell", "cross-sell", "rétention"],
+    "createdAt": "2024-05-10T09:45:00.000Z",
+    "updatedAt": "2024-05-10T09:45:00.000Z",
+    "steps": [
+      { "text": "Classifier les clients selon leur valeur et potentiel", "image": "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Concevoir un programme d'avantages progressifs", "image": "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Identifier les moments clés pour proposer des services complémentaires", "image": "https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Planifier des revues stratégiques trimestrielles", "image": "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Suivre les indicateurs de fidélisation (LTV, taux de rétention)", "image": "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=600&q=80" }
+    ]
+  },
+  {
+    "id": "sop-029",
+    "title": "Création d'une identité visuelle de marque",
+    "description": "Guide méthodologique pour créer une identité visuelle cohérente et mémorable pour une marque",
+    "instructions": "1. Recherche et stratégie\n   - Analyser l'ADN et les valeurs de la marque\n   - Étudier le positionnement et la cible\n   - Réaliser un benchmark concurrentiel\n   - Créer un moodboard d'inspiration\n\n2. Développement du logo\n   - Esquisser plusieurs concepts (minimum 3)\n   - Sélectionner et affiner le concept retenu\n   - Créer les déclinaisons (horizontal, vertical, icône)\n   - Définir les espacements et zones de protection\n\n3. Système graphique\n   - Définir la palette de couleurs principale et secondaire\n   - Sélectionner les typographies (titres, corps de texte)\n   - Créer les éléments graphiques complémentaires\n   - Concevoir les motifs et textures si nécessaire\n\n4. Applications\n   - Décliner l'identité sur les supports essentiels\n   - Créer des mockups pour visualiser les applications\n   - Adapter le système pour le digital et l'imprimé\n   - Prévoir les variations pour différents contextes\n\n5. Finalisation et livraison\n   - Créer une charte graphique complète\n   - Préparer les fichiers sources dans différents formats\n   - Organiser les assets dans une structure claire\n   - Fournir un guide d'utilisation détaillé",
+    "author": "Lucas Girard",
+    "category": "Design",
+    "priority": "high",
+    "tags": ["branding", "identité", "logo", "charte-graphique"],
+    "createdAt": "2024-05-15T11:30:00.000Z",
+    "updatedAt": "2024-05-15T11:30:00.000Z",
+    "steps": [
+      { "text": "Analyser l'ADN et les valeurs de la marque", "image": "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Esquisser plusieurs concepts (minimum 3)", "image": "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Définir la palette de couleurs principale et secondaire", "image": "https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Décliner l'identité sur les supports essentiels", "image": "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Créer une charte graphique complète", "image": "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=600&q=80" }
+    ]
+  },
+  {
+    "id": "sop-030",
+    "title": "Refonte UI/UX d'un site web",
+    "description": "Méthodologie complète pour réaliser une refonte ergonomique et visuelle d'un site web",
+    "instructions": "1. Audit et analyse\n   - Réaliser un audit UX du site existant\n   - Analyser les données d'usage (heatmaps, analytics)\n   - Identifier les points de friction et opportunités\n   - Définir les objectifs d'amélioration\n\n2. Recherche utilisateur\n   - Créer des personas détaillés\n   - Réaliser des entretiens utilisateurs\n   - Cartographier les parcours utilisateurs\n   - Définir les besoins fonctionnels prioritaires\n\n3. Architecture et wireframing\n   - Restructurer l'architecture de l'information\n   - Créer des wireframes basse fidélité\n   - Tester les wireframes avec des utilisateurs\n   - Itérer selon les retours\n\n4. Design d'interface\n   - Créer un design system cohérent\n   - Développer des maquettes haute fidélité\n   - Concevoir les interfaces pour mobile et desktop\n   - Animer les interactions clés\n\n5. Validation et préparation\n   - Réaliser des tests utilisateurs sur les maquettes\n   - Créer un prototype interactif\n   - Préparer les spécifications pour les développeurs\n   - Fournir les assets et documentation UI",
+    "author": "Lucas Girard",
+    "category": "Design",
+    "priority": "high",
+    "tags": ["ui", "ux", "refonte", "ergonomie"],
+    "createdAt": "2024-05-20T09:15:00.000Z",
+    "updatedAt": "2024-05-20T09:15:00.000Z",
+    "steps": [
+      { "text": "Réaliser un audit UX du site existant", "image": "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Créer des personas détaillés", "image": "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Restructurer l'architecture de l'information", "image": "https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Créer un design system cohérent", "image": "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Réaliser des tests utilisateurs sur les maquettes", "image": "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=600&q=80" }
+    ]
+  },
+  {
+    "id": "sop-031",
+    "title": "Création d'infographies percutantes",
+    "description": "Guide pour concevoir et réaliser des infographies efficaces qui vulgarisent des données complexes",
+    "instructions": "1. Préparation et recherche\n   - Définir l'objectif et le message clé\n   - Collecter et analyser les données\n   - Identifier l'angle narratif\n   - Rechercher des références et inspiration\n\n2. Structure et hiérarchisation\n   - Organiser les données selon une logique claire\n   - Établir une hiérarchie visuelle des informations\n   - Créer un storyboard de l'infographie\n   - Simplifier les données complexes\n\n3. Design et visualisation\n   - Choisir les types de visualisation adaptés (graphiques, icônes)\n   - Créer une grille de mise en page\n   - Développer un style graphique cohérent\n   - Utiliser des couleurs significatives et contrastées\n\n4. Création des éléments\n   - Concevoir des icônes et illustrations sur mesure\n   - Produire les graphiques et diagrammes\n   - Rédiger des titres et légendes concis\n   - Équilibrer texte et éléments visuels\n\n5. Finalisation et optimisation\n   - Vérifier l'exactitude des données\n   - Optimiser la lisibilité et l'accessibilité\n   - Adapter aux formats de diffusion (web, réseaux sociaux, print)\n   - Vérifier la cohérence globale du design",
+    "author": "Lucas Girard",
+    "category": "Design",
+    "priority": "medium",
+    "tags": ["infographie", "data-viz", "visualisation", "graphiques"],
+    "createdAt": "2024-05-25T14:45:00.000Z",
+    "updatedAt": "2024-05-25T14:45:00.000Z",
+    "steps": [
+      { "text": "Définir l'objectif et le message clé", "image": "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Organiser les données selon une logique claire", "image": "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Choisir les types de visualisation adaptés", "image": "https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Concevoir des icônes et illustrations sur mesure", "image": "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Vérifier l'exactitude des données", "image": "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=600&q=80" }
+    ]
+  },
+  {
+    "id": "sop-032",
+    "title": "Mise en place d'un tracking GA4",
+    "description": "Procédure complète pour configurer et optimiser Google Analytics 4 sur un site web",
+    "instructions": "1. Préparation et stratégie\n   - Définir les objectifs business et KPIs\n   - Établir un plan de mesure détaillé\n   - Cartographier les événements à tracker\n   - Définir les conversions et audiences clés\n\n2. Installation technique\n   - Créer une propriété GA4\n   - Installer le tag GA4 via Google Tag Manager\n   - Configurer les paramètres de base (devise, fuseau horaire)\n   - Activer les fonctionnalités avancées (recherche sur site, scroll)\n\n3. Configuration des événements\n   - Paramétrer les événements automatiques\n   - Configurer les événements recommandés\n   - Créer des événements personnalisés\n   - Mettre en place le e-commerce amélioré\n\n4. Personnalisation avancée\n   - Créer des audiences segmentées\n   - Configurer les dimensions et métriques personnalisées\n   - Mettre en place les rapports personnalisés\n   - Configurer les attributions et canaux personnalisés\n\n5. Test et validation\n   - Vérifier la collecte de données en temps réel\n   - Tester les événements et conversions\n   - Configurer les alertes et exportations\n   - Documenter la mise en place pour les équipes",
+    "author": "Emma Lefevre",
+    "category": "Analytics",
+    "priority": "high",
+    "tags": ["ga4", "tracking", "analytics", "mesure"],
+    "createdAt": "2024-06-01T10:00:00.000Z",
+    "updatedAt": "2024-06-01T10:00:00.000Z",
+    "steps": [
+      { "text": "Définir les objectifs business et KPIs", "image": "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Installer le tag GA4 via Google Tag Manager", "image": "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Configurer les événements recommandés", "image": "https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Créer des audiences segmentées", "image": "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Vérifier la collecte de données en temps réel", "image": "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=600&q=80" }
+    ]
+  },
+  {
+    "id": "sop-033",
+    "title": "Création d'un dashboard de performance",
+    "description": "Méthodologie pour concevoir et mettre en place un tableau de bord de pilotage marketing efficace",
+    "instructions": "1. Définition des objectifs et KPIs\n   - Identifier les indicateurs clés par canal\n   - Définir les seuils d'alerte et objectifs\n   - Aligner les métriques avec les objectifs business\n   - Déterminer la granularité temporelle (jour, semaine, mois)\n\n2. Collecte et consolidation des données\n   - Identifier les sources de données (GA4, réseaux sociaux, CRM)\n   - Mettre en place les connecteurs API nécessaires\n   - Automatiser l'extraction des données\n   - Normaliser les données provenant de sources différentes\n\n3. Conception du dashboard\n   - Sélectionner l'outil adapté (Data Studio, PowerBI, Tableau)\n   - Structurer les sections par canal ou objectif\n   - Choisir les visualisations appropriées pour chaque métrique\n   - Concevoir une interface intuitive et claire\n\n4. Mise en place technique\n   - Créer les requêtes et calculs nécessaires\n   - Implémenter les filtres et segments\n   - Configurer les comparaisons temporelles\n   - Mettre en place les systèmes d'alertes\n\n5. Déploiement et amélioration\n   - Former les équipes à l'utilisation du dashboard\n   - Recueillir les feedbacks des utilisateurs\n   - Itérer et améliorer les visualisations\n   - Documenter les méthodologies de calcul",
+    "author": "Emma Lefevre",
+    "category": "Analytics",
+    "priority": "medium",
+    "tags": ["dashboard", "reporting", "data", "visualisation"],
+    "createdAt": "2024-06-05T13:30:00.000Z",
+    "updatedAt": "2024-06-05T13:30:00.000Z",
+    "steps": [
+      { "text": "Identifier les indicateurs clés par canal", "image": "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Mettre en place les connecteurs API nécessaires", "image": "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Structurer les sections par canal ou objectif", "image": "https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Implémenter les filtres et segments", "image": "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Former les équipes à l'utilisation du dashboard", "image": "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=600&q=80" }
+    ]
+  },
+  {
+    "id": "sop-034",
+    "title": "Analyse de parcours client et optimisation de conversion",
+    "description": "Méthodologie pour analyser et optimiser les parcours clients afin d'améliorer les taux de conversion",
+    "instructions": "1. Analyse des données actuelles\n   - Extraire les données de navigation et conversion\n   - Identifier les parcours les plus fréquents\n   - Repérer les points de friction et abandons\n   - Analyser les différences par segment et appareil\n\n2. Cartographie des parcours\n   - Créer une visualisation des parcours principaux\n   - Documenter les étapes clés du tunnel\n   - Mesurer les temps passés à chaque étape\n   - Identifier les micro-conversions intermédiaires\n\n3. Diagnostic qualitatif\n   - Mettre en place des enregistrements de session\n   - Réaliser des tests utilisateurs\n   - Collecter des feedbacks via sondages\n   - Analyser les heatmaps et clickmaps\n\n4. Plan d'optimisation\n   - Prioriser les points de friction selon impact/effort\n   - Formuler des hypothèses d'amélioration\n   - Concevoir des tests A/B\n   - Définir les KPIs de mesure du succès\n\n5. Implémentation et analyse\n   - Mettre en place les modifications prioritaires\n   - Lancer les tests A/B\n   - Mesurer l'impact sur les conversions\n   - Documenter les apprentissages pour itérations futures",
+    "author": "Emma Lefevre",
+    "category": "Analytics",
+    "priority": "high",
+    "tags": ["conversion", "ux", "ab-testing", "optimisation"],
+    "createdAt": "2024-06-10T15:45:00.000Z",
+    "updatedAt": "2024-06-10T15:45:00.000Z",
+    "steps": [
+      { "text": "Extraire les données de navigation et conversion", "image": "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Créer une visualisation des parcours principaux", "image": "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Mettre en place des enregistrements de session", "image": "https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Formuler des hypothèses d'amélioration", "image": "https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=600&q=80" },
+      { "text": "Mesurer l'impact sur les conversions", "image": "https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=600&q=80" }
+    ]
   }
 ] 
