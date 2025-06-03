@@ -7,6 +7,40 @@ import crypto from 'crypto';
 
 const prisma = new PrismaClient();
 
+/**
+ * @swagger
+ * /api/sops:
+ *   get:
+ *     summary: Récupère la liste de tous les SOPs
+ *     tags:
+ *       - SOPs
+ *     responses:
+ *       200:
+ *         description: Liste des SOPs récupérée avec succès
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: string
+ *                   title:
+ *                     type: string
+ *                   content:
+ *                     type: string
+ *                   authorId:
+ *                     type: string
+ *                   createdAt:
+ *                     type: string
+ *                     format: date-time
+ *                   updatedAt:
+ *                     type: string
+ *                     format: date-time
+ *                   author:
+ *                     type: string
+ */
 export async function GET() {
   const sops = await prisma.sop.findMany({
     include: { user: true }
@@ -18,6 +52,53 @@ export async function GET() {
   return NextResponse.json(sopsWithAuthor);
 }
 
+/**
+ * @swagger
+ * /api/sops:
+ *   post:
+ *     summary: Crée un nouveau SOP
+ *     tags:
+ *       - SOPs
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *               content:
+ *                 type: string
+ *               authorId:
+ *                 type: string
+ *               priority:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: SOP créé avec succès
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: string
+ *                 title:
+ *                   type: string
+ *                 content:
+ *                   type: string
+ *                 authorId:
+ *                   type: string
+ *                 createdAt:
+ *                   type: string
+ *                   format: date-time
+ *                 updatedAt:
+ *                   type: string
+ *                   format: date-time
+ *                 author:
+ *                   type: string
+ */
 export async function POST(req: Request) {
   const data = await req.json();
   const { author, ...rest } = data;

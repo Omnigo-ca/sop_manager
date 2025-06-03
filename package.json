@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@clerk/clerk-sdk-node": "^4.13.23",
     "@clerk/nextjs": "^6.20.2",
     "@hookform/resolvers": "^3.9.1",
     "@prisma/client": "^6.8.2",
@@ -39,6 +40,8 @@
     "@radix-ui/react-toggle": "1.1.1",
     "@radix-ui/react-toggle-group": "1.1.1",
     "@radix-ui/react-tooltip": "1.1.6",
+    "@types/swagger-jsdoc": "^6.0.4",
+    "@types/swagger-ui-react": "^5.18.0",
     "autoprefixer": "^10.4.20",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -61,6 +64,8 @@
     "recharts": "2.15.0",
     "sonner": "^1.7.1",
     "svix": "^1.16.0",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-react": "^5.22.0",
     "tailwind-merge": "^2.5.5",
     "tailwindcss-animate": "^1.0.7",
     "vaul": "^0.9.6",

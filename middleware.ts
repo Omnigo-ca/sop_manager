@@ -1,5 +1,7 @@
 import { clerkMiddleware } from '@clerk/nextjs/server'
+import { NextResponse } from 'next/server'
 
+// Applique le middleware Clerk pour la gestion de l'authentification
 export default clerkMiddleware();
 
 export const config = {

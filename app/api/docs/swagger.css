@@ -1,0 +1,36 @@
+/* Styles personnalisés pour Swagger UI */
+.swagger-ui .topbar {
+  background-color: #222;
+}
+
+.swagger-ui .info .title {
+  color: #333;
+}
+
+.swagger-ui .opblock .opblock-summary-operation-id, 
+.swagger-ui .opblock .opblock-summary-path, 
+.swagger-ui .opblock .opblock-summary-path__deprecated {
+  font-size: 16px;
+}
+
+.swagger-ui .scheme-container {
+  margin: 0 0 20px;
+  padding: 30px 0;
+  background: #fff;
+  box-shadow: 0 1px 2px 0 rgba(0,0,0,.15);
+}
+
+/* Correction pour le rendu des formulaires dans Next.js */
+.swagger-ui input[type=text], 
+.swagger-ui textarea {
+  border: 1px solid #d9d9d9;
+}
+
+/* Ajustements pour les mobiles */
+@media (max-width: 768px) {
+  .swagger-ui .opblock .opblock-summary-operation-id, 
+  .swagger-ui .opblock .opblock-summary-path, 
+  .swagger-ui .opblock .opblock-summary-path__deprecated {
+    font-size: 14px;
+  }
+} 

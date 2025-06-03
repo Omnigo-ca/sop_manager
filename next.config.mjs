@@ -9,6 +9,8 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  // Configuration pour permettre l'importation de CSS de Swagger UI
+  transpilePackages: ['swagger-ui-react'],
 }
 
 export default nextConfig

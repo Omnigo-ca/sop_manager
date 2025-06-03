@@ -69,7 +69,6 @@ sop-manager/
    DATABASE_URL="mysql://user:password@localhost:3306/sop_manager"
    NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=votre_clé_publique
    CLERK_SECRET_KEY=votre_clé_secrète
-   SIGNING_SECRET=votre_clé_de_signature
    ```
 
 4. **Initialiser la base de données**

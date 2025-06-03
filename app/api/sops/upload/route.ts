@@ -5,6 +5,73 @@ import crypto from 'crypto';
 
 const prisma = new PrismaClient();
 
+/**
+ * @swagger
+ * /api/sops/upload:
+ *   post:
+ *     summary: Télécharge et importe un SOP à partir d'un fichier Markdown
+ *     description: |
+ *       Permet de télécharger un fichier Markdown contenant un SOP et de l'importer dans la base de données.
+ *       Le fichier est analysé pour extraire les métadonnées et le contenu du SOP.
+ *     tags:
+ *       - SOPs
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               file:
+ *                 type: string
+ *                 format: binary
+ *                 description: Fichier Markdown contenant le SOP à importer
+ *     responses:
+ *       200:
+ *         description: SOP importé avec succès
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: string
+ *                 title:
+ *                   type: string
+ *                 description:
+ *                   type: string
+ *                 instructions:
+ *                   type: string
+ *                 category:
+ *                   type: string
+ *                 priority:
+ *                   type: string
+ *                 tags:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ *                 steps:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                 authorId:
+ *                   type: string
+ *                 author:
+ *                   type: string
+ *       400:
+ *         description: Erreur dans le format du fichier
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *       500:
+ *         description: Erreur serveur
+ */
 export async function POST(req: NextRequest) {
   const formData = await req.formData();
   const file = formData.get('file');
