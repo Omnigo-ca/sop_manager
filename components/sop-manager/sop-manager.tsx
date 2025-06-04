@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/dialog"
 import { useToast } from "@/hooks/use-toast"
 import { useUser } from '@clerk/nextjs'
+import { AlertDialog, AlertDialogContent } from "@/components/ui/alert-dialog"
 
 import { SOP, FormData, ViewMode, User } from "./types"
 import { fetchSOPs, fetchUsers, createSOP, updateSOP, deleteSOP, uploadMarkdown } from "./api"
@@ -483,8 +484,8 @@ export function SOPManager() {
         </Dialog>
 
         {/* Delete Dialog */}
-        <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-          <DialogContent>
+        <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+          <AlertDialogContent>
             {sopToDelete && (
               <SopDeleteDialog 
                 sop={sopToDelete}
@@ -492,8 +493,8 @@ export function SOPManager() {
                 onCancel={() => setIsDeleteDialogOpen(false)}
               />
             )}
-          </DialogContent>
-        </Dialog>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </div>
   );

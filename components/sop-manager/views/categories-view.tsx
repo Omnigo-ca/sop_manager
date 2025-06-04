@@ -144,12 +144,14 @@ export function CategoriesView({
                   {selectedSop.steps.map((step, idx) => (
                     <li key={idx} className="mb-2">
                       <div className="font-semibold mb-1">{step.text}</div>
-                      <img
-                        src={step.image}
-                        alt={step.text}
-                        className="max-w-full h-auto rounded border shadow-sm"
-                        style={{ maxHeight: 200 }}
-                      />
+                      {step.image && step.image.trim() !== "" && (
+                        <img
+                          src={step.image}
+                          alt={step.text}
+                          className="max-w-full h-auto rounded border shadow-sm"
+                          style={{ maxHeight: 200 }}
+                        />
+                      )}
                     </li>
                   ))}
                 </ol>

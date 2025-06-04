@@ -10,11 +10,11 @@ datasource db {
 
 model sop {
   id           String   @id
-  title        String
-  description  String
-  instructions String
-  category     String
-  priority     String
+  title        String   @db.VarChar(255)
+  description  String   @db.Text
+  instructions String   @db.LongText
+  category     String   @db.VarChar(100)
+  priority     String   @db.VarChar(50)
   tags         Json
   steps        Json
   authorId     String

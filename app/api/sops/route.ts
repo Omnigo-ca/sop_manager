@@ -102,8 +102,20 @@ export async function GET() {
 export async function POST(req: Request) {
   const data = await req.json();
   const { author, ...rest } = data;
+  
+  // Generate a unique ID for the SOP
+  const id = 'sop-' + Date.now() + '-' + crypto.randomBytes(4).toString('hex');
+  
   if (rest.priority) rest.priority = rest.priority.toLowerCase();
-  const sop = await prisma.sop.create({ data: rest, include: { user: true } });
+  
+  const sop = await prisma.sop.create({ 
+    data: { 
+      ...rest,
+      id 
+    }, 
+    include: { user: true } 
+  });
+  
   return NextResponse.json({
     ...sop,
     author: sop.user?.name || sop.authorId,

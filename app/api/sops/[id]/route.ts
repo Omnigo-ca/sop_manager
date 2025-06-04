@@ -130,7 +130,7 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
       where: { id: params.id },
       data: {
         ...data,
-        editedAt: new Date(),
+        updatedAt: new Date(),
       },
     });
     return NextResponse.json(sop);

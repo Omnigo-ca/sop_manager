@@ -100,6 +100,40 @@ sop-manager/
 3. **Webhooks Clerk**
    Pour développer en local, exposez le port 3000 avec ngrok pour recevoir les webhooks Clerk.
 
+## Déploiement avec Docker Compose
+
+Pour déployer l'application avec Docker Compose:
+
+1. Assurez-vous que Docker et Docker Compose sont installés sur votre machine.
+
+2. Clonez le dépôt:
+   ```bash
+   git clone <repository-url>
+   cd sop-manager
+   ```
+
+3. Lancez les conteneurs avec Docker Compose:
+   ```bash
+   docker-compose up -d
+   ```
+
+4. L'application sera disponible à l'adresse http://localhost:3000
+
+5. Pour arrêter les conteneurs:
+   ```bash
+   docker-compose down
+   ```
+
+6. Pour voir les logs:
+   ```bash
+   docker-compose logs -f
+   ```
+
+7. Si vous souhaitez conserver les données de la base de données lors de l'arrêt, utilisez:
+   ```bash
+   docker-compose down --volumes
+   ```
+
 ## 📝 Licence
 
 Tous droits réservés. Ce logiciel est la propriété de l'entreprise.
