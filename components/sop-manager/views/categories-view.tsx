@@ -1,5 +1,5 @@
 import React from "react"
-import { Download, Edit, User, Tag, Calendar } from "lucide-react"
+import { Download, Edit, User, Tag, Calendar, Trash2 } from "lucide-react"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -13,6 +13,7 @@ interface CategoriesViewProps {
   onCategorySelect: (category: string) => void
   onSopSelect: (sop: SOP) => void
   onEdit: (sop: SOP) => void
+  onDelete: (sop: SOP) => void
   onDownloadPDF: (sop: SOP) => Promise<void>
 }
 
@@ -24,6 +25,7 @@ export function CategoriesView({
   onCategorySelect,
   onSopSelect,
   onEdit,
+  onDelete,
   onDownloadPDF
 }: CategoriesViewProps) {
   // Get unique categories
@@ -43,9 +45,8 @@ export function CategoriesView({
                   <button
                     onClick={() => {
                       onCategorySelect(category)
-                      // Déselectionner la SOP actuelle pour afficher toutes les SOPs de la catégorie
                       if (selectedSop && selectedSop.category === category) {
-                        onSopSelect(null as any) // Utilise any pour éviter des erreurs TypeScript
+                        onSopSelect(null as any)
                       }
                     }}
                     className={`text-left font-medium text-base w-full px-2 py-1.5 hover:bg-gray-200 rounded ${
@@ -57,15 +58,40 @@ export function CategoriesView({
 
                   <div className="ml-3 border-l-2 pl-2 mt-1 border-gray-300 space-y-1">
                     {sopsInCategory.map((sop) => (
-                      <button
-                        key={sop.id}
-                        onClick={() => onSopSelect(sop)}
-                        className={`text-left text-sm w-full px-2 py-1 hover:bg-gray-200 rounded truncate ${
-                          selectedSop?.id === sop.id ? 'bg-gray-200 text-primary font-medium' : 'text-gray-700'
-                        }`}
-                      >
-                        {sop.title}
-                      </button>
+                      <div key={sop.id} className="flex items-center justify-between group">
+                        <button
+                          onClick={() => onSopSelect(sop)}
+                          className={`text-left text-sm flex-1 px-2 py-1 hover:bg-gray-200 rounded truncate ${
+                            selectedSop?.id === sop.id ? 'bg-gray-200 text-primary font-medium' : 'text-gray-700'
+                          }`}
+                        >
+                          {sop.title}
+                        </button>
+                        <div className="hidden group-hover:flex gap-1 pr-2">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-6 w-6"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onEdit(sop);
+                            }}
+                          >
+                            <Edit className="h-3 w-3" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-6 w-6 text-red-600 hover:text-red-700"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onDelete(sop);
+                            }}
+                          >
+                            <Trash2 className="h-3 w-3" />
+                          </Button>
+                        </div>
+                      </div>
                     ))}
                   </div>
                 </div>
@@ -124,6 +150,14 @@ export function CategoriesView({
                   className="flex items-center gap-1"
                 >
                   <Edit className="h-4 w-4" /> Modifier
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => onDelete(selectedSop)}
+                  className="flex items-center gap-1 text-red-600 hover:text-red-700"
+                >
+                  <Trash2 className="h-4 w-4" /> Supprimer
                 </Button>
               </div>
             </div>
@@ -189,28 +223,43 @@ export function CategoriesView({
                 .filter(sop => sop.category === selectedCategory)
                 .map((sop) => (
                   <Card key={sop.id} className="hover:shadow-md transition-shadow">
-                    <div className="p-4">
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <h3 className="font-semibold text-lg mb-1">{sop.title}</h3>
-                          {sop.description && (
-                            <p className="text-gray-600 text-sm line-clamp-2 mb-2">{sop.description}</p>
-                          )}
-                          <div className="flex gap-2 items-center">
-                            <Badge className={priorityColors[sop.priority.toLowerCase() as SOP["priority"]]}>
-                              {priorityLabels[sop.priority.toLowerCase() as SOP["priority"]]}
-                            </Badge>
-                            <span className="text-xs text-gray-500">
-                              {new Date(sop.createdAt).toLocaleDateString("fr-FR")}
-                            </span>
-                          </div>
+                    <div className="p-4 flex justify-between items-start">
+                      <div>
+                        <h3 className="font-semibold text-lg mb-1">{sop.title}</h3>
+                        {sop.description && (
+                          <p className="text-gray-600 text-sm line-clamp-2 mb-2">{sop.description}</p>
+                        )}
+                        <div className="flex gap-2 items-center">
+                          <Badge className={priorityColors[sop.priority.toLowerCase() as SOP["priority"]]}>
+                            {priorityLabels[sop.priority.toLowerCase() as SOP["priority"]]}
+                          </Badge>
+                          <span className="text-xs text-gray-500">
+                            {new Date(sop.createdAt).toLocaleDateString("fr-FR")}
+                          </span>
                         </div>
+                      </div>
+                      <div className="flex gap-2">
                         <Button
                           variant="ghost"
                           size="sm"
                           onClick={() => onSopSelect(sop)}
                         >
                           Voir le détail
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => onEdit(sop)}
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => onDelete(sop)}
+                          className="text-red-600 hover:text-red-700"
+                        >
+                          <Trash2 className="h-4 w-4" />
                         </Button>
                       </div>
                     </div>

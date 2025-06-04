@@ -58,21 +58,4 @@ export const deleteSOP = async (id: string): Promise<void> => {
     const errorText = await res.text()
     throw new Error(errorText || 'Erreur lors de la suppression de la SOP')
   }
-}
-
-export const uploadMarkdown = async (file: File): Promise<SOP> => {
-  const formData = new FormData()
-  formData.append('file', file)
-  
-  const res = await fetch('/api/sops/upload', {
-    method: 'POST',
-    body: formData,
-  })
-  
-  if (!res.ok) {
-    const data = await res.json()
-    throw new Error(data.error || 'Erreur lors de l\'import du markdown')
-  }
-  
-  return res.json()
 } 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react"
-import { Plus, Search, Upload } from "lucide-react"
+import { Plus, Search } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -48,7 +48,6 @@ export function SOPManager() {
   
   const [uploading, setUploading] = useState(false);
   const [users, setUsers] = useState<User[]>([]);
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Fetch data
   useEffect(() => {
@@ -170,32 +169,6 @@ export function SOPManager() {
     }
   };
 
-  const handleMarkdownUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    
-    setUploading(true);
-    
-    try {
-      const sop = await uploadMarkdown(file);
-      setSops(prev => [sop, ...prev]);
-      
-      toast({
-        title: 'SOP importé',
-        description: 'Le markdown a été converti et ajouté avec succès',
-      });
-    } catch (error: any) {
-      toast({
-        title: 'Erreur',
-        description: error.message,
-        variant: 'destructive',
-      });
-    } finally {
-      setUploading(false);
-      e.target.value = '';
-    }
-  };
-
   const handleViewModeChange = (value: string) => {
     setViewMode(value as ViewMode);
     if (value === "categories") {
@@ -240,20 +213,6 @@ export function SOPManager() {
           >
             <Plus className="mr-2 h-4 w-4" /> Nouvelle procédure
           </Button>
-          <Button
-            onClick={() => fileInputRef.current?.click()}
-            className="bg-primary hover:bg-primary-light text-white font-meutas font-semibold"
-            disabled={uploading}
-          >
-            <Upload className="mr-2 h-4 w-4" /> Importer
-          </Button>
-          <input
-            type="file"
-            ref={fileInputRef}
-            onChange={handleMarkdownUpload}
-            accept=".md"
-            className="hidden"
-          />
         </div>
 
         <div className="flex gap-2">
@@ -359,6 +318,10 @@ export function SOPManager() {
                 onCategorySelect={setSelectedCategory}
                 onSopSelect={setSelectedSop}
                 onEdit={handleEditSOP}
+                onDelete={(sop) => {
+                  setSopToDelete(sop);
+                  setIsDeleteDialogOpen(true);
+                }}
                 onDownloadPDF={handleDownloadPDFWrapper}
               />
             )}

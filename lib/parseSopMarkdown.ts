@@ -1,4 +1,7 @@
 import MarkdownIt from 'markdown-it';
+import { SOP } from '@/components/sop-manager/types';
+
+type Priority = "low" | "medium" | "high" | "critical";
 
 export interface ParsedSOP {
   title: string;
@@ -8,9 +11,11 @@ export interface ParsedSOP {
   author: string;
   authorId?: string;
   category: string;
-  priority: string;
+  priority: Priority;
   tags: string[];
 }
+
+const DEFAULT_PRIORITY: Priority = "medium";
 
 /**
  * Parse un markdown structuré en SOP.
@@ -91,4 +96,65 @@ export function parseSopMarkdown(markdown: string): ParsedSOP {
     priority,
     tags,
   };
+}
+
+export function parseMarkdownToSop(markdown: string): ParsedSOP {
+  const md = new MarkdownIt();
+  const tokens = md.parse(markdown, {});
+  
+  let title = '';
+  let description = '';
+  let steps: { text: string; image?: string }[] = [];
+  let currentStep: { text: string; image?: string } | null = null;
+  
+  // Extraire le titre (premier h1)
+  for (let i = 0; i < tokens.length; i++) {
+    const token = tokens[i];
+    
+    if (token.type === 'heading_open' && token.tag === 'h1') {
+      title = tokens[i + 1].content;
+      break;
+    }
+  }
+
+  // Extraire les étapes
+  for (let i = 0; i < tokens.length; i++) {
+    const token = tokens[i];
+    
+    // Si on trouve un nombre suivi d'un point, c'est une étape
+    if (token.type === 'text' && /^\d+\\\./.test(token.content)) {
+      if (currentStep) {
+        steps.push(currentStep);
+      }
+      currentStep = { text: token.content.replace(/^\d+\\\.\s*/, '') };
+    }
+    
+    // Si on trouve une image et qu'on est dans une étape
+    else if (token.type === 'image' && currentStep) {
+      currentStep.image = token.attrs?.find(([key]) => key === 'src')?.[1] || undefined;
+    }
+  }
+  
+  // Ajouter la dernière étape si elle existe
+  if (currentStep) {
+    steps.push(currentStep);
+  }
+
+  // Extraire les instructions (tout le contenu sauf le titre)
+  const instructions = markdown
+    .replace(/^#\s[^\n]*\n/, '') // Enlever le titre
+    .trim();
+
+  const parsedSop: ParsedSOP = {
+    title,
+    description,
+    instructions,
+    steps,
+    author: 'Patrice Robitaille', // Extrait du markdown
+    category: 'Google Business', // Catégorie par défaut basée sur le contenu
+    priority: DEFAULT_PRIORITY,
+    tags: ['google', 'business', 'profile'], // Tags par défaut basés sur le contenu
+  };
+
+  return parsedSop;
 } 
