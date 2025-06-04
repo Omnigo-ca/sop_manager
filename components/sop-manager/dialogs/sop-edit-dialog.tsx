@@ -6,39 +6,44 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { SOP, User } from "../types"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 
 interface SopEditDialogProps {
-  sop: SOP
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  sop: SOP | null
   users: User[]
-  onUpdateSOP: (id: string, updatedSOP: Partial<SOP>) => void
-  onCancel: () => void
+  onSubmit: (updatedSop: Partial<SOP>) => void
 }
 
-export function SopEditDialog({ sop, users, onUpdateSOP, onCancel }: SopEditDialogProps) {
+type Priority = "low" | "medium" | "high" | "critical"
+
+export function SopEditDialog({ open, onOpenChange, sop, users, onSubmit }: SopEditDialogProps) {
   const [formData, setFormData] = useState({
-    title: sop.title,
-    description: sop.description,
-    instructions: sop.instructions,
-    authorId: sop.authorId || "",
-    category: sop.category,
-    priority: sop.priority,
-    tags: sop.tags.join(", "),
+    title: "",
+    description: "",
+    instructions: "",
+    authorId: "",
+    category: "",
+    priority: "medium" as Priority,
+    tags: "",
   })
 
-  const [steps, setSteps] = useState<{ text: string; image: string }[]>(sop.steps || [])
+  const [steps, setSteps] = useState<{ text: string; image: string }[]>(sop?.steps || [])
 
-  // Update form data when sop changes
   useEffect(() => {
-    setFormData({
-      title: sop.title,
-      description: sop.description,
-      instructions: sop.instructions,
-      authorId: sop.authorId || "",
-      category: sop.category,
-      priority: sop.priority,
-      tags: sop.tags.join(", "),
-    })
-    setSteps(sop.steps || [])
+    if (sop) {
+      setFormData({
+        title: sop.title,
+        description: sop.description,
+        instructions: sop.instructions,
+        authorId: sop.authorId || "",
+        category: sop.category,
+        priority: sop.priority,
+        tags: sop.tags.join(", "),
+      })
+      setSteps(sop.steps || [])
+    }
   }, [sop])
 
   const handleAddStep = () => {
@@ -62,170 +67,153 @@ export function SopEditDialog({ sop, users, onUpdateSOP, onCancel }: SopEditDial
     reader.readAsDataURL(file)
   }
 
-  const handleSubmit = () => {
-    if (!formData.title || !formData.instructions || !formData.authorId) {
-      return
-    }
-
-    const updatedSOP: Partial<SOP> = {
-      ...sop,
-      title: formData.title,
-      description: formData.description,
-      instructions: formData.instructions,
-      authorId: formData.authorId,
-      category: formData.category || "Général",
-      priority: formData.priority,
-      tags: formData.tags
-        .split(",")
-        .map((tag) => tag.trim())
-        .filter((tag) => tag),
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    onSubmit({
+      ...formData,
+      tags: formData.tags.split(",").map(tag => tag.trim()).filter(Boolean),
       steps: steps,
-    }
-
-    onUpdateSOP(sop.id, updatedSOP)
+    })
   }
 
+  if (!sop) return null
+
   return (
-    <div className="space-y-4">
-      <div>
-        <Label htmlFor="edit-title">Titre *</Label>
-        <Input
-          id="edit-title"
-          value={formData.title}
-          onChange={(e) => setFormData((prev) => ({ ...prev, title: e.target.value }))}
-          placeholder="Titre de la procédure"
-        />
-      </div>
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-2xl">
+        <DialogHeader>
+          <DialogTitle className="text-2xl font-meutas font-bold">Modifier la procédure</DialogTitle>
+          <DialogDescription className="text-gray-600 font-meutas font-light">
+            Modifiez les détails de la procédure opérationnelle standardisée
+          </DialogDescription>
+        </DialogHeader>
 
-      <div>
-        <Label htmlFor="edit-description">Description</Label>
-        <Textarea
-          id="edit-description"
-          value={formData.description}
-          onChange={(e) => setFormData((prev) => ({ ...prev, description: e.target.value }))}
-          placeholder="Description courte de la procédure"
-          rows={2}
-        />
-      </div>
-
-      <div>
-        <Label htmlFor="edit-instructions">Instructions *</Label>
-        <Textarea
-          id="edit-instructions"
-          value={formData.instructions}
-          onChange={(e) => setFormData((prev) => ({ ...prev, instructions: e.target.value }))}
-          placeholder="Décrivez les étapes de la procédure..."
-          rows={6}
-        />
-      </div>
-
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <Label htmlFor="edit-author">Auteur *</Label>
-          <Select
-            value={formData.authorId || undefined}
-            onValueChange={(value) => setFormData((prev) => ({ ...prev, authorId: value }))}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Sélectionner un auteur" />
-            </SelectTrigger>
-            <SelectContent>
-              {users.map((user) => (
-                <SelectItem key={user.id} value={user.id}>{user.name}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
-        <div>
-          <Label htmlFor="edit-category">Catégorie</Label>
-          <Input
-            id="edit-category"
-            value={formData.category}
-            onChange={(e) => setFormData((prev) => ({ ...prev, category: e.target.value }))}
-            placeholder="ex: IT, RH, Production"
-          />
-        </div>
-      </div>
-
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <Label htmlFor="edit-priority">Priorité</Label>
-          <Select
-            value={formData.priority}
-            onValueChange={(value: SOP["priority"]) =>
-              setFormData((prev) => ({ ...prev, priority: value }))
-            }
-          >
-            <SelectTrigger>
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="low">Faible</SelectItem>
-              <SelectItem value="medium">Moyenne</SelectItem>
-              <SelectItem value="high">Élevée</SelectItem>
-              <SelectItem value="critical">Critique</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
-        <div>
-          <Label htmlFor="edit-tags">Tags</Label>
-          <Input
-            id="edit-tags"
-            value={formData.tags}
-            onChange={(e) => setFormData((prev) => ({ ...prev, tags: e.target.value }))}
-            placeholder="tag1, tag2, tag3"
-          />
-        </div>
-      </div>
-
-      <div>
-        <Label>Étapes illustrées</Label>
-        <div className="space-y-4">
-          {steps.map((step, idx) => (
-            <div key={idx} className="flex flex-col md:flex-row gap-2 items-start md:items-end border p-3 rounded-lg bg-gray-50">
-              <div className="flex-1">
-                <Input
-                  type="text"
-                  placeholder={`Texte de l'étape #${idx + 1}`}
-                  value={step.text}
-                  onChange={e => handleStepChange(idx, "text", e.target.value)}
-                  className="mb-2"
-                />
-                {step.image && (
-                  <img src={step.image} alt="aperçu" className="max-h-32 rounded border mb-2" />
-                )}
-                <Input
-                  type="file"
-                  accept="image/*"
-                  onChange={e => {
-                    if (e.target.files && e.target.files[0]) {
-                      handleStepImageUpload(idx, e.target.files[0])
-                    }
-                  }}
-                />
-              </div>
-              <Button variant="destructive" size="icon" onClick={() => handleRemoveStep(idx)} title="Supprimer l'étape">
-                <X className="h-4 w-4" />
-              </Button>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="space-y-4">
+            <div>
+              <label htmlFor="title" className="block text-sm font-meutas font-medium mb-1">
+                Titre
+              </label>
+              <Input
+                id="title"
+                value={formData.title}
+                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                className="w-full border-black"
+                required
+              />
             </div>
-          ))}
-          <Button type="button" variant="outline" onClick={handleAddStep}>
-            <Plus className="h-4 w-4 mr-2" /> Ajouter une étape
-          </Button>
-        </div>
-      </div>
 
-      <div className="flex justify-end gap-2 pt-4">
-        <Button variant="outline" onClick={onCancel}>
-          Annuler
-        </Button>
-        <Button onClick={handleSubmit}>
-          <Save className="h-4 w-4 mr-2" />
-          Sauvegarder
-        </Button>
-      </div>
-    </div>
+            <div>
+              <label htmlFor="description" className="block text-sm font-meutas font-medium mb-1">
+                Description
+              </label>
+              <Textarea
+                id="description"
+                value={formData.description}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                className="w-full border-black"
+                required
+              />
+            </div>
+
+            <div>
+              <label htmlFor="instructions" className="block text-sm font-meutas font-medium mb-1">
+                Instructions
+              </label>
+              <Textarea
+                id="instructions"
+                value={formData.instructions}
+                onChange={(e) => setFormData({ ...formData, instructions: e.target.value })}
+                className="w-full border-black"
+                required
+              />
+            </div>
+
+            <div>
+              <label htmlFor="author" className="block text-sm font-meutas font-medium mb-1">
+                Auteur
+              </label>
+              <Select
+                value={formData.authorId}
+                onValueChange={(value) => setFormData({ ...formData, authorId: value })}
+              >
+                <SelectTrigger className="w-full border-black">
+                  <SelectValue placeholder="Sélectionner un auteur" />
+                </SelectTrigger>
+                <SelectContent>
+                  {users.map((user) => (
+                    <SelectItem key={user.id} value={user.id} className="font-meutas">
+                      {user.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <label htmlFor="category" className="block text-sm font-meutas font-medium mb-1">
+                Catégorie
+              </label>
+              <Input
+                id="category"
+                value={formData.category}
+                onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                className="w-full border-black"
+                required
+              />
+            </div>
+
+            <div>
+              <label htmlFor="priority" className="block text-sm font-meutas font-medium mb-1">
+                Priorité
+              </label>
+              <Select
+                value={formData.priority}
+                onValueChange={(value: Priority) => setFormData({ ...formData, priority: value })}
+              >
+                <SelectTrigger className="w-full border-black">
+                  <SelectValue placeholder="Sélectionner une priorité" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="low" className="font-meutas">Basse</SelectItem>
+                  <SelectItem value="medium" className="font-meutas">Moyenne</SelectItem>
+                  <SelectItem value="high" className="font-meutas">Haute</SelectItem>
+                  <SelectItem value="critical" className="font-meutas">Critique</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <label htmlFor="tags" className="block text-sm font-meutas font-medium mb-1">
+                Tags (séparés par des virgules)
+              </label>
+              <Input
+                id="tags"
+                value={formData.tags}
+                onChange={(e) => setFormData({ ...formData, tags: e.target.value })}
+                className="w-full border-black"
+              />
+            </div>
+          </div>
+
+          <div className="flex justify-end gap-3">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => onOpenChange(false)}
+              className="border-black hover:bg-gray-100"
+            >
+              Annuler
+            </Button>
+            <Button
+              type="submit"
+              className="bg-primary hover:bg-primary-light text-white"
+            >
+              Enregistrer
+            </Button>
+          </div>
+        </form>
+      </DialogContent>
+    </Dialog>
   )
 } 

@@ -1,106 +1,124 @@
 import React from "react"
-import { Edit, X, User, Tag, Calendar } from "lucide-react"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
-import { SOP, priorityColors, priorityLabels } from "../types"
+import { X } from "lucide-react"
+import { SOP } from "../types"
 
 interface SopDetailDialogProps {
-  sop: SOP
-  onEdit: () => void
-  onDelete: () => void
+  sop: SOP | null
+  onClose: () => void
 }
 
-export function SopDetailDialog({ sop, onEdit, onDelete }: SopDetailDialogProps) {
+export function SopDetailDialog({ sop, onClose }: SopDetailDialogProps) {
+  if (!sop) return null
+
   return (
-    <div className="space-y-4">
-      <DialogHeader>
-        <DialogTitle>{sop.title}</DialogTitle>
-        <DialogDescription>{sop.description}</DialogDescription>
-      </DialogHeader>
-      
-      {/* Instructions */}
-      <div>
-        <h4 className="font-medium mb-2">Instructions:</h4>
-        <div className="bg-gray-50 p-4 rounded-lg">
-          <pre className="whitespace-pre-wrap text-sm">{sop.instructions}</pre>
-        </div>
-      </div>
-      
-      {/* Étapes illustrées */}
-      {sop.steps && sop.steps.length > 0 && (
-        <div>
-          <h4 className="font-medium mb-2 mt-4">Étapes illustrées :</h4>
-          <ol className="space-y-6 list-decimal list-inside">
-            {sop.steps.map((step, idx) => (
-              <li key={idx} className="mb-2">
-                <div className="font-semibold mb-1">{step.text}</div>
-                {step.image && step.image.trim() !== "" && (
-                  <img
-                    src={step.image}
-                    alt={step.text}
-                    className="max-w-full h-auto rounded border shadow-sm"
-                    style={{ maxHeight: 200 }}
-                  />
+    <Dialog open={!!sop} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto bg-white border-black">
+        <DialogHeader>
+          <div className="flex items-start justify-between">
+            <div className="flex-1">
+              <DialogTitle className="text-2xl font-meutas mb-2">{sop.title}</DialogTitle>
+              <div className="flex items-center gap-2 text-sm text-gray-600 mb-4">
+                <span>Créé le {new Date(sop.createdAt).toLocaleDateString()}</span>
+                {sop.editedAt && (
+                  <>
+                    <span>•</span>
+                    <span>Modifié le {new Date(sop.editedAt).toLocaleDateString()}</span>
+                  </>
                 )}
-              </li>
-            ))}
-          </ol>
-        </div>
-      )}
-      
-      {/* Metadata */}
-      <div className="flex flex-wrap gap-4 text-sm text-gray-600">
-        <div className="flex items-center gap-1">
-          <User className="h-4 w-4" />
-          {sop.author}
-        </div>
-        <div className="flex items-center gap-1">
-          <Tag className="h-4 w-4" />
-          {sop.category}
-        </div>
-        <div className="flex items-center gap-1">
-          <Calendar className="h-4 w-4" />
-          Créé le {new Date(sop.createdAt).toLocaleDateString("fr-FR")}
-        </div>
-        {sop.editedAt && (
-          <div className="flex items-center gap-1 text-blue-600">
-            <Edit className="h-4 w-4" />
-            Modifié le {new Date(sop.editedAt).toLocaleDateString("fr-FR")}
+              </div>
+            </div>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={onClose}
+              className="hover:bg-gray-100"
+            >
+              <X className="h-4 w-4" />
+            </Button>
           </div>
-        )}
-      </div>
-      
-      {/* Tags */}
-      {sop.tags.length > 0 && (
-        <div className="flex flex-wrap gap-2">
-          {sop.tags.map((tag) => (
-            <Badge key={tag} variant="secondary" className="text-xs">
-              {tag}
-            </Badge>
-          ))}
+        </DialogHeader>
+
+        <div className="space-y-6">
+          <div>
+            <h3 className="text-lg font-meutas mb-2">Description</h3>
+            <p className="text-gray-600">{sop.description}</p>
+          </div>
+
+          <div className="flex flex-wrap gap-4">
+            <div>
+              <h4 className="font-meutas mb-1">Catégorie</h4>
+              <Badge variant="outline" className="border-black">
+                {sop.category}
+              </Badge>
+            </div>
+            <div>
+              <h4 className="font-meutas mb-1">Priorité</h4>
+              <Badge 
+                className={`${
+                  sop.priority === "high" 
+                    ? "bg-red-100 text-red-800 border-red-200" 
+                    : sop.priority === "medium"
+                    ? "bg-yellow-100 text-yellow-800 border-yellow-200"
+                    : "bg-green-100 text-green-800 border-green-200"
+                } font-meutas`}
+              >
+                {sop.priority === "high" ? "Haute" : sop.priority === "medium" ? "Moyenne" : "Basse"}
+              </Badge>
+            </div>
+            {sop.tags && sop.tags.length > 0 && (
+              <div>
+                <h4 className="font-meutas mb-1">Tags</h4>
+                <div className="flex flex-wrap gap-2">
+                  {sop.tags.map((tag, index) => (
+                    <Badge 
+                      key={index}
+                      variant="outline"
+                      className="border-black bg-primary-light text-primary"
+                    >
+                      {tag}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div>
+            <h3 className="text-lg font-meutas mb-2">Instructions</h3>
+            <div className="prose max-w-none">
+              <pre className="whitespace-pre-wrap font-sans text-gray-600 bg-gray-50 p-4 rounded-lg border border-black">
+                {sop.instructions}
+              </pre>
+            </div>
+          </div>
+
+          {sop.steps && sop.steps.length > 0 && (
+            <div>
+              <h3 className="text-lg font-meutas mb-2">Étapes illustrées</h3>
+              <div className="space-y-4">
+                {sop.steps.map((step, index) => (
+                  <div 
+                    key={index}
+                    className="p-4 border border-black rounded-lg bg-gray-50"
+                  >
+                    <p className="mb-2 text-gray-600">{step.text}</p>
+                    {step.image && (
+                      <img
+                        src={step.image}
+                        alt={`Étape ${index + 1}`}
+                        className="max-h-48 rounded-lg border border-black"
+                      />
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
-      )}
-      
-      {/* Boutons Modifier et Supprimer */}
-      <div className="flex gap-2 justify-end pt-2">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={onEdit}
-          className="flex items-center gap-1"
-        >
-          <Edit className="h-4 w-4" /> Modifier
-        </Button>
-        <Button
-          variant="destructive"
-          size="sm"
-          className="flex items-center gap-1"
-          onClick={onDelete}
-        >
-          <X className="h-4 w-4" /> Supprimer
-        </Button>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   )
 } 

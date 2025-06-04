@@ -4,37 +4,41 @@ import { SOP } from "./types"
 
 interface StatsOverviewProps {
   sops: SOP[]
-  filteredSops: SOP[]
-  uniqueCategories: string[]
 }
 
-export function StatsOverview({ sops, filteredSops, uniqueCategories }: StatsOverviewProps) {
-  const criticalSops = sops.filter((s) => s.priority === "critical").length
+export function StatsOverview({ sops }: StatsOverviewProps) {
+  const totalSops = sops.length
+  const highPrioritySops = sops.filter((s) => s.priority === "high").length
+  const categories = [...new Set(sops.map(s => s.category))]
+  const authors = [...new Set(sops.map(s => s.authorId))]
   
   return (
-    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-      <Card>
-        <CardContent className="p-4">
-          <div className="text-2xl font-bold">{sops.length}</div>
-          <div className="text-sm text-gray-600">Total SOP</div>
+    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <Card className="border-black bg-white hover:shadow-md transition-shadow">
+        <CardContent className="p-6">
+          <div className="text-3xl font-meutas text-primary">{totalSops}</div>
+          <div className="text-sm font-meutas text-gray-600">Total procédures</div>
         </CardContent>
       </Card>
-      <Card>
-        <CardContent className="p-4">
-          <div className="text-2xl font-bold">{filteredSops.length}</div>
-          <div className="text-sm text-gray-600">Affichés</div>
+      
+      <Card className="border-black bg-white hover:shadow-md transition-shadow">
+        <CardContent className="p-6">
+          <div className="text-3xl font-meutas text-primary">{categories.length}</div>
+          <div className="text-sm font-meutas text-gray-600">Catégories</div>
         </CardContent>
       </Card>
-      <Card>
-        <CardContent className="p-4">
-          <div className="text-2xl font-bold">{uniqueCategories.length}</div>
-          <div className="text-sm text-gray-600">Catégories</div>
+      
+      <Card className="border-black bg-white hover:shadow-md transition-shadow">
+        <CardContent className="p-6">
+          <div className="text-3xl font-meutas text-primary">{authors.length}</div>
+          <div className="text-sm font-meutas text-gray-600">Auteurs</div>
         </CardContent>
       </Card>
-      <Card>
-        <CardContent className="p-4">
-          <div className="text-2xl font-bold">{criticalSops}</div>
-          <div className="text-sm text-gray-600">Critiques</div>
+      
+      <Card className="border-black bg-white hover:shadow-md transition-shadow">
+        <CardContent className="p-6">
+          <div className="text-3xl font-meutas text-primary">{highPrioritySops}</div>
+          <div className="text-sm font-meutas text-gray-600">Haute priorité</div>
         </CardContent>
       </Card>
     </div>

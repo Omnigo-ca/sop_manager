@@ -11,8 +11,13 @@ const config: Config = {
   theme: {
   	extend: {
   		colors: {
-  			background: 'hsl(var(--background))',
-  			foreground: 'hsl(var(--foreground))',
+  			'primary-light': '#7DF9FF',
+  			'primary': '#4ec6e2',
+  			border: "black",
+  			input: "black",
+  			ring: "black",
+  			background: "hsl(var(--background))",
+  			foreground: "hsl(var(--foreground))",
   			card: {
   				DEFAULT: 'hsl(var(--card))',
   				foreground: 'hsl(var(--card-foreground))'
@@ -20,10 +25,6 @@ const config: Config = {
   			popover: {
   				DEFAULT: 'hsl(var(--popover))',
   				foreground: 'hsl(var(--popover-foreground))'
-  			},
-  			primary: {
-  				DEFAULT: 'hsl(var(--primary))',
-  				foreground: 'hsl(var(--primary-foreground))'
   			},
   			secondary: {
   				DEFAULT: 'hsl(var(--secondary))',
@@ -42,8 +43,6 @@ const config: Config = {
   				foreground: 'hsl(var(--destructive-foreground))'
   			},
   			border: 'hsl(var(--border))',
-  			input: 'hsl(var(--input))',
-  			ring: 'hsl(var(--ring))',
   			chart: {
   				'1': 'hsl(var(--chart-1))',
   				'2': 'hsl(var(--chart-2))',
@@ -52,15 +51,9 @@ const config: Config = {
   				'5': 'hsl(var(--chart-5))'
   			},
   			sidebar: {
-  				DEFAULT: 'hsl(var(--sidebar-background))',
-  				foreground: 'hsl(var(--sidebar-foreground))',
-  				primary: 'hsl(var(--sidebar-primary))',
-  				'primary-foreground': 'hsl(var(--sidebar-primary-foreground))',
-  				accent: 'hsl(var(--sidebar-accent))',
-  				'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
-  				border: 'hsl(var(--sidebar-border))',
-  				ring: 'hsl(var(--sidebar-ring))'
-  			}
+  				DEFAULT: "hsl(var(--sidebar))",
+  				foreground: "hsl(var(--sidebar-foreground))"
+  			},
   		},
   		borderRadius: {
   			lg: 'var(--radius)',
@@ -88,7 +81,25 @@ const config: Config = {
   		animation: {
   			'accordion-down': 'accordion-down 0.2s ease-out',
   			'accordion-up': 'accordion-up 0.2s ease-out'
-  		}
+  		},
+  		fontFamily: {
+  			meutas: ['Meutas', 'sans-serif'],
+  		},
+  		fontWeight: {
+  			thin: '100',
+  			ultralight: '200',
+  			extralight: '200',
+  			light: '300',
+  			normal: '400',
+  			middle: '500',
+  			semibold: '600',
+  			bold: '700',
+  			extrabold: '800',
+  			black: '900',
+  		},
+  		borderColor: {
+  			DEFAULT: "black",
+  		},
   	}
   },
   plugins: [require("tailwindcss-animate")],

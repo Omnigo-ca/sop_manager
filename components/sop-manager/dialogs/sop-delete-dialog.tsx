@@ -1,33 +1,49 @@
 import React from "react"
-import { 
-  AlertDialogHeader, 
-  AlertDialogTitle, 
-  AlertDialogDescription, 
-  AlertDialogFooter, 
-  AlertDialogAction, 
-  AlertDialogCancel
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 import { SOP } from "../types"
 
 interface SopDeleteDialogProps {
-  sop: SOP
-  onConfirm: (id: string) => void
-  onCancel: () => void
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  sop: SOP | null
+  onConfirm: () => void
 }
 
-export function SopDeleteDialog({ sop, onConfirm, onCancel }: SopDeleteDialogProps) {
+export function SopDeleteDialog({ open, onOpenChange, sop, onConfirm }: SopDeleteDialogProps) {
+  if (!sop) return null
+
   return (
-    <>
-      <AlertDialogHeader>
-        <AlertDialogTitle>Supprimer la procédure ?</AlertDialogTitle>
-        <AlertDialogDescription>
-          Êtes-vous sûr de vouloir supprimer la SOP "{sop.title}" ? Cette action est irréversible.
-        </AlertDialogDescription>
-      </AlertDialogHeader>
-      <AlertDialogFooter>
-        <AlertDialogCancel onClick={onCancel}>Annuler</AlertDialogCancel>
-        <AlertDialogAction onClick={() => onConfirm(sop.id)} autoFocus>Supprimer</AlertDialogAction>
-      </AlertDialogFooter>
-    </>
+    <AlertDialog open={open} onOpenChange={onOpenChange}>
+      <AlertDialogContent className="bg-white border-black">
+        <AlertDialogHeader>
+          <AlertDialogTitle className="text-xl font-meutas">
+            Supprimer la procédure
+          </AlertDialogTitle>
+          <AlertDialogDescription className="text-gray-600">
+            Êtes-vous sûr de vouloir supprimer la procédure "{sop.title}" ? Cette action est irréversible.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel className="border-black hover:bg-gray-100">
+            Annuler
+          </AlertDialogCancel>
+          <AlertDialogAction 
+            onClick={onConfirm}
+            className="bg-red-500 hover:bg-red-600 text-white font-meutas"
+          >
+            Supprimer
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   )
 } 

@@ -35,7 +35,7 @@ export function SOPManager() {
   const [filterPriority, setFilterPriority] = useState("all");
   const [filterAuthor, setFilterAuthor] = useState("all");
   const [sortBy, setSortBy] = useState("date");
-  const [viewMode, setViewMode] = useState<ViewMode>("grid");
+  const [viewMode, setViewMode] = useState<ViewMode>("categories");
   
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
@@ -46,19 +46,8 @@ export function SOPManager() {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [sopToDelete, setSopToDelete] = useState<SOP | null>(null);
   
-  const [formData, setFormData] = useState<FormData>({
-    title: "",
-    description: "",
-    instructions: "",
-    authorId: "",
-    category: "",
-    priority: "medium",
-    tags: "",
-  });
-  
-  const [steps, setSteps] = useState<{ text: string; image: string }[]>([]);
-  const [users, setUsers] = useState<User[]>([]);
   const [uploading, setUploading] = useState(false);
+  const [users, setUsers] = useState<User[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Fetch data
@@ -159,16 +148,6 @@ export function SOPManager() {
 
   const handleEditSOP = (sop: SOP) => {
     setEditingSop(sop);
-    setFormData({
-      title: sop.title,
-      description: sop.description,
-      instructions: sop.instructions,
-      authorId: sop.authorId || "",
-      category: sop.category,
-      priority: sop.priority,
-      tags: sop.tags.join(", "),
-    });
-    setSteps(sop.steps || []);
     setIsEditDialogOpen(true);
   };
 
@@ -238,151 +217,110 @@ export function SOPManager() {
   
   // Render component
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Gestionnaire de SOP</h1>
-          <p className="text-gray-600">Créez, organisez et centralisez vos procédures opérationnelles standardisées</p>
+    <div className="p-6 bg-white min-h-screen">
+      {/* Header */}
+      <div className="flex flex-col items-center justify-center text-center mb-8">
+        <div>
+          <h1 className="text-3xl font-meutas font-bold text-black mb-2">Gestionnaire de procédures</h1>
+          <p className="text-gray-600 font-meutas font-light">Gérez vos procédures opérationnelles standardisées</p>
+        </div>
+      </div>
+
+      {/* Stats Overview */}
+      <div className="mb-8">
+        <StatsOverview sops={sops} />
+      </div>
+
+      {/* Actions and Filters */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+        <div className="flex gap-2">
+          <Button
+            onClick={() => setIsCreateDialogOpen(true)}
+            className="bg-primary hover:bg-primary-light text-white font-meutas font-semibold"
+          >
+            <Plus className="mr-2 h-4 w-4" /> Nouvelle procédure
+          </Button>
+          <Button
+            onClick={() => fileInputRef.current?.click()}
+            className="bg-primary hover:bg-primary-light text-white font-meutas font-semibold"
+            disabled={uploading}
+          >
+            <Upload className="mr-2 h-4 w-4" /> Importer
+          </Button>
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleMarkdownUpload}
+            accept=".md"
+            className="hidden"
+          />
         </div>
 
-        {/* Controls */}
-        <div className="bg-white rounded-lg shadow-sm border p-6 mb-6">
-          <div className="flex flex-col lg:flex-row gap-4 mb-4">
-            {/* Search */}
-            <div className="flex-1">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                <Input
-                  placeholder="Rechercher des SOP..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-10"
-                />
-              </div>
-            </div>
-
-            {/* Create Button */}
-            <Button 
-              className="flex items-center gap-2"
-              onClick={() => setIsCreateDialogOpen(true)}
-            >
-              <Plus className="h-4 w-4" />
-              Créer un SOP
-            </Button>
-
-            {/* Upload Markdown Button */}
-            <Button
-              type="button"
-              variant="secondary"
-              className="flex items-center gap-2"
-              disabled={uploading}
-              onClick={() => fileInputRef.current?.click()}
-            >
-              <Upload className="h-4 w-4" />
-              {uploading ? 'Import...' : 'Importer un markdown'}
-            </Button>
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept=".md, .markdown, text/markdown"
-              className="hidden"
-              onChange={handleMarkdownUpload}
-              disabled={uploading}
-            />
-          </div>
-
-          {/* Filters */}
-          <div className="flex flex-wrap gap-4">
-            <Select value={filterCategory} onValueChange={setFilterCategory}>
-              <SelectTrigger className="w-48">
-                <SelectValue placeholder="Toutes les catégories" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Toutes les catégories</SelectItem>
-                {uniqueCategories.sort().map((category) => (
-                  <SelectItem key={category} value={category}>
-                    {category}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            <Select value={filterPriority} onValueChange={setFilterPriority}>
-              <SelectTrigger className="w-48">
-                <SelectValue placeholder="Toutes les priorités" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Toutes les priorités</SelectItem>
-                <SelectItem value="critical">Critique</SelectItem>
-                <SelectItem value="high">Élevée</SelectItem>
-                <SelectItem value="medium">Moyenne</SelectItem>
-                <SelectItem value="low">Faible</SelectItem>
-              </SelectContent>
-            </Select>
-
-            <Select value={filterAuthor} onValueChange={setFilterAuthor}>
-              <SelectTrigger className="w-48">
-                <SelectValue placeholder="Tous les auteurs" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Tous les auteurs</SelectItem>
-                {uniqueAuthors.sort().map((author) => (
-                  <SelectItem key={author} value={author}>
-                    {author}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-
-            <Select value={sortBy} onValueChange={setSortBy}>
-              <SelectTrigger className="w-48">
-                <SelectValue placeholder="Trier par" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="date">Date de création</SelectItem>
-                <SelectItem value="title">Titre</SelectItem>
-                <SelectItem value="priority">Priorité</SelectItem>
-                <SelectItem value="author">Auteur</SelectItem>
-              </SelectContent>
-            </Select>
-
-            <Select value={viewMode} onValueChange={handleViewModeChange}>
-              <SelectTrigger className="w-48">
-                <SelectValue placeholder="Mode d'affichage" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="grid">Grille</SelectItem>
-                <SelectItem value="list">Liste détaillée</SelectItem>
-                <SelectItem value="compact">Liste compacte</SelectItem>
-                <SelectItem value="table">Tableau</SelectItem>
-                <SelectItem value="categories">Bibliothèque</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+        <div className="flex gap-2">
+          <Input
+            placeholder="Rechercher..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="border-black focus:ring-primary focus:border-primary font-meutas font-normal"
+          />
+          <Select value={viewMode} onValueChange={(value: ViewMode) => setViewMode(value)}>
+            <SelectTrigger className="w-[180px] border-black font-meutas font-normal">
+              <SelectValue placeholder="Vue" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="grid" className="font-meutas">Grille</SelectItem>
+              <SelectItem value="list" className="font-meutas">Liste</SelectItem>
+              <SelectItem value="compact" className="font-meutas">Compact</SelectItem>
+              <SelectItem value="table" className="font-meutas">Tableau</SelectItem>
+              <SelectItem value="categories" className="font-meutas">Catégories</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
 
-        {/* Statistics */}
-        <StatsOverview 
-          sops={sops} 
-          filteredSops={filteredSops} 
-          uniqueCategories={uniqueCategories} 
-        />
+        <div className="flex gap-2">
+          <Select value={filterCategory} onValueChange={setFilterCategory}>
+            <SelectTrigger className="w-[180px] border-black font-meutas font-normal">
+              <SelectValue placeholder="Catégorie" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all" className="font-meutas">Toutes les catégories</SelectItem>
+              {getUniqueValues(sops, 'category').map((category) => (
+                <SelectItem key={category} value={category} className="font-meutas">{category}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
 
-        {/* SOP Display - Empty State */}
-        {filteredSops.length === 0 && (
-          <EmptyState hasSops={sops.length > 0} />
-        )}
+          <Select value={filterPriority} onValueChange={setFilterPriority}>
+            <SelectTrigger className="w-[180px] border-black font-meutas font-normal">
+              <SelectValue placeholder="Priorité" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all" className="font-meutas">Toutes les priorités</SelectItem>
+              <SelectItem value="high" className="font-meutas">Haute</SelectItem>
+              <SelectItem value="medium" className="font-meutas">Moyenne</SelectItem>
+              <SelectItem value="low" className="font-meutas">Basse</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
 
-        {/* SOP Display - Content based on View Mode */}
-        {filteredSops.length > 0 && (
+      {/* Content */}
+      <div className="bg-white rounded-lg border border-black p-4">
+        {filteredSops.length === 0 ? (
+          <EmptyState />
+        ) : (
           <>
             {viewMode === "grid" && (
-              <GridView 
+              <GridView
                 sops={filteredSops}
-                downloadingPdf={downloadingPdf}
-                onViewDetails={setSelectedSop}
+                onEdit={handleEditSOP}
+                onDelete={(sop) => {
+                  setSopToDelete(sop);
+                  setIsDeleteDialogOpen(true);
+                }}
                 onDownloadPDF={handleDownloadPDFWrapper}
+                downloadingPdf={downloadingPdf}
+                onSelect={setSelectedSop}
               />
             )}
 
@@ -426,76 +364,35 @@ export function SOPManager() {
             )}
           </>
         )}
-
-        {/* Dialogs */}
-        <Dialog open={!!selectedSop && viewMode !== "categories"} onOpenChange={(open) => { 
-          if (!open) setSelectedSop(null) 
-        }}>
-          <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
-            {selectedSop && (
-              <SopDetailDialog 
-                sop={selectedSop} 
-                onEdit={() => { 
-                  handleEditSOP(selectedSop); 
-                  setSelectedSop(null);
-                }} 
-                onDelete={() => {
-                  setSopToDelete(selectedSop);
-                  setIsDeleteDialogOpen(true);
-                }}
-              />
-            )}
-          </DialogContent>
-        </Dialog>
-
-        {/* Create Dialog */}
-        <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
-          <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle>Créer un nouveau SOP</DialogTitle>
-              <DialogDescription>Remplissez les informations pour générer une nouvelle procédure</DialogDescription>
-            </DialogHeader>
-            
-            <SopCreateDialog 
-              users={users}
-              onCreateSOP={handleCreateSOP}
-              onCancel={() => setIsCreateDialogOpen(false)}
-            />
-          </DialogContent>
-        </Dialog>
-
-        {/* Edit Dialog */}
-        <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-          <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle>Modifier le SOP</DialogTitle>
-              <DialogDescription>Modifiez les informations de la procédure</DialogDescription>
-            </DialogHeader>
-            
-            {editingSop && (
-              <SopEditDialog 
-                sop={editingSop}
-                users={users}
-                onUpdateSOP={handleUpdateSOP}
-                onCancel={() => setIsEditDialogOpen(false)}
-              />
-            )}
-          </DialogContent>
-        </Dialog>
-
-        {/* Delete Dialog */}
-        <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-          <AlertDialogContent>
-            {sopToDelete && (
-              <SopDeleteDialog 
-                sop={sopToDelete}
-                onConfirm={handleDeleteSOP}
-                onCancel={() => setIsDeleteDialogOpen(false)}
-              />
-            )}
-          </AlertDialogContent>
-        </AlertDialog>
       </div>
+
+      {/* Dialogs */}
+      <SopCreateDialog
+        open={isCreateDialogOpen}
+        onOpenChange={setIsCreateDialogOpen}
+        onSubmit={handleCreateSOP}
+        users={users}
+      />
+      
+      <SopEditDialog
+        open={isEditDialogOpen}
+        onOpenChange={setIsEditDialogOpen}
+        sop={editingSop}
+        users={users}
+        onSubmit={(updatedSop) => editingSop && handleUpdateSOP(editingSop.id, updatedSop)}
+      />
+      
+      <SopDetailDialog
+        sop={selectedSop}
+        onClose={() => setSelectedSop(null)}
+      />
+      
+      <SopDeleteDialog
+        open={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+        sop={sopToDelete}
+        onConfirm={() => sopToDelete && handleDeleteSOP(sopToDelete.id)}
+      />
     </div>
   );
 } 
