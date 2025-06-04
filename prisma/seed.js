@@ -77,6 +77,27 @@ async function main() {
       },
     });
   }
+
+  // Ajout d'accès par défaut aux SOPs
+  // Donner accès à l'utilisateur standard à quelques SOPs
+  const sopsForUser = defaultSops.slice(0, 5); // Les 5 premières SOPs
+  
+  for (const sop of sopsForUser) {
+    await prisma.sopAccess.upsert({
+      where: {
+        userId_sopId: {
+          userId: user.id,
+          sopId: sop.id
+        }
+      },
+      update: {},
+      create: {
+        userId: user.id,
+        sopId: sop.id,
+        updatedAt: new Date()
+      }
+    });
+  }
 }
 
 main()

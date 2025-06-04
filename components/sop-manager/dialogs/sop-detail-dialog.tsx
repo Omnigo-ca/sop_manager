@@ -1,124 +1,118 @@
 import React from "react"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { X, Edit, Trash } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { X } from "lucide-react"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { SOP } from "../types"
+import { Badge } from "@/components/ui/badge"
+import { formatDate } from "../utils"
 
 interface SopDetailDialogProps {
   sop: SOP | null
   onClose: () => void
+  canEdit: boolean
+  canDelete: boolean
+  onEdit: (sop: SOP) => void
+  onDelete: (sop: SOP) => void
 }
 
-export function SopDetailDialog({ sop, onClose }: SopDetailDialogProps) {
-  if (!sop) return null
+export function SopDetailDialog({ sop, onClose, canEdit, canDelete, onEdit, onDelete }: SopDetailDialogProps) {
+  if (!sop) return null;
 
   return (
-    <Dialog open={!!sop} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto bg-white border-black">
+    <Dialog open={!!sop} onOpenChange={() => onClose()}>
+      <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
         <DialogHeader>
-          <div className="flex items-start justify-between">
-            <div className="flex-1">
-              <DialogTitle className="text-2xl font-meutas mb-2">{sop.title}</DialogTitle>
-              <div className="flex items-center gap-2 text-sm text-gray-600 mb-4">
-                <span>Créé le {new Date(sop.createdAt).toLocaleDateString()}</span>
-                {sop.editedAt && (
-                  <>
-                    <span>•</span>
-                    <span>Modifié le {new Date(sop.editedAt).toLocaleDateString()}</span>
-                  </>
-                )}
-              </div>
+          <div className="flex justify-between items-start">
+            <DialogTitle className="text-2xl font-meutas font-bold">{sop.title}</DialogTitle>
+            <div className="flex gap-2">
+              {canEdit && (
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => onEdit(sop)}
+                  className="border-black hover:bg-gray-100"
+                >
+                  <Edit className="h-4 w-4" />
+                </Button>
+              )}
+              {canDelete && (
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={() => onDelete(sop)}
+                  className="border-black hover:bg-gray-100"
+                >
+                  <Trash className="h-4 w-4" />
+                </Button>
+              )}
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={onClose}
+                className="border-black hover:bg-gray-100"
+              >
+                <X className="h-4 w-4" />
+              </Button>
             </div>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={onClose}
-              className="hover:bg-gray-100"
-            >
-              <X className="h-4 w-4" />
-            </Button>
           </div>
         </DialogHeader>
 
-        <div className="space-y-6">
-          <div>
-            <h3 className="text-lg font-meutas mb-2">Description</h3>
-            <p className="text-gray-600">{sop.description}</p>
-          </div>
-
-          <div className="flex flex-wrap gap-4">
-            <div>
-              <h4 className="font-meutas mb-1">Catégorie</h4>
-              <Badge variant="outline" className="border-black">
-                {sop.category}
-              </Badge>
-            </div>
-            <div>
-              <h4 className="font-meutas mb-1">Priorité</h4>
-              <Badge 
-                className={`${
-                  sop.priority === "high" 
-                    ? "bg-red-100 text-red-800 border-red-200" 
-                    : sop.priority === "medium"
-                    ? "bg-yellow-100 text-yellow-800 border-yellow-200"
-                    : "bg-green-100 text-green-800 border-green-200"
-                } font-meutas`}
-              >
-                {sop.priority === "high" ? "Haute" : sop.priority === "medium" ? "Moyenne" : "Basse"}
-              </Badge>
-            </div>
-            {sop.tags && sop.tags.length > 0 && (
-              <div>
-                <h4 className="font-meutas mb-1">Tags</h4>
-                <div className="flex flex-wrap gap-2">
-                  {sop.tags.map((tag, index) => (
-                    <Badge 
-                      key={index}
-                      variant="outline"
-                      className="border-black bg-primary-light text-primary"
-                    >
-                      {tag}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
+        <div className="space-y-4">
+          <div className="flex flex-wrap gap-2 items-center text-sm text-gray-600">
+            <span>Par {sop.author}</span>
+            <span>•</span>
+            <span>Créé le {formatDate(sop.createdAt)}</span>
+            {sop.editedAt && (
+              <>
+                <span>•</span>
+                <span>Modifié le {formatDate(sop.editedAt)}</span>
+              </>
             )}
           </div>
 
-          <div>
-            <h3 className="text-lg font-meutas mb-2">Instructions</h3>
-            <div className="prose max-w-none">
-              <pre className="whitespace-pre-wrap font-sans text-gray-600 bg-gray-50 p-4 rounded-lg border border-black">
-                {sop.instructions}
-              </pre>
-            </div>
+          <div className="flex flex-wrap gap-2">
+            <Badge variant="outline" className="border-black">
+              {sop.category}
+            </Badge>
+            <Badge variant="outline" className="border-black capitalize">
+              {sop.priority}
+            </Badge>
+            {sop.tags.map((tag) => (
+              <Badge key={tag} variant="outline" className="border-black">
+                {tag}
+              </Badge>
+            ))}
           </div>
 
-          {sop.steps && sop.steps.length > 0 && (
-            <div>
-              <h3 className="text-lg font-meutas mb-2">Étapes illustrées</h3>
-              <div className="space-y-4">
-                {sop.steps.map((step, index) => (
-                  <div 
-                    key={index}
-                    className="p-4 border border-black rounded-lg bg-gray-50"
-                  >
-                    <p className="mb-2 text-gray-600">{step.text}</p>
-                    {step.image && (
-                      <img
-                        src={step.image}
-                        alt={`Étape ${index + 1}`}
-                        className="max-h-48 rounded-lg border border-black"
-                      />
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
+          <div className="prose prose-sm max-w-none">
+            <h3 className="text-lg font-meutas font-semibold">Description</h3>
+            <p>{sop.description}</p>
+
+            <h3 className="text-lg font-meutas font-semibold mt-6">Instructions</h3>
+            <div className="whitespace-pre-wrap">{sop.instructions}</div>
+
+            {sop.steps && sop.steps.length > 0 && (
+              <>
+                <h3 className="text-lg font-meutas font-semibold mt-6">Étapes</h3>
+                <div className="space-y-4">
+                  {sop.steps.map((step, index) => (
+                    <div key={index} className="flex gap-4">
+                      {step.image && (
+                        <img
+                          src={step.image}
+                          alt={`Étape ${index + 1}`}
+                          className="w-24 h-24 object-cover rounded"
+                        />
+                      )}
+                      <div>{step.text}</div>
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
         </div>
       </DialogContent>
     </Dialog>
-  )
+  );
 } 

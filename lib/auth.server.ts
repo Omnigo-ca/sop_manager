@@ -92,4 +92,82 @@ export async function getUserById(userId: string): Promise<PrismaUser | null> {
     console.error(`Erreur lors de la récupération de l'utilisateur ${userId}:`, error);
     return null;
   }
+}
+
+/**
+ * Vérifie si l'utilisateur a la permission d'effectuer une opération CRUD sur les SOPs
+ * @param userId ID de l'utilisateur à vérifier
+ * @param operation 'create' | 'update' | 'delete' | 'read'
+ * @returns true si l'utilisateur a la permission, false sinon
+ */
+export async function checkSopPermission(userId: string, operation: 'create' | 'update' | 'delete' | 'read'): Promise<boolean> {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: userId }
+    });
+
+    if (!user) return false;
+
+    // Les admins peuvent tout faire
+    if (user.role === 'ADMIN') return true;
+
+    // Les auteurs peuvent créer et mettre à jour leurs propres SOPs
+    if (user.role === 'AUTHOR') {
+      return operation === 'create' || operation === 'read';
+    }
+
+    // Les utilisateurs simples peuvent uniquement lire les SOPs auxquelles ils ont accès
+    if (user.role === 'USER') {
+      return operation === 'read';
+    }
+
+    return false;
+  } catch (error) {
+    console.error(`Erreur lors de la vérification des permissions pour l'utilisateur ${userId}:`, error);
+    return false;
+  }
+}
+
+/**
+ * Vérifie si l'utilisateur a accès à une SOP spécifique
+ * @param userId ID de l'utilisateur
+ * @param sopId ID de la SOP
+ * @returns true si l'utilisateur a accès, false sinon
+ */
+export async function checkSopAccess(userId: string, sopId: string): Promise<boolean> {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: userId }
+    });
+
+    if (!user) return false;
+
+    // Les admins ont accès à toutes les SOPs
+    if (user.role === 'ADMIN') return true;
+
+    // Vérifier si l'utilisateur est l'auteur de la SOP
+    const sop = await prisma.sop.findFirst({
+      where: {
+        id: sopId,
+        authorId: userId
+      }
+    });
+
+    if (sop) return true;
+
+    // Vérifier si l'utilisateur a un accès explicite à la SOP
+    const access = await prisma.sopAccess.findUnique({
+      where: {
+        userId_sopId: {
+          userId: userId,
+          sopId: sopId
+        }
+      }
+    });
+
+    return !!access;
+  } catch (error) {
+    console.error(`Erreur lors de la vérification de l'accès à la SOP ${sopId} pour l'utilisateur ${userId}:`, error);
+    return false;
+  }
 } 

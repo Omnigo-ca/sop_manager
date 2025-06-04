@@ -1,6 +1,15 @@
 import { SOP } from "./types"
 import { downloadSOPAsPDF } from "@/lib/pdfGenerator"
 
+export const formatDate = (date: string | Date): string => {
+  const d = new Date(date)
+  return d.toLocaleDateString('fr-FR', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+  })
+}
+
 export const getUniqueValues = (sops: SOP[], key: keyof SOP): string[] => {
   return [...new Set(sops.map((sop) => sop[key] as string))].filter(Boolean)
 }

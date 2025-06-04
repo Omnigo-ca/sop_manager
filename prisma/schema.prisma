@@ -9,30 +9,46 @@ datasource db {
 }
 
 model sop {
-  id           String   @id
-  title        String   @db.VarChar(255)
-  description  String   @db.Text
-  instructions String   @db.LongText
-  category     String   @db.VarChar(100)
-  priority     String   @db.VarChar(50)
+  id           String      @id
+  title        String      @db.VarChar(255)
+  description  String      @db.Text
+  instructions String      @db.LongText
+  category     String      @db.VarChar(100)
+  priority     String      @db.VarChar(50)
   tags         Json
   steps        Json
   authorId     String
-  createdAt    DateTime @default(now())
+  createdAt    DateTime    @default(now())
   updatedAt    DateTime
-  user         user     @relation(fields: [authorId], references: [id], map: "SOP_authorId_fkey")
+  user         user        @relation("SopAuthor", fields: [authorId], references: [id], map: "SOP_authorId_fkey")
+  access       SopAccess[] @relation("SopAccess")
 
   @@index([authorId], map: "SOP_authorId_fkey")
 }
 
 model user {
-  id        String    @id
-  email     String    @unique(map: "User_email_key")
-  name      String?
-  role      user_role @default(USER)
-  createdAt DateTime  @default(now())
-  updatedAt DateTime
-  sop       sop[]
+  id            String      @id
+  email         String      @unique(map: "User_email_key")
+  name          String?
+  role          user_role   @default(USER)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime
+  authoredSops  sop[]       @relation("SopAuthor")
+  sopAccess     SopAccess[] @relation("UserAccess")
+}
+
+model SopAccess {
+  id        String   @id @default(cuid())
+  userId    String
+  sopId     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      user     @relation("UserAccess", fields: [userId], references: [id], onDelete: Cascade)
+  sop       sop      @relation("SopAccess", fields: [sopId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, sopId])
+  @@index([userId])
+  @@index([sopId])
 }
 
 enum user_role {

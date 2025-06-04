@@ -36,6 +36,7 @@ export function SOPManager() {
   const [filterAuthor, setFilterAuthor] = useState("all");
   const [sortBy, setSortBy] = useState("date");
   const [viewMode, setViewMode] = useState<ViewMode>("categories");
+  const [currentUser, setCurrentUser] = useState<any>(null);
   
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
@@ -48,6 +49,25 @@ export function SOPManager() {
   
   const [uploading, setUploading] = useState(false);
   const [users, setUsers] = useState<User[]>([]);
+
+  // Fetch current user data
+  useEffect(() => {
+    fetch('/api/user')
+      .then(res => res.json())
+      .then(data => {
+        if (!data.error) {
+          setCurrentUser(data);
+        }
+      })
+      .catch(error => {
+        console.error('Erreur lors de la récupération des données utilisateur:', error);
+      });
+  }, []);
+
+  // Check if user can perform CRUD operations
+  const canCreateSop = currentUser?.role === 'ADMIN';
+  const canEditSop = currentUser?.role === 'ADMIN';
+  const canDeleteSop = currentUser?.role === 'ADMIN';
 
   // Fetch data
   useEffect(() => {
@@ -207,12 +227,14 @@ export function SOPManager() {
       {/* Actions and Filters */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
         <div className="flex gap-2">
-          <Button
-            onClick={() => setIsCreateDialogOpen(true)}
-            className="bg-primary hover:bg-primary-light text-white font-meutas font-semibold"
-          >
-            <Plus className="mr-2 h-4 w-4" /> Nouvelle procédure
-          </Button>
+          {canCreateSop && (
+            <Button
+              onClick={() => setIsCreateDialogOpen(true)}
+              className="bg-primary hover:bg-primary-light text-white font-meutas font-semibold"
+            >
+              <Plus className="mr-2 h-4 w-4" /> Nouvelle procédure
+            </Button>
+          )}
         </div>
 
         <div className="flex gap-2">
@@ -330,32 +352,48 @@ export function SOPManager() {
       </div>
 
       {/* Dialogs */}
-      <SopCreateDialog
-        open={isCreateDialogOpen}
-        onOpenChange={setIsCreateDialogOpen}
-        onSubmit={handleCreateSOP}
-        users={users}
-      />
+      {canCreateSop && (
+        <SopCreateDialog
+          open={isCreateDialogOpen}
+          onOpenChange={setIsCreateDialogOpen}
+          onSubmit={handleCreateSOP}
+          users={users}
+        />
+      )}
       
-      <SopEditDialog
-        open={isEditDialogOpen}
-        onOpenChange={setIsEditDialogOpen}
-        sop={editingSop}
-        users={users}
-        onSubmit={(updatedSop) => editingSop && handleUpdateSOP(editingSop.id, updatedSop)}
-      />
+      {canEditSop && (
+        <SopEditDialog
+          open={isEditDialogOpen}
+          onOpenChange={setIsEditDialogOpen}
+          sop={editingSop}
+          users={users}
+          onSubmit={(updatedSop) => editingSop && handleUpdateSOP(editingSop.id, updatedSop)}
+        />
+      )}
       
       <SopDetailDialog
         sop={selectedSop}
         onClose={() => setSelectedSop(null)}
+        canEdit={canEditSop}
+        canDelete={canDeleteSop}
+        onEdit={(sop) => {
+          setEditingSop(sop);
+          setIsEditDialogOpen(true);
+        }}
+        onDelete={(sop) => {
+          setSopToDelete(sop);
+          setIsDeleteDialogOpen(true);
+        }}
       />
       
-      <SopDeleteDialog
-        open={isDeleteDialogOpen}
-        onOpenChange={setIsDeleteDialogOpen}
-        sop={sopToDelete}
-        onConfirm={() => sopToDelete && handleDeleteSOP(sopToDelete.id)}
-      />
+      {canDeleteSop && (
+        <SopDeleteDialog
+          open={isDeleteDialogOpen}
+          onOpenChange={setIsDeleteDialogOpen}
+          sop={sopToDelete}
+          onConfirm={() => sopToDelete && handleDeleteSOP(sopToDelete.id)}
+        />
+      )}
     </div>
   );
 } 
