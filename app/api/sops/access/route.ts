@@ -4,6 +4,109 @@ import { getCurrentUser, checkSopPermission } from '@/lib/auth.server';
 
 const prisma = new PrismaClient();
 
+/**
+ * @swagger
+ * /api/sops/access:
+ *   get:
+ *     summary: Récupère la liste des utilisateurs ayant accès à une SOP
+ *     tags:
+ *       - SOPs
+ *     parameters:
+ *       - in: query
+ *         name: sopId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID de la SOP
+ *     responses:
+ *       200:
+ *         description: Liste des accès récupérée avec succès
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: string
+ *                   userId:
+ *                     type: string
+ *                   userName:
+ *                     type: string
+ *                   userEmail:
+ *                     type: string
+ *                   createdAt:
+ *                     type: string
+ *                     format: date-time
+ *       401:
+ *         description: Non authentifié
+ *       403:
+ *         description: Non autorisé
+ *       400:
+ *         description: Paramètre sopId manquant
+ *       500:
+ *         description: Erreur serveur
+ *   post:
+ *     summary: Ajoute un accès à une SOP pour un utilisateur
+ *     tags:
+ *       - SOPs
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               sopId:
+ *                 type: string
+ *               userId:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Accès ajouté avec succès
+ *       400:
+ *         description: Paramètres manquants
+ *       401:
+ *         description: Non authentifié
+ *       403:
+ *         description: Non autorisé
+ *       404:
+ *         description: SOP ou utilisateur non trouvé
+ *       500:
+ *         description: Erreur serveur
+ *   delete:
+ *     summary: Supprime un accès à une SOP pour un utilisateur
+ *     tags:
+ *       - SOPs
+ *     parameters:
+ *       - in: query
+ *         name: sopId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID de la SOP
+ *       - in: query
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID de l'utilisateur
+ *     responses:
+ *       200:
+ *         description: Accès supprimé avec succès
+ *       400:
+ *         description: Paramètres manquants
+ *       401:
+ *         description: Non authentifié
+ *       403:
+ *         description: Non autorisé
+ *       404:
+ *         description: Accès non trouvé
+ *       500:
+ *         description: Erreur serveur
+ */
+
 // Ajouter un accès à une SOP pour un utilisateur
 export async function POST(req: Request) {
   try {

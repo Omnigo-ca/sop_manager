@@ -2,6 +2,39 @@ import { NextResponse } from "next/server";
 import { getAuth } from "@clerk/nextjs/server";
 import prisma from "@/lib/prisma";
 
+/**
+ * @swagger
+ * /api/sop-access/assign:
+ *   post:
+ *     summary: Assigne l'accès à une SOP à une liste d'utilisateurs (remplace les accès existants)
+ *     tags:
+ *       - SOPs
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               sopId:
+ *                 type: string
+ *               userIds:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *     responses:
+ *       200:
+ *         description: Associations mises à jour avec succès
+ *       400:
+ *         description: Paramètres manquants ou SOP non trouvée
+ *       401:
+ *         description: Non authentifié
+ *       403:
+ *         description: Non autorisé
+ *       500:
+ *         description: Erreur interne du serveur
+ */
+
 export async function POST(request: Request) {
   try {
     const { userId } = getAuth(request);
