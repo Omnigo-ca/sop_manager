@@ -28,10 +28,10 @@ function AdminNav() {
 
   return (
     <Link 
-      href="/admin/manage-sop-access" 
+      href="/admin/manage-access-groups" 
       className="px-4 py-2 text-sm font-medium text-black hover:text-primary transition-colors"
     >
-      Associer les procédures
+      Groupes d'accès
     </Link>
   );
 }

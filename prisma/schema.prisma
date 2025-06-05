@@ -21,38 +21,68 @@ model sop {
   createdAt    DateTime    @default(now())
   updatedAt    DateTime
   user         user        @relation("SopAuthor", fields: [authorId], references: [id], map: "SOP_authorId_fkey")
-  access       SopAccess[] @relation("SopAccess")
+  accessGroups SopAccessGroup[] @relation("SopAccessGroups")
 
   @@index([authorId], map: "SOP_authorId_fkey")
 }
 
 model user {
-  id            String      @id
-  email         String      @unique(map: "User_email_key")
+  id            String             @id
+  email         String             @unique(map: "User_email_key")
   name          String?
-  role          user_role   @default(USER)
-  createdAt     DateTime    @default(now())
+  role          user_role          @default(USER)
+  createdAt     DateTime           @default(now())
   updatedAt     DateTime
-  authoredSops  sop[]       @relation("SopAuthor")
-  sopAccess     SopAccess[] @relation("UserAccess")
+  authoredSops  sop[]              @relation("SopAuthor")
+  accessGroups  UserAccessGroup[]  @relation("UserAccessGroups")
 }
 
-model SopAccess {
-  id        String   @id @default(cuid())
-  userId    String
-  sopId     String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  user      user     @relation("UserAccess", fields: [userId], references: [id], onDelete: Cascade)
-  sop       sop      @relation("SopAccess", fields: [sopId], references: [id], onDelete: Cascade)
+model AccessGroup {
+  id          String             @id @default(cuid())
+  name        String             @unique @db.VarChar(100)
+  description String?            @db.Text
+  type        AccessGroupType
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+  sops        SopAccessGroup[]   @relation("AccessGroupSops")
+  users       UserAccessGroup[]  @relation("AccessGroupUsers")
+}
 
-  @@unique([userId, sopId])
+model UserAccessGroup {
+  id            String      @id @default(cuid())
+  userId        String
+  accessGroupId String
+  assignedAt    DateTime    @default(now())
+  assignedBy    String?     // ID de l'admin qui a fait l'assignation
+  user          user        @relation("UserAccessGroups", fields: [userId], references: [id], onDelete: Cascade)
+  accessGroup   AccessGroup @relation("AccessGroupUsers", fields: [accessGroupId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, accessGroupId])
   @@index([userId])
+  @@index([accessGroupId])
+}
+
+model SopAccessGroup {
+  id            String      @id @default(cuid())
+  sopId         String
+  accessGroupId String
+  assignedAt    DateTime    @default(now())
+  sop           sop         @relation("SopAccessGroups", fields: [sopId], references: [id], onDelete: Cascade)
+  accessGroup   AccessGroup @relation("AccessGroupSops", fields: [accessGroupId], references: [id], onDelete: Cascade)
+
+  @@unique([sopId, accessGroupId])
   @@index([sopId])
+  @@index([accessGroupId])
 }
 
 enum user_role {
   ADMIN
   AUTHOR
   USER
+}
+
+enum AccessGroupType {
+  INTERNAL        // Procédures internes
+  PUBLIC          // Procédures publiques pour les clients  
+  ADMINISTRATIVE  // Procédures administratives pour la gestion
 }

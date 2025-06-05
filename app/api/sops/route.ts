@@ -58,23 +58,37 @@ export async function GET() {
       sops = await prisma.sop.findMany({
         include: {
           user: true,
-          access: {
+          accessGroups: {
             include: {
-              user: true,
-            },
-          },
+              accessGroup: {
+                include: {
+                  users: {
+                    include: {
+                      user: true
+                    }
+                  }
+                }
+              }
+            }
+          }
         },
       });
     } else {
-      // Les autres utilisateurs voient uniquement les SOPs auxquelles ils ont accès
+      // Les autres utilisateurs voient uniquement les SOPs auxquelles ils ont accès via les groupes d'accès
       sops = await prisma.sop.findMany({
         where: {
           OR: [
             { authorId: currentUser.id }, // SOPs dont ils sont auteurs
             {
-              access: {
+              accessGroups: {
                 some: {
-                  userId: currentUser.id // SOPs auxquelles ils ont accès explicitement
+                  accessGroup: {
+                    users: {
+                      some: {
+                        userId: currentUser.id // SOPs auxquelles ils ont accès via leur groupe
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -82,24 +96,36 @@ export async function GET() {
         },
         include: {
           user: true,
-          access: {
+          accessGroups: {
             include: {
-              user: true,
-            },
-          },
+              accessGroup: {
+                include: {
+                  users: {
+                    include: {
+                      user: true
+                    }
+                  }
+                }
+              }
+            }
+          }
         },
       });
     }
 
-    // Transformer les données pour inclure les utilisateurs associés
+    // Transformer les données pour inclure les utilisateurs associés via les groupes
     const formattedSops = sops.map(sop => ({
       ...sop,
       author: sop.user?.name || sop.authorId,
-      users: sop.access.map(access => ({
-        id: access.user.id,
-        name: access.user.name || 'Sans nom',
-      })),
-      access: undefined, // Supprimer le champ access de la réponse
+      users: sop.accessGroups?.flatMap(groupLink => 
+        groupLink.accessGroup?.users?.map(userGroup => ({
+          id: userGroup.user.id,
+          name: userGroup.user.name || 'Sans nom',
+        })) || []
+      ).filter((user, index, self) => 
+        index === self.findIndex(u => u.id === user.id) // Supprimer les doublons
+      ) || [],
+      accessGroups: undefined, // Supprimer le champ accessGroups de la réponse
       user: undefined, // Supprimer le champ user de la réponse
     }));
 
@@ -180,18 +206,85 @@ export async function POST(req: Request) {
     
     if (rest.priority) rest.priority = rest.priority.toLowerCase();
     
-    const sop = await prismaClient.sop.create({ 
+    // Récupérer les groupes d'accès pour assigner automatiquement
+    const groups = await prisma.accessGroup.findMany();
+    const internalGroup = groups.find(g => g.type === 'INTERNAL');
+    const publicGroup = groups.find(g => g.type === 'PUBLIC');
+    const administrativeGroup = groups.find(g => g.type === 'ADMINISTRATIVE');
+    
+    if (!internalGroup || !administrativeGroup) {
+      return NextResponse.json({ error: 'Groupes d\'accès manquants' }, { status: 500 });
+    }
+    
+    // Déterminer le groupe d'accès principal en fonction de la catégorie
+    let primaryGroupId = internalGroup.id; // Par défaut, groupe interne
+    
+    if (rest.category && rest.category.toLowerCase().includes('public')) {
+      primaryGroupId = publicGroup?.id || internalGroup.id;
+    } else if (rest.category && rest.category.toLowerCase().includes('client')) {
+      primaryGroupId = publicGroup?.id || internalGroup.id;
+    }
+    
+    // Vérifier si c'est une procédure administrative
+    const isAdministrative = (title, category) => {
+      const titleLower = title?.toLowerCase() || '';
+      const categoryLower = category?.toLowerCase() || '';
+      return titleLower.includes('gestion') || 
+             titleLower.includes('administration') || 
+             titleLower.includes('audit') ||
+             titleLower.includes('contrôle') ||
+             titleLower.includes('formation') ||
+             categoryLower.includes('admin') ||
+             categoryLower.includes('rh') ||
+             categoryLower.includes('formation');
+    };
+    
+    // Créer la SOP
+    const sop = await prisma.sop.create({ 
       data: { 
         ...rest,
         id,
-        authorId: currentUser.id // Utiliser l'ID de l'utilisateur connecté
+        authorId: currentUser.id,
+        updatedAt: new Date()
       }, 
-      include: { user: true } 
+      include: { 
+        user: true
+      } 
+    });
+    
+    // Assigner la SOP au groupe principal et au groupe administratif si applicable
+    let groupsToAssign = [primaryGroupId];
+    if (isAdministrative(rest.title, rest.category)) {
+      groupsToAssign.push(administrativeGroup.id);
+    }
+    
+    const uniqueGroups = [...new Set(groupsToAssign)]; // Éviter les doublons
+    
+    await Promise.all(uniqueGroups.map(groupId =>
+      prisma.sopAccessGroup.create({
+        data: {
+          sopId: sop.id,
+          accessGroupId: groupId
+        }
+      })
+    ));
+    
+    // Récupérer la SOP avec les groupes assignés
+    const sopWithGroups = await prisma.sop.findUnique({
+      where: { id: sop.id },
+      include: { 
+        user: true,
+        accessGroups: {
+          include: {
+            accessGroup: true
+          }
+        }
+      }
     });
     
     return NextResponse.json({
-      ...sop,
-      author: sop.user?.name || sop.authorId,
+      ...sopWithGroups,
+      author: sopWithGroups?.user?.name || sopWithGroups?.authorId,
     });
   } catch (error: any) {
     console.error('Erreur lors de la création du SOP:', error);

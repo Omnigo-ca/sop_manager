@@ -129,7 +129,7 @@ export async function checkSopPermission(userId: string, operation: 'create' | '
 }
 
 /**
- * Vérifie si l'utilisateur a accès à une SOP spécifique
+ * Vérifie si l'utilisateur a accès à une SOP spécifique via les groupes d'accès
  * @param userId ID de l'utilisateur
  * @param sopId ID de la SOP
  * @returns true si l'utilisateur a accès, false sinon
@@ -155,17 +155,31 @@ export async function checkSopAccess(userId: string, sopId: string): Promise<boo
 
     if (sop) return true;
 
-    // Vérifier si l'utilisateur a un accès explicite à la SOP
-    const access = await prisma.sopAccess.findUnique({
-      where: {
-        userId_sopId: {
-          userId: userId,
-          sopId: sopId
+    // Vérifier l'accès via les groupes d'accès
+    const sopWithGroups = await prisma.sop.findUnique({
+      where: { id: sopId },
+      include: { 
+        accessGroups: {
+          include: {
+            accessGroup: {
+              include: {
+                users: {
+                  where: { userId: userId }
+                }
+              }
+            }
+          }
         }
       }
     });
 
-    return !!access;
+    if (sopWithGroups && sopWithGroups.accessGroups.some(groupLink => 
+      groupLink.accessGroup.users.length > 0
+    )) {
+      return true;
+    }
+
+    return false;
   } catch (error) {
     console.error(`Erreur lors de la vérification de l'accès à la SOP ${sopId} pour l'utilisateur ${userId}:`, error);
     return false;
