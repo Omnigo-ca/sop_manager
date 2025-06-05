@@ -1,0 +1,30 @@
+name: CI Backup
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, develop]
+
+jobs:
+  quick-check:
+    name: ⚡ Quick Check
+    runs-on: ubuntu-22.04
+    timeout-minutes: 5
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          
+      - name: Install and Test
+        run: |
+          npm ci --legacy-peer-deps
+          npm run lint
+          npm test
+          npm run build
+        env:
+          NEXT_TELEMETRY_DISABLED: 1 
