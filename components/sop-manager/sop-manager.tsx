@@ -210,7 +210,7 @@ export function SOPManager() {
           {canCreateSop && (
             <Button
               onClick={() => setIsCreateDialogOpen(true)}
-              className="bg-primary hover:bg-primary-light text-white font-meutas font-semibold"
+              className="bg-primary hover:bg-primary-light text-black font-meutas font-semibold border border-black"
             >
               <Plus className="mr-2 h-4 w-4" /> Nouvelle procédure
             </Button>

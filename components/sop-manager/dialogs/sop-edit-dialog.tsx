@@ -194,7 +194,7 @@ export function SopEditDialog({ open, onOpenChange, sop, users, onSubmit }: SopE
             </Button>
             <Button
               type="submit"
-              className="bg-primary hover:bg-primary-light text-white"
+              className="bg-primary hover:bg-primary-light text-black border border-black"
             >
               Enregistrer
             </Button>

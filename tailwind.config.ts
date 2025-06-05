@@ -12,7 +12,7 @@ const config: Config = {
   	extend: {
   		colors: {
   			'primary-light': '#7DF9FF',
-  			'primary': '#4ec6e2',
+  			'primary': '#7DF9FF',
   			border: "black",
   			input: "black",
   			ring: "black",

@@ -480,28 +480,28 @@ export default function ManageAccessGroupsPage() {
     <div className="container mx-auto py-10">
       <div className="flex justify-between items-center mb-8">
         <div>
-          <h1 className="text-2xl font-bold">Gestion des groupes d'accès</h1>
-          <p className="text-muted-foreground">
-            Créez et organisez des groupes pour contrôler l'accès aux procédures
-          </p>
+          <h1 className="text-2xl font-meutas font-bold">Gestion des groupes d'accès</h1>
+          <p className="text-muted-foreground font-meutas">
+              Créez et organisez des groupes pour contrôler l'accès aux procédures
+            </p>
         </div>
         <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
           <DialogTrigger asChild>
-            <Button>
+            <Button className="font-meutas">
               <Plus className="h-4 w-4 mr-2" />
               Créer un groupe
             </Button>
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Créer un nouveau groupe d'accès</DialogTitle>
-              <DialogDescription>
+              <DialogTitle className="font-meutas">Créer un nouveau groupe d'accès</DialogTitle>
+              <DialogDescription className="font-meutas">
                 Créez un groupe pour organiser l'accès aux procédures. Le nom du groupe définira son type.
               </DialogDescription>
             </DialogHeader>
             <div className="space-y-4">
               <div>
-                <Label htmlFor="name">Nom du groupe</Label>
+                <Label htmlFor="name" className="font-meutas">Nom du groupe</Label>
                 <Input
                   id="name"
                   value={formData.name}
@@ -510,7 +510,7 @@ export default function ManageAccessGroupsPage() {
                 />
               </div>
               <div>
-                <Label htmlFor="description">Description</Label>
+                <Label htmlFor="description" className="font-meutas">Description</Label>
                 <Textarea
                   id="description"
                   value={formData.description}
@@ -519,10 +519,10 @@ export default function ManageAccessGroupsPage() {
                 />
               </div>
               <div className="flex justify-end space-x-2">
-                <Button variant="outline" onClick={() => setIsCreateDialogOpen(false)}>
+                <Button variant="outline" onClick={() => setIsCreateDialogOpen(false)} className="font-meutas">
                   Annuler
                 </Button>
-                <Button onClick={handleCreateGroup} disabled={!formData.name}>
+                <Button onClick={handleCreateGroup} disabled={!formData.name} className="font-meutas">
                   Créer
                 </Button>
               </div>
@@ -536,7 +536,7 @@ export default function ManageAccessGroupsPage() {
           <Card key={group.id} className="relative">
             <CardHeader>
               <div className="flex items-center justify-between">
-                <CardTitle className="text-lg">{group.name}</CardTitle>
+                <CardTitle className="text-lg font-meutas">{group.name}</CardTitle>
                 <div className="flex space-x-1">
                   <Button
                     variant="ghost"
@@ -568,20 +568,20 @@ export default function ManageAccessGroupsPage() {
                   </AlertDialog>
                 </div>
               </div>
-              <CardDescription>{group.description}</CardDescription>
+              <CardDescription className="font-meutas">{group.description}</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-4">
                   <div className="flex items-center gap-1">
                     <FileText className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-sm text-muted-foreground">
+                    <span className="text-sm text-muted-foreground font-meutas">
                       {group._count.sops} SOPs
                     </span>
                   </div>
                   <div className="flex items-center gap-1">
                     <Users className="h-4 w-4 text-muted-foreground" />
-                    <span className="text-sm text-muted-foreground">
+                    <span className="text-sm text-muted-foreground font-meutas">
                       {group._count.users} utilisateurs
                     </span>
                   </div>
@@ -589,7 +589,7 @@ export default function ManageAccessGroupsPage() {
               </div>
 
               <div className="mb-4">
-                <h4 className="text-sm font-medium mb-2">Utilisateurs assignés :</h4>
+                <h4 className="text-sm font-meutas font-medium mb-2">Utilisateurs assignés :</h4>
                 <div className="flex flex-wrap gap-1">
                   {group.users.slice(0, 3).map((userGroup) => (
                     <Badge key={userGroup.user.id} variant="outline" className="text-xs">
@@ -602,7 +602,7 @@ export default function ManageAccessGroupsPage() {
                     </Badge>
                   )}
                   {group.users.length === 0 && (
-                    <span className="text-xs text-muted-foreground">
+                    <span className="text-xs text-muted-foreground font-meutas">
                       Aucun utilisateur assigné
                     </span>
                   )}
@@ -612,7 +612,7 @@ export default function ManageAccessGroupsPage() {
               <div className="space-y-2">
                 <Button
                   onClick={() => openUserAssignDialog(group)}
-                  className="w-full"
+                  className="w-full font-meutas hover:text-primary hover:border-primary hover:bg-black transition-colors"
                   variant="outline"
                   size="sm"
                 >
@@ -622,7 +622,7 @@ export default function ManageAccessGroupsPage() {
                 
                 <Button
                   onClick={() => openSopAssignDialog(group)}
-                  className="w-full"
+                  className="w-full font-meutas hover:text-primary hover:border-primary hover:bg-black transition-colors"
                   variant="outline"
                   size="sm"
                 >
@@ -644,10 +644,10 @@ export default function ManageAccessGroupsPage() {
       }}>
         <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle>
+            <DialogTitle className="font-meutas">
               Gérer les utilisateurs - {selectedGroup?.name}
             </DialogTitle>
-            <DialogDescription>
+            <DialogDescription className="font-meutas">
               Sélectionnez les utilisateurs qui auront accès à ce groupe de procédures.
             </DialogDescription>
           </DialogHeader>

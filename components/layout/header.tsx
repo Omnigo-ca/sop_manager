@@ -29,7 +29,7 @@ function AdminNav() {
   return (
     <Link 
       href="/admin/manage-access-groups" 
-      className="px-4 py-2 text-sm font-medium text-black hover:text-primary transition-colors"
+      className="px-4 py-2 text-xl font-meutas font-medium text-black hover:text-primary transition-colors"
     >
       Groupes d'accès
     </Link>
@@ -39,15 +39,19 @@ function AdminNav() {
 export function Header() {
   return (
     <header className="flex justify-between items-center px-6 py-4 h-16 border-b border-black">
-      <div className="flex items-center gap-4">
+      <div className="flex items-center">
+        <img src="/logo.png" alt="Logo" className="h-16 w-auto" />
+      </div>
+      
+      <div className="flex items-center gap-4 absolute left-1/2 transform -translate-x-1/2">
         <Link href="/" className="font-meutas font-bold text-xl text-black hover:text-primary transition-colors">
-          <img src="/logo.png" alt="Logo" className="h-8 w-auto inline-block mr-2" />
           SOP Manager
         </Link>
         <SignedIn>
           <AdminNav />
         </SignedIn>
       </div>
+      
       <div className="flex items-center gap-4">
         <SignedOut>
           <SignInButton>
@@ -56,7 +60,7 @@ export function Header() {
             </button>
           </SignInButton>
           <SignUpButton>
-            <button className="px-4 py-2 bg-primary hover:bg-primary-light text-white font-meutas font-semibold rounded-md transition-colors">
+            <button className="px-4 py-2 bg-primary hover:bg-primary-light text-black font-meutas font-semibold rounded-md transition-colors border border-black">
               Inscription
             </button>
           </SignUpButton>

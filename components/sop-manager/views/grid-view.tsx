@@ -50,7 +50,7 @@ export function GridView({ sops, onSelect, onEdit, onDelete }: GridViewProps) {
             <div className="flex items-center gap-2 text-sm text-gray-500">
               <span>Catégorie: {sop.category}</span>
               {sop.editedAt && (
-                <Badge variant="outline" className="text-xs bg-primary-light text-primary border-primary">
+                <Badge variant="outline" className="text-xs bg-primary text-black border-black">
                   Modifié
                 </Badge>
               )}

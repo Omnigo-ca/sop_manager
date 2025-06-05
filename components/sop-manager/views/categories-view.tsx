@@ -157,7 +157,7 @@ export function CategoriesView({
                     Créé le {new Date(selectedSop.createdAt).toLocaleDateString("fr-FR")}
                   </div>
                   {selectedSop.editedAt && (
-                    <div className="flex items-center gap-1 text-blue-600">
+                    <div className="flex items-center gap-1 text-primary border-b border-black">
                       <Edit className="h-4 w-4" />
                       Modifié le {new Date(selectedSop.editedAt).toLocaleDateString("fr-FR")}
                     </div>

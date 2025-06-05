@@ -213,7 +213,7 @@ export function SopCreateDialog({ open, onOpenChange, onSubmit, users }: SopCrea
             </Button>
             <Button
               type="submit"
-              className="bg-primary hover:bg-primary-light text-white font-meutas"
+              className="bg-primary hover:bg-primary-light text-black font-meutas border border-black"
             >
               Créer la procédure
             </Button>

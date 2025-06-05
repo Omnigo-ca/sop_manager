@@ -41,7 +41,10 @@ export function ThemeProvider({
     root.classList.remove("light", "dark")
     root.classList.add(theme)
     root.style.setProperty("--primary-light", "#7DF9FF")
-    root.style.setProperty("--primary", "#4ec6e2")
+    root.style.setProperty("--primary", "#7DF9FF")
+    root.style.setProperty("--primary-foreground", "#000000")
+    root.style.setProperty("--border", "#000000")
+    root.style.setProperty("--ring", "#000000")
 
     if (attribute === "class") {
       root.classList.add(theme)
