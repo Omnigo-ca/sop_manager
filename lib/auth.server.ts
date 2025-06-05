@@ -12,14 +12,14 @@ async function syncUserWithDatabase(clerkUser: any): Promise<PrismaUser> {
     throw new Error("Utilisateur Clerk non défini");
   }
 
-  const { id, firstName, lastName, emailAddresses } = clerkUser;
+  const { id, firstName, lastName, emailAddresses, username } = clerkUser;
   
   if (!emailAddresses || emailAddresses.length === 0) {
     throw new Error("Adresse email manquante pour l'utilisateur");
   }
   
   const email = emailAddresses[0].emailAddress;
-  const name = `${firstName || ''} ${lastName || ''}`.trim();
+  const name = `${firstName || ''} ${lastName || ''}`.trim() || username || email.split('@')[0];
   
   // Vérifier si l'utilisateur existe déjà dans Prisma
   const existingUser = await prisma.user.findUnique({

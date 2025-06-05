@@ -91,67 +91,37 @@ export async function POST(req: Request) {
     // Gestion des différents événements Clerk
     
     switch (event.type) {
-      case 'user.created': {
-        const { id, email_addresses, first_name, last_name } = event.data;
+      case 'user.created':
+      case 'user.updated': {
+        const { id, email_addresses, first_name, last_name, username } = event.data;
         
         if (!email_addresses || email_addresses.length === 0) {
           console.error('Adresse email manquante pour l\'utilisateur:', id);
           return NextResponse.json({ error: 'Adresse email manquante' }, { status: 400 });
         }
 
-        const newUser = await prisma.user.upsert({
+        const email = email_addresses[0].email_address;
+        const name = `${first_name || ''} ${last_name || ''}`.trim() || username || email.split('@')[0];
+
+        // Utiliser upsert pour créer ou mettre à jour l'utilisateur
+        const user = await prisma.user.upsert({
           where: { id },
-          update: {},
           create: {
             id,
-            email: email_addresses[0].email_address,
-            name: `${first_name || ''} ${last_name || ''}`.trim(),
-            role: 'USER', // Rôle par défaut
+            email,
+            name,
+            role: 'USER',
             createdAt: new Date(),
+            updatedAt: new Date(),
+          },
+          update: {
+            email,
+            name,
             updatedAt: new Date(),
           },
         });
         
-        return NextResponse.json({ success: true, user: newUser });
-      }
-      
-      case 'user.updated': {
-        const { id, email_addresses, first_name, last_name } = event.data;
-        
-        if (!email_addresses || email_addresses.length === 0) {
-          console.error('Adresse email manquante pour la mise à jour de l\'utilisateur:', id);
-          return NextResponse.json({ error: 'Adresse email manquante' }, { status: 400 });
-        }
-
-        // Vérifier si l'utilisateur existe
-        const user = await prisma.user.findUnique({ where: { id } });
-        
-        if (user) {
-          const updatedUser = await prisma.user.update({
-            where: { id },
-            data: {
-              email: email_addresses[0].email_address,
-              name: `${first_name || ''} ${last_name || ''}`.trim(),
-              updatedAt: new Date(),
-            },
-          });
-          
-          return NextResponse.json({ success: true, user: updatedUser });
-        } else {
-          // L'utilisateur n'existe pas encore dans la base de données, le créer
-          const newUser = await prisma.user.create({
-            data: {
-              id,
-              email: email_addresses[0].email_address,
-              name: `${first_name || ''} ${last_name || ''}`.trim(),
-              role: 'USER',
-              createdAt: new Date(),
-              updatedAt: new Date(),
-            },
-          });
-          
-          return NextResponse.json({ success: true, user: newUser });
-        }
+        return NextResponse.json({ success: true, user });
       }
       
       case 'user.deleted': {

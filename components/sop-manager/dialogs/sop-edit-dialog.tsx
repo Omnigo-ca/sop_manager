@@ -117,19 +117,6 @@ export function SopEditDialog({ open, onOpenChange, sop, users, onSubmit }: SopE
             </div>
 
             <div>
-              <label htmlFor="instructions" className="block text-sm font-meutas font-medium mb-1">
-                Instructions
-              </label>
-              <Textarea
-                id="instructions"
-                value={formData.instructions}
-                onChange={(e) => setFormData({ ...formData, instructions: e.target.value })}
-                className="w-full border-black"
-                required
-              />
-            </div>
-
-            <div>
               <label htmlFor="author" className="block text-sm font-meutas font-medium mb-1">
                 Auteur
               </label>

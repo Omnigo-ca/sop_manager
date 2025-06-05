@@ -17,14 +17,15 @@ interface SopCreateDialogProps {
 }
 
 export function SopCreateDialog({ open, onOpenChange, onSubmit, users }: SopCreateDialogProps) {
-  const [formData, setFormData] = useState({
-    title: "",
-    description: "",
-    instructions: "",
-    authorId: "",
-    category: "",
-    priority: "medium" as SOP["priority"],
-    tags: "",
+  const [formData, setFormData] = useState<Omit<SOP, 'id' | 'createdAt' | 'updatedAt' | 'editedAt'>>({
+    title: '',
+    description: '',
+    instructions: '',
+    author: '',
+    authorId: '',
+    category: '',
+    priority: 'medium' as const,
+    tags: [],
   })
 
   const [markdown, setMarkdown] = useState("")
@@ -39,28 +40,24 @@ export function SopCreateDialog({ open, onOpenChange, onSubmit, users }: SopCrea
       const parsedSop = parseMarkdownToSop(markdown)
       const newSOP: Omit<SOP, 'id' | 'createdAt' | 'updatedAt' | 'editedAt'> = {
         ...parsedSop,
-        authorId: formData.authorId || users[0]?.id, // Utiliser le premier utilisateur par défaut
+        authorId: formData.authorId || users[0]?.id || '', // Utiliser le premier utilisateur par défaut
       }
       onSubmit(newSOP)
       return
     }
 
-    if (!formData.title || !formData.instructions || !formData.authorId) {
+    if (!formData.title || !formData.description || !formData.authorId) {
       return
     }
 
     const newSOP: Omit<SOP, 'id' | 'createdAt' | 'updatedAt' | 'editedAt'> = {
-      title: formData.title,
-      description: formData.description,
-      instructions: formData.instructions,
-      author: '',
-      authorId: formData.authorId,
-      category: formData.category || "Général",
-      priority: formData.priority,
-      tags: formData.tags
-        .split(",")
-        .map((tag) => tag.trim())
-        .filter((tag) => tag),
+      ...formData,
+      tags: typeof formData.tags === 'string' 
+        ? formData.tags
+            .split(",")
+            .map((tag: string) => tag.trim())
+            .filter(Boolean)
+        : formData.tags,
     }
 
     onSubmit(newSOP)
@@ -202,16 +199,6 @@ export function SopCreateDialog({ open, onOpenChange, onSubmit, users }: SopCrea
                 />
               </div>
 
-              <div>
-                <Label htmlFor="instructions" className="font-meutas">Instructions</Label>
-                <Textarea
-                  id="instructions"
-                  value={formData.instructions}
-                  onChange={(e) => setFormData({ ...formData, instructions: e.target.value })}
-                  className="min-h-[200px] border-black focus:ring-primary focus:border-primary"
-                  required
-                />
-              </div>
             </div>
           )}
 

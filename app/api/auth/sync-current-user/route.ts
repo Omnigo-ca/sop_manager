@@ -74,53 +74,36 @@ export async function GET() {
       return NextResponse.json({ error: 'Utilisateur non authentifié' }, { status: 401 });
     }
 
-    const { id, firstName, lastName, emailAddresses } = user;
+    const { id, firstName, lastName, emailAddresses, username } = user;
     
     if (!emailAddresses || emailAddresses.length === 0) {
       return NextResponse.json({ error: 'Adresse email manquante' }, { status: 400 });
     }
     
     const email = emailAddresses[0].emailAddress;
-    const name = `${firstName || ''} ${lastName || ''}`.trim();
+    const name = `${firstName || ''} ${lastName || ''}`.trim() || username || email.split('@')[0];
     
-    // Vérifier si l'utilisateur existe déjà dans Prisma
-    const existingUser = await prisma.user.findUnique({
+    // Utiliser upsert pour créer ou mettre à jour l'utilisateur
+    const syncedUser = await prisma.user.upsert({
       where: { id },
+      create: {
+        id,
+        email,
+        name,
+        role: 'USER',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      update: {
+        email,
+        name,
+        updatedAt: new Date(),
+      },
     });
-    
-    let syncedUser;
-    
-    if (existingUser) {
-      // Mettre à jour l'utilisateur si les données ont changé
-      if (existingUser.email !== email || existingUser.name !== name) {
-        syncedUser = await prisma.user.update({
-          where: { id },
-          data: {
-            email,
-            name,
-            updatedAt: new Date(),
-          },
-        });
-      } else {
-        syncedUser = existingUser;
-      }
-    } else {
-      // Créer un nouvel utilisateur
-      syncedUser = await prisma.user.create({
-        data: {
-          id,
-          email,
-          name,
-          role: 'USER', // Rôle par défaut
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        },
-      });
-    }
     
     return NextResponse.json({
       success: true,
-      message: existingUser ? 'Utilisateur mis à jour' : 'Utilisateur créé',
+      message: 'Utilisateur synchronisé',
       user: {
         id: syncedUser.id,
         email: syncedUser.email,

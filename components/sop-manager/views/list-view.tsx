@@ -7,13 +7,11 @@ import { SOP, priorityColors, priorityLabels } from "../types"
 
 interface ListViewProps {
   sops: SOP[]
-  downloadingPdf: string | null
   onViewDetails: (sop: SOP) => void
-  onEdit: (sop: SOP) => void
-  onDownloadPDF: (sop: SOP) => Promise<void>
+  onEdit?: (sop: SOP) => void
 }
 
-export function ListView({ sops, downloadingPdf, onViewDetails, onEdit, onDownloadPDF }: ListViewProps) {
+export function ListView({ sops, onViewDetails, onEdit }: ListViewProps) {
   return (
     <div className="space-y-4">
       {sops.map((sop) => (
@@ -61,25 +59,6 @@ export function ListView({ sops, downloadingPdf, onViewDetails, onEdit, onDownlo
               </div>
               <div className="flex gap-2">
                 <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => onDownloadPDF(sop)}
-                  disabled={downloadingPdf === sop.id}
-                  className="flex items-center gap-1"
-                >
-                  {downloadingPdf === sop.id ? (
-                    <>
-                      <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent"></div>
-                      Génération...
-                    </>
-                  ) : (
-                    <>
-                      <Download className="h-4 w-4" />
-                      PDF
-                    </>
-                  )}
-                </Button>
-                <Button
                   variant="secondary"
                   size="sm"
                   onClick={() => onViewDetails(sop)}
@@ -87,14 +66,13 @@ export function ListView({ sops, downloadingPdf, onViewDetails, onEdit, onDownlo
                 >
                   Détails
                 </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => onEdit(sop)}
-                  className="flex items-center gap-1"
-                >
-                  <Edit className="h-4 w-4" />
-                </Button>
+                <div className="flex items-center gap-2">
+                  {onEdit && (
+                    <Button variant="ghost" size="icon" onClick={() => onEdit(sop)}>
+                      <Edit className="h-4 w-4" />
+                    </Button>
+                  )}
+                </div>
               </div>
             </div>
           </div>

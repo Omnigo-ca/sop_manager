@@ -1,5 +1,5 @@
 import React from "react"
-import { Download, ChevronDown, Edit, Trash } from "lucide-react"
+import { Download, ChevronDown, Edit, Trash, Trash2 } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -7,14 +7,12 @@ import { SOP } from "../types"
 
 interface GridViewProps {
   sops: SOP[]
-  downloadingPdf: string | null
   onSelect: (sop: SOP) => void
-  onEdit: (sop: SOP) => void
-  onDelete: (sop: SOP) => void
-  onDownloadPDF: (sop: SOP) => Promise<void>
+  onEdit?: (sop: SOP) => void
+  onDelete?: (sop: SOP) => void
 }
 
-export function GridView({ sops, downloadingPdf, onSelect, onEdit, onDelete, onDownloadPDF }: GridViewProps) {
+export function GridView({ sops, onSelect, onEdit, onDelete }: GridViewProps) {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
       {sops.map((sop) => (
@@ -62,43 +60,17 @@ export function GridView({ sops, downloadingPdf, onSelect, onEdit, onDelete, onD
           <CardContent className="pt-0">
             <div className="flex justify-between items-center">
               <div className="flex gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => onEdit(sop)}
-                  className="border-black hover:bg-primary-light hover:text-white transition-colors"
-                >
-                  <Edit className="h-4 w-4" />
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => onDelete(sop)}
-                  className="border-black hover:bg-red-500 hover:text-white transition-colors"
-                >
-                  <Trash className="h-4 w-4" />
-                </Button>
-              </div>
-
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => onDownloadPDF(sop)}
-                disabled={downloadingPdf === sop.id}
-                className="border-black hover:bg-primary hover:text-white transition-colors flex items-center gap-1"
-              >
-                {downloadingPdf === sop.id ? (
-                  <>
-                    <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent"></div>
-                    PDF
-                  </>
-                ) : (
-                  <>
-                    <Download className="h-4 w-4" />
-                    PDF
-                  </>
+                {onEdit && (
+                  <Button variant="ghost" size="icon" onClick={() => onEdit(sop)}>
+                    <Edit className="h-4 w-4" />
+                  </Button>
                 )}
-              </Button>
+                {onDelete && (
+                  <Button variant="ghost" size="icon" onClick={() => onDelete(sop)}>
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                )}
+              </div>
             </div>
           </CardContent>
         </Card>

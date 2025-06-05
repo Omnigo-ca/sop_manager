@@ -1,5 +1,5 @@
-import React from "react"
-import { Download, Edit, User, Tag, Calendar, Trash2 } from "lucide-react"
+import React, { useState } from "react"
+import { Download, Edit, User, Tag, Calendar, Trash2, ChevronRight, ChevronDown } from "lucide-react"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -9,27 +9,38 @@ interface CategoriesViewProps {
   sops: SOP[]
   selectedCategory: string | null
   selectedSop: SOP | null
-  downloadingPdf: string | null
-  onCategorySelect: (category: string) => void
-  onSopSelect: (sop: SOP) => void
-  onEdit: (sop: SOP) => void
-  onDelete: (sop: SOP) => void
-  onDownloadPDF: (sop: SOP) => Promise<void>
+  onSelectCategory: (category: string | null) => void
+  onSelectSop: (sop: SOP | null) => void
+  onEdit?: (sop: SOP) => void
+  onDelete?: (sop: SOP) => void
 }
 
 export function CategoriesView({
   sops,
   selectedCategory,
   selectedSop,
-  downloadingPdf,
-  onCategorySelect,
-  onSopSelect,
+  onSelectCategory,
+  onSelectSop,
   onEdit,
   onDelete,
-  onDownloadPDF
 }: CategoriesViewProps) {
   // Get unique categories
   const categories = [...new Set(sops.map(sop => sop.category))].sort()
+  
+  // State for expanded categories
+  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set())
+
+  // Toggle category expansion
+  const toggleCategory = (category: string) => {
+    const newExpanded = new Set(expandedCategories)
+    if (newExpanded.has(category)) {
+      newExpanded.delete(category)
+    } else {
+      newExpanded.add(category)
+    }
+    setExpandedCategories(newExpanded)
+    onSelectCategory(category)
+  }
 
   return (
     <div className="flex bg-white rounded-lg shadow overflow-hidden">
@@ -40,60 +51,34 @@ export function CategoriesView({
           <div className="space-y-1">
             {categories.map((category) => {
               const sopsInCategory = sops.filter((sop) => sop.category === category)
+              const isExpanded = expandedCategories.has(category)
               return (
-                <div key={category} className="mb-4">
-                  <button
-                    onClick={() => {
-                      onCategorySelect(category)
-                      if (selectedSop && selectedSop.category === category) {
-                        onSopSelect(null as any)
-                      }
-                    }}
-                    className={`text-left font-medium text-base w-full px-2 py-1.5 hover:bg-gray-200 rounded ${
-                      selectedCategory === category && !selectedSop ? 'bg-gray-200 text-primary' : 'text-gray-800'
-                    }`}
+                <div key={category} className="space-y-1">
+                  <Button
+                    variant={selectedCategory === category ? "secondary" : "ghost"}
+                    className="w-full justify-start font-normal"
+                    onClick={() => toggleCategory(category)}
                   >
-                    {category} ({sopsInCategory.length})
-                  </button>
-
-                  <div className="ml-3 border-l-2 pl-2 mt-1 border-gray-300 space-y-1">
-                    {sopsInCategory.map((sop) => (
-                      <div key={sop.id} className="flex items-center justify-between group">
-                        <button
-                          onClick={() => onSopSelect(sop)}
-                          className={`text-left text-sm flex-1 px-2 py-1 hover:bg-gray-200 rounded truncate ${
-                            selectedSop?.id === sop.id ? 'bg-gray-200 text-primary font-medium' : 'text-gray-700'
-                          }`}
+                    {isExpanded ? <ChevronDown className="h-4 w-4 mr-2" /> : <ChevronRight className="h-4 w-4 mr-2" />}
+                    <span className="truncate">{category}</span>
+                    <span className="ml-auto text-xs text-gray-500">{sopsInCategory.length}</span>
+                  </Button>
+                  
+                  {/* Liste des procédures de la catégorie */}
+                  {isExpanded && (
+                    <div className="ml-6 space-y-1">
+                      {sopsInCategory.map((sop) => (
+                        <Button
+                          key={sop.id}
+                          variant="ghost"
+                          className={`w-full justify-start pl-2 py-1 text-sm ${selectedSop?.id === sop.id ? 'bg-gray-100 text-primary font-medium' : 'text-gray-700'}`}
+                          onClick={() => onSelectSop(sop)}
                         >
-                          {sop.title}
-                        </button>
-                        <div className="hidden group-hover:flex gap-1 pr-2">
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-6 w-6"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              onEdit(sop);
-                            }}
-                          >
-                            <Edit className="h-3 w-3" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-6 w-6 text-red-600 hover:text-red-700"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              onDelete(sop);
-                            }}
-                          >
-                            <Trash2 className="h-3 w-3" />
-                          </Button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                          <span className="truncate">{sop.title}</span>
+                        </Button>
+                      ))}
+                    </div>
+                  )}
                 </div>
               )
             })}
@@ -102,121 +87,84 @@ export function CategoriesView({
       </div>
 
       {/* Main Content Area */}
-      <div className="flex-1 overflow-y-auto p-6" style={{ maxHeight: 'calc(100vh - 300px)' }}>
+      <div className="flex-1 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 300px)' }}>
         {selectedSop ? (
-          /* Single SOP Detail View */
-          <div className="space-y-6">
-            <div className="flex justify-between items-start">
-              <div>
-                <h2 className="text-2xl font-bold mb-2">{selectedSop.title}</h2>
-                {selectedSop.description && (
-                  <p className="text-gray-600 mb-4">{selectedSop.description}</p>
+          /* Selected SOP Detail View */
+          <div className="p-6">
+            <div className="mb-6">
+              <div className="flex justify-between items-start gap-4 mb-4">
+                <h2 className="text-2xl font-bold">{selectedSop.title}</h2>
+                <div className="flex gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => onSelectSop(selectedSop)}
+                    className="flex items-center gap-1"
+                  >
+                    <Edit className="h-4 w-4" /> Modifier
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => onDelete && onDelete(selectedSop)}
+                    className="flex items-center gap-1 text-red-600 hover:text-red-700"
+                  >
+                    <Trash2 className="h-4 w-4" /> Supprimer
+                  </Button>
+                </div>
+              </div>
+
+              <div className="prose prose-sm max-w-none">
+                <p className="text-gray-600 text-lg mb-6">{selectedSop.description}</p>
+
+                {selectedSop.steps && selectedSop.steps.length > 0 && (
+                  <div className="mt-8">
+                    <h4 className="font-medium text-lg mb-4">Étapes illustrées :</h4>
+                    <ol className="space-y-6 list-decimal list-inside">
+                      {selectedSop.steps.map((step, idx) => (
+                        <li key={idx} className="mb-4">
+                          <div className="font-semibold mb-2">{step.text}</div>
+                          {step.image && (
+                            <img
+                              src={step.image}
+                              alt={step.text}
+                              className="max-w-full h-auto rounded border shadow-sm"
+                              style={{ maxHeight: 200 }}
+                            />
+                          )}
+                        </li>
+                      ))}
+                    </ol>
+                  </div>
                 )}
-                <div className="flex flex-wrap gap-2 mb-4">
-                  <Badge className={priorityColors[selectedSop.priority.toLowerCase() as SOP["priority"]]}>
-                    {priorityLabels[selectedSop.priority.toLowerCase() as SOP["priority"]]}
-                  </Badge>
-                  {selectedSop.tags.map((tag) => (
-                    <Badge key={tag} variant="secondary" className="text-xs">
-                      {tag}
-                    </Badge>
-                  ))}
-                </div>
-              </div>
-              <div className="flex gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => onDownloadPDF(selectedSop)}
-                  disabled={downloadingPdf === selectedSop.id}
-                  className="flex items-center gap-1"
-                >
-                  {downloadingPdf === selectedSop.id ? (
-                    <>
-                      <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-t-transparent"></div>
-                      Génération...
-                    </>
-                  ) : (
-                    <>
-                      <Download className="h-4 w-4" />
-                      PDF
-                    </>
+
+                {/* Metadata */}
+                <div className="flex flex-wrap gap-4 text-sm text-gray-600 border-t mt-8 pt-4">
+                  <div className="flex items-center gap-1">
+                    <User className="h-4 w-4" />
+                    {selectedSop.author}
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Tag className="h-4 w-4" />
+                    {selectedSop.category}
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Calendar className="h-4 w-4" />
+                    Créé le {new Date(selectedSop.createdAt).toLocaleDateString("fr-FR")}
+                  </div>
+                  {selectedSop.editedAt && (
+                    <div className="flex items-center gap-1 text-blue-600">
+                      <Edit className="h-4 w-4" />
+                      Modifié le {new Date(selectedSop.editedAt).toLocaleDateString("fr-FR")}
+                    </div>
                   )}
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => onEdit(selectedSop)}
-                  className="flex items-center gap-1"
-                >
-                  <Edit className="h-4 w-4" /> Modifier
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => onDelete(selectedSop)}
-                  className="flex items-center gap-1 text-red-600 hover:text-red-700"
-                >
-                  <Trash2 className="h-4 w-4" /> Supprimer
-                </Button>
-              </div>
-            </div>
-
-            {/* Instructions */}
-            <div>
-              <h4 className="font-medium text-lg mb-2">Instructions:</h4>
-              <div className="bg-gray-50 p-4 rounded-lg">
-                <pre className="whitespace-pre-wrap text-sm">{selectedSop.instructions}</pre>
-              </div>
-            </div>
-
-            {/* Étapes illustrées */}
-            {selectedSop.steps && selectedSop.steps.length > 0 && (
-              <div>
-                <h4 className="font-medium text-lg mb-2">Étapes illustrées :</h4>
-                <ol className="space-y-6 list-decimal list-inside">
-                  {selectedSop.steps.map((step, idx) => (
-                    <li key={idx} className="mb-2">
-                      <div className="font-semibold mb-1">{step.text}</div>
-                      {step.image && step.image.trim() !== "" && (
-                        <img
-                          src={step.image}
-                          alt={step.text}
-                          className="max-w-full h-auto rounded border shadow-sm"
-                          style={{ maxHeight: 200 }}
-                        />
-                      )}
-                    </li>
-                  ))}
-                </ol>
-              </div>
-            )}
-
-            {/* Metadata */}
-            <div className="flex flex-wrap gap-4 text-sm text-gray-600 border-t pt-4">
-              <div className="flex items-center gap-1">
-                <User className="h-4 w-4" />
-                {selectedSop.author}
-              </div>
-              <div className="flex items-center gap-1">
-                <Tag className="h-4 w-4" />
-                {selectedSop.category}
-              </div>
-              <div className="flex items-center gap-1">
-                <Calendar className="h-4 w-4" />
-                Créé le {new Date(selectedSop.createdAt).toLocaleDateString("fr-FR")}
-              </div>
-              {selectedSop.editedAt && (
-                <div className="flex items-center gap-1 text-blue-600">
-                  <Edit className="h-4 w-4" />
-                  Modifié le {new Date(selectedSop.editedAt).toLocaleDateString("fr-FR")}
                 </div>
-              )}
+              </div>
             </div>
           </div>
         ) : selectedCategory ? (
           /* Category SOPs List View */
-          <div>
+          <div className="p-6">
             <h2 className="text-xl font-bold mb-6">Catégorie: {selectedCategory}</h2>
             <div className="grid gap-4">
               {sops
@@ -225,7 +173,12 @@ export function CategoriesView({
                   <Card key={sop.id} className="hover:shadow-md transition-shadow">
                     <div className="p-4 flex justify-between items-start">
                       <div>
-                        <h3 className="font-semibold text-lg mb-1">{sop.title}</h3>
+                        <h3 
+                          className="font-semibold text-lg mb-1 cursor-pointer hover:text-primary transition-colors"
+                          onClick={() => onSelectSop(sop)}
+                        >
+                          {sop.title}
+                        </h3>
                         {sop.description && (
                           <p className="text-gray-600 text-sm line-clamp-2 mb-2">{sop.description}</p>
                         )}
@@ -239,28 +192,16 @@ export function CategoriesView({
                         </div>
                       </div>
                       <div className="flex gap-2">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => onSopSelect(sop)}
-                        >
-                          Voir le détail
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => onEdit(sop)}
-                        >
-                          <Edit className="h-4 w-4" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => onDelete(sop)}
-                          className="text-red-600 hover:text-red-700"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
+                        {onEdit && (
+                          <Button variant="ghost" size="icon" onClick={() => onEdit(sop)}>
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                        )}
+                        {onDelete && (
+                          <Button variant="ghost" size="icon" onClick={() => onDelete(sop)}>
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        )}
                       </div>
                     </div>
                   </Card>

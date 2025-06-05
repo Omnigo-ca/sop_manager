@@ -38,8 +38,7 @@ sop-manager/
 - **Authentification** complète avec différents rôles (Admin, Auteur, Utilisateur)
 - **Création et édition** de procédures avec éditeur riche
 - **Catégorisation** des procédures par tags et priorités
-- **Recherche et filtrage** des procédures
-- **Export** des procédures en PDF
+- **Recherche** et filtrage des procédures
 - **Interface responsive** adaptée à tous les appareils
 
 ## 🚀 Comment démarrer

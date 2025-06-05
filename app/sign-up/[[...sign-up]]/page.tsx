@@ -15,6 +15,27 @@ export default function SignUpPage() {
         signInUrl="/sign-in"
         routing="path"
         path="/sign-up"
+        appearance={{
+          elements: {
+            formButtonPrimary: 'bg-primary hover:bg-primary/90',
+            card: 'shadow-md'
+          }
+        }}
+        afterSignUpUrl="/dashboard"
+        formFields={[
+          {
+            name: 'firstName',
+            label: 'Prénom',
+            type: 'text',
+            required: true,
+          },
+          {
+            name: 'lastName',
+            label: 'Nom',
+            type: 'text',
+            required: true,
+          }
+        ]}
       />
     </div>
   )

@@ -16,12 +16,12 @@ import { useUser } from '@clerk/nextjs'
 import { AlertDialog, AlertDialogContent } from "@/components/ui/alert-dialog"
 
 import { SOP, FormData, ViewMode, User } from "./types"
-import { fetchSOPs, fetchUsers, createSOP, updateSOP, deleteSOP, uploadMarkdown } from "./api"
-import { getUniqueValues, filterSops, sortSops, handleDownloadPDF, handleStepImageUpload } from "./utils"
+import { fetchSOPs, fetchUsers, createSOP, updateSOP, deleteSOP } from "./api"
+import { getUniqueValues, filterSops, sortSops, handleStepImageUpload } from "./utils"
 import { GridView, ListView, CompactView, TableView, CategoriesView } from "./views"
 import { EmptyState } from "./empty-state"
 import { StatsOverview } from "./stats-overview"
-import { SopCreateDialog, SopEditDialog, SopDetailDialog, SopDeleteDialog } from "./dialogs"
+import { SopCreateDialog, SopEditDialog, SopDeleteDialog } from "./dialogs"
 
 export function SOPManager() {
   const { isSignedIn, isLoaded } = useUser();
@@ -42,7 +42,6 @@ export function SOPManager() {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [editingSop, setEditingSop] = useState<SOP | null>(null);
-  const [downloadingPdf, setDownloadingPdf] = useState<string | null>(null);
   const [selectedSop, setSelectedSop] = useState<SOP | null>(null);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [sopToDelete, setSopToDelete] = useState<SOP | null>(null);
@@ -170,25 +169,6 @@ export function SOPManager() {
     setIsEditDialogOpen(true);
   };
 
-  const handleDownloadPDFWrapper = async (sop: SOP) => {
-    try {
-      setDownloadingPdf(sop.id);
-      await handleDownloadPDF(sop);
-      toast({
-        title: "PDF téléchargé",
-        description: `Le SOP "${sop.title}" a été téléchargé en PDF avec succès`,
-      });
-    } catch (error) {
-      toast({
-        title: "Erreur de téléchargement",
-        description: "Impossible de générer le PDF. Veuillez réessayer.",
-        variant: "destructive",
-      });
-    } finally {
-      setDownloadingPdf(null);
-    }
-  };
-
   const handleViewModeChange = (value: string) => {
     setViewMode(value as ViewMode);
     if (value === "categories") {
@@ -286,68 +266,50 @@ export function SOPManager() {
       </div>
 
       {/* Content */}
-      <div className="bg-white rounded-lg border border-black p-4">
+      <div className="mt-6">
         {filteredSops.length === 0 ? (
-          <EmptyState />
+          <EmptyState hasSops={sops.length > 0} />
+        ) : viewMode === "grid" ? (
+          <GridView
+            sops={filteredSops}
+            onSelect={(sop) => setSelectedSop(sop)}
+            onEdit={canEditSop ? handleEditSOP : undefined}
+            onDelete={canDeleteSop ? (sop) => {
+              setSopToDelete(sop);
+              setIsDeleteDialogOpen(true);
+            } : undefined}
+          />
+        ) : viewMode === "list" ? (
+          <ListView
+            sops={filteredSops}
+            onViewDetails={(sop) => setSelectedSop(sop)}
+            onEdit={canEditSop ? handleEditSOP : undefined}
+          />
+        ) : viewMode === "compact" ? (
+          <CompactView
+            sops={filteredSops}
+            onViewDetails={(sop) => setSelectedSop(sop)}
+            onEdit={canEditSop ? handleEditSOP : () => {}}
+          />
+        ) : viewMode === "table" ? (
+          <TableView
+            sops={filteredSops}
+            onViewDetails={(sop) => setSelectedSop(sop)}
+            onEdit={canEditSop ? handleEditSOP : () => {}}
+          />
         ) : (
-          <>
-            {viewMode === "grid" && (
-              <GridView
-                sops={filteredSops}
-                onEdit={handleEditSOP}
-                onDelete={(sop) => {
-                  setSopToDelete(sop);
-                  setIsDeleteDialogOpen(true);
-                }}
-                onDownloadPDF={handleDownloadPDFWrapper}
-                downloadingPdf={downloadingPdf}
-                onSelect={setSelectedSop}
-              />
-            )}
-
-            {viewMode === "list" && (
-              <ListView 
-                sops={filteredSops}
-                downloadingPdf={downloadingPdf}
-                onViewDetails={setSelectedSop}
-                onEdit={handleEditSOP}
-                onDownloadPDF={handleDownloadPDFWrapper}
-              />
-            )}
-
-            {viewMode === "compact" && (
-              <CompactView 
-                sops={filteredSops}
-                onViewDetails={setSelectedSop}
-                onEdit={handleEditSOP}
-              />
-            )}
-
-            {viewMode === "table" && (
-              <TableView 
-                sops={filteredSops}
-                onViewDetails={setSelectedSop}
-                onEdit={handleEditSOP}
-              />
-            )}
-
-            {viewMode === "categories" && (
-              <CategoriesView 
-                sops={filteredSops}
-                selectedCategory={selectedCategory}
-                selectedSop={selectedSop}
-                downloadingPdf={downloadingPdf}
-                onCategorySelect={setSelectedCategory}
-                onSopSelect={setSelectedSop}
-                onEdit={handleEditSOP}
-                onDelete={(sop) => {
-                  setSopToDelete(sop);
-                  setIsDeleteDialogOpen(true);
-                }}
-                onDownloadPDF={handleDownloadPDFWrapper}
-              />
-            )}
-          </>
+          <CategoriesView
+            sops={filteredSops}
+            selectedCategory={selectedCategory}
+            selectedSop={selectedSop}
+            onSelectCategory={setSelectedCategory}
+            onSelectSop={setSelectedSop}
+            onEdit={canEditSop ? handleEditSOP : undefined}
+            onDelete={canDeleteSop ? (sop) => {
+              setSopToDelete(sop);
+              setIsDeleteDialogOpen(true);
+            } : undefined}
+          />
         )}
       </div>
 
@@ -370,21 +332,6 @@ export function SOPManager() {
           onSubmit={(updatedSop) => editingSop && handleUpdateSOP(editingSop.id, updatedSop)}
         />
       )}
-      
-      <SopDetailDialog
-        sop={selectedSop}
-        onClose={() => setSelectedSop(null)}
-        canEdit={canEditSop}
-        canDelete={canDeleteSop}
-        onEdit={(sop) => {
-          setEditingSop(sop);
-          setIsEditDialogOpen(true);
-        }}
-        onDelete={(sop) => {
-          setSopToDelete(sop);
-          setIsDeleteDialogOpen(true);
-        }}
-      />
       
       {canDeleteSop && (
         <SopDeleteDialog

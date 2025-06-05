@@ -1,5 +1,4 @@
 import { SOP } from "./types"
-import { downloadSOPAsPDF } from "@/lib/pdfGenerator"
 
 export const formatDate = (date: string | Date): string => {
   const d = new Date(date)
@@ -51,10 +50,6 @@ export const sortSops = (sops: SOP[], sortBy: string): SOP[] => {
         return 0
     }
   })
-}
-
-export const handleDownloadPDF = async (sop: SOP): Promise<void> => {
-  await downloadSOPAsPDF(sop)
 }
 
 export const handleStepImageUpload = (file: File): Promise<string> => {
