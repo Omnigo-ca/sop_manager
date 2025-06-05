@@ -289,13 +289,13 @@ export function SOPManager() {
           <CompactView
             sops={filteredSops}
             onViewDetails={(sop) => setSelectedSop(sop)}
-            onEdit={canEditSop ? handleEditSOP : () => {}}
+            onEdit={canEditSop ? handleEditSOP : undefined}
           />
         ) : viewMode === "table" ? (
           <TableView
             sops={filteredSops}
             onViewDetails={(sop) => setSelectedSop(sop)}
-            onEdit={canEditSop ? handleEditSOP : () => {}}
+            onEdit={canEditSop ? handleEditSOP : undefined}
           />
         ) : (
           <CategoriesView

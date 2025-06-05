@@ -95,22 +95,26 @@ export function CategoriesView({
               <div className="flex justify-between items-start gap-4 mb-4">
                 <h2 className="text-2xl font-bold">{selectedSop.title}</h2>
                 <div className="flex gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => onSelectSop(selectedSop)}
-                    className="flex items-center gap-1"
-                  >
-                    <Edit className="h-4 w-4" /> Modifier
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => onDelete && onDelete(selectedSop)}
-                    className="flex items-center gap-1 text-red-600 hover:text-red-700"
-                  >
-                    <Trash2 className="h-4 w-4" /> Supprimer
-                  </Button>
+                  {onEdit && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => onEdit(selectedSop)}
+                      className="flex items-center gap-1"
+                    >
+                      <Edit className="h-4 w-4" /> Modifier
+                    </Button>
+                  )}
+                  {onDelete && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => onDelete(selectedSop)}
+                      className="flex items-center gap-1 text-red-600 hover:text-red-700"
+                    >
+                      <Trash2 className="h-4 w-4" /> Supprimer
+                    </Button>
+                  )}
                 </div>
               </div>
 

@@ -7,7 +7,7 @@ import { SOP, priorityColors, priorityLabels } from "../types"
 interface TableViewProps {
   sops: SOP[]
   onViewDetails: (sop: SOP) => void
-  onEdit: (sop: SOP) => void
+  onEdit?: (sop: SOP) => void
 }
 
 export function TableView({ sops, onViewDetails, onEdit }: TableViewProps) {
@@ -66,13 +66,15 @@ export function TableView({ sops, onViewDetails, onEdit }: TableViewProps) {
                   >
                     Voir
                   </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => onEdit(sop)}
-                  >
-                    <Edit className="h-4 w-4" />
-                  </Button>
+                  {onEdit && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => onEdit(sop)}
+                    >
+                      <Edit className="h-4 w-4" />
+                    </Button>
+                  )}
                 </div>
               </td>
             </tr>
