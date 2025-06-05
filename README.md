@@ -4,16 +4,38 @@ Application web moderne pour la gestion des procédures opérationnelles standar
 
 ## 📋 À propos du projet
 
-SOP Manager est une application web qui permet de créer, gérer et partager des procédures opérationnelles standard au sein d'une organisation. Elle offre une interface utilisateur intuitive pour documenter les processus métier et garantir leur bonne exécution.
+SOP Manager est une application web qui permet de créer, gérer et partager des procédures opérationnelles standard au sein d'une organisation. Elle offre une interface utilisateur intuitive pour documenter les processus métier, attribuer des droits d'accès par groupes et garantir leur bonne exécution.
 
 ## 🛠️ Technologies utilisées
 
-- **Frontend**: Next.js 15, React 19, TailwindCSS
-- **Backend**: API Routes de Next.js
-- **Authentification**: Clerk
-- **Base de données**: MySQL avec Prisma ORM
-- **UI Components**: Radix UI
-- **Autres**: TypeScript, Zod pour la validation, Recharts, React Hook Form
+- **Frontend**: 
+  - Next.js 15 avec App Router
+  - React 19
+  - TailwindCSS pour le styling
+  - Radix UI pour les composants accessibles
+  - React Hook Form pour la gestion des formulaires
+  - Zod pour la validation des données
+  - Recharts pour les visualisations graphiques
+
+- **Backend**: 
+  - API Routes de Next.js
+  - Prisma ORM pour l'accès à la base de données
+  - Swagger pour la documentation API
+
+- **Authentification**: 
+  - Clerk avec gestion des rôles (Admin, Auteur, Utilisateur)
+  - Webhooks pour l'intégration avec d'autres services
+
+- **Base de données**: 
+  - MySQL 8.0
+  - Migrations Prisma pour la gestion du schéma
+
+- **Déploiement**:
+  - Docker et Docker Compose
+  - Configuration multi-conteneurs
+
+- **Tests**:
+  - Jest et React Testing Library
 
 ## 🗂️ Structure du projet
 
@@ -24,29 +46,69 @@ sop-manager/
 │   │   ├── sops/       # API pour les procédures
 │   │   ├── users/      # API pour les utilisateurs
 │   │   └── webhooks/   # Webhooks (ex: Clerk)
+│   ├── admin/          # Interface d'administration
+│   ├── docs/           # Documentation API (Swagger)
 │   ├── sign-in/        # Page de connexion
 │   ├── sign-up/        # Page d'inscription
 │   └── page.tsx        # Page d'accueil
 ├── components/         # Composants React réutilisables
+├── hooks/              # Custom React hooks
 ├── lib/                # Utilitaires et logiques métier
+│   └── generated/      # Code Prisma généré
 ├── prisma/             # Schéma et migrations de base de données
-└── types/              # Définitions TypeScript
+├── public/             # Fichiers statiques
+└── styles/             # Styles globaux
 ```
+
+## 🗄️ Schéma de la base de données
+
+![Schéma de la base de données](./BDD_Diagram.png)
+
+Le schéma comprend les tables principales suivantes:
+- **sop**: Stocke les procédures avec leurs détails (instructions, étapes, priorité, etc.)
+- **user**: Gère les utilisateurs et leurs rôles (Admin, Auteur, Utilisateur)
+- **AccessGroup**: Définit les groupes d'accès pour contrôler les permissions
+- **UserAccessGroup**: Table de jonction entre utilisateurs et groupes d'accès
+- **SopAccessGroup**: Table de jonction entre procédures et groupes d'accès
 
 ## ✨ Fonctionnalités
 
-- **Authentification** complète avec différents rôles (Admin, Auteur, Utilisateur)
-- **Création et édition** de procédures avec éditeur riche
-- **Catégorisation** des procédures par tags et priorités
-- **Recherche** et filtrage des procédures
-- **Interface responsive** adaptée à tous les appareils
+- **Système d'authentification** complet avec différents rôles:
+  - Administrateurs: gestion complète du système et des utilisateurs
+  - Auteurs: création et modification des procédures
+  - Utilisateurs: consultation des procédures selon leurs droits d'accès
+
+- **Gestion des procédures**:
+  - Éditeur riche avec support Markdown
+  - Organisation par catégories, tags et niveaux de priorité
+  - Création de procédures avec instructions étape par étape
+  - Versionnement des procédures
+
+- **Contrôle d'accès avancé**:
+  - Gestion des groupes d'accès
+  - Attribution de procédures à des groupes spécifiques
+  - Restrictions d'accès basées sur les rôles et groupes
+
+- **Recherche et navigation**:
+  - Recherche textuelle complète
+  - Filtrage multi-critères (catégorie, priorité, tags)
+  - Interface responsive adaptée à tous les appareils
+
+- **Administration**:
+  - Tableau de bord pour les administrateurs
+  - Métriques d'utilisation et statistiques
+  - Gestion des utilisateurs et de leurs droits
+
+- **Documentation API**:
+  - Interface Swagger pour explorer et tester l'API
+  - Documentation interactive des endpoints
 
 ## 🚀 Comment démarrer
 
 ### Prérequis
 
 - Node.js 20 ou plus récent
-- MySQL
+- MySQL 8.0
 - Un compte Clerk pour l'authentification
 
 ### Installation et configuration
@@ -76,13 +138,26 @@ sop-manager/
    npx prisma generate
    ```
 
-5. **Lancer l'application en mode développement**
+5. **Alimenter la base de données avec des données de test (optionnel)**
+   ```bash
+   npx prisma db seed
+   ```
+
+6. **Lancer l'application en mode développement**
    ```bash
    npm run dev
    ```
 
-6. **Accéder à l'application**
+7. **Accéder à l'application**
    Ouvrez votre navigateur et accédez à `http://localhost:3000`
+
+## 🧪 Tests
+
+Pour exécuter les tests:
+
+```bash
+npm test
+```
 
 ## 🐳 Utilisation avec Docker
 
@@ -101,7 +176,7 @@ sop-manager/
 
 ## Déploiement avec Docker Compose
 
-Pour déployer l'application avec Docker Compose:
+Pour déployer l'application complète avec Docker Compose:
 
 1. Assurez-vous que Docker et Docker Compose sont installés sur votre machine.
 
@@ -111,24 +186,26 @@ Pour déployer l'application avec Docker Compose:
    cd sop-manager
    ```
 
-3. Lancez les conteneurs avec Docker Compose:
+3. Configurez vos variables d'environnement dans le fichier docker-compose.yml ou utilisez un fichier .env.
+
+4. Lancez les conteneurs avec Docker Compose:
    ```bash
    docker-compose up -d
    ```
 
-4. L'application sera disponible à l'adresse http://localhost:3000
+5. L'application sera disponible à l'adresse http://localhost:3000
 
-5. Pour arrêter les conteneurs:
+6. Pour arrêter les conteneurs:
    ```bash
    docker-compose down
    ```
 
-6. Pour voir les logs:
+7. Pour voir les logs:
    ```bash
    docker-compose logs -f
    ```
 
-7. Si vous souhaitez conserver les données de la base de données lors de l'arrêt, utilisez:
+8. Pour conserver les données de la base de données lors de l'arrêt:
    ```bash
    docker-compose down --volumes
    ```
