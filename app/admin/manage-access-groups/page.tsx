@@ -91,6 +91,12 @@ export default function ManageAccessGroupsPage() {
     description: ""
   });
 
+  // États pour les modifications en attente
+  const [pendingUserChanges, setPendingUserChanges] = useState<string[]>([]);
+  const [pendingSopChanges, setPendingSopChanges] = useState<string[]>([]);
+  const [isSubmittingUsers, setIsSubmittingUsers] = useState(false);
+  const [isSubmittingSops, setIsSubmittingSops] = useState(false);
+
   useEffect(() => {
     const fetchCurrentUser = async () => {
       try {
@@ -249,6 +255,58 @@ export default function ManageAccessGroupsPage() {
     }
   };
 
+  // Fonction pour gérer les changements temporaires d'utilisateurs
+  const handleUserToggle = (userId: string, isChecked: boolean) => {
+    if (isChecked) {
+      setPendingUserChanges(prev => [...prev.filter(id => id !== userId), userId]);
+    } else {
+      setPendingUserChanges(prev => prev.filter(id => id !== userId));
+    }
+  };
+
+  // Fonction pour valider et envoyer les assignations d'utilisateurs
+  const handleValidateUserAssignments = async () => {
+    if (!selectedGroup) return;
+    
+    setIsSubmittingUsers(true);
+    try {
+      const response = await fetch(`/api/access-groups/assign`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          accessGroupId: selectedGroup.id,
+          userIds: pendingUserChanges,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to assign users");
+      }
+
+      toast({
+        title: "Succès",
+        description: "Les utilisateurs ont été assignés avec succès",
+      });
+
+      // Refresh the data
+      const updatedGroupsResponse = await fetch("/api/access-groups");
+      const updatedGroupsData = await updatedGroupsResponse.json();
+      setAccessGroups(updatedGroupsData);
+      setIsAssignDialogOpen(false);
+      setPendingUserChanges([]);
+    } catch (error) {
+      toast({
+        title: "Erreur",
+        description: "Impossible d'assigner les utilisateurs",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmittingUsers(false);
+    }
+  };
+
   const handleAssignUsers = async (groupId: string, userIds: string[]) => {
     try {
       const response = await fetch(`/api/access-groups/assign`, {
@@ -282,6 +340,58 @@ export default function ManageAccessGroupsPage() {
         description: "Impossible d'assigner les utilisateurs",
         variant: "destructive",
       });
+    }
+  };
+
+  // Fonction pour gérer les changements temporaires de SOP
+  const handleSopToggle = (sopId: string, isChecked: boolean) => {
+    if (isChecked) {
+      setPendingSopChanges(prev => [...prev.filter(id => id !== sopId), sopId]);
+    } else {
+      setPendingSopChanges(prev => prev.filter(id => id !== sopId));
+    }
+  };
+
+  // Fonction pour valider et envoyer les assignations de SOP
+  const handleValidateSopAssignments = async () => {
+    if (!selectedGroup) return;
+    
+    setIsSubmittingSops(true);
+    try {
+      const response = await fetch(`/api/sop-access/assign`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          accessGroupId: selectedGroup.id,
+          sopIds: pendingSopChanges,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to assign SOPs");
+      }
+
+      toast({
+        title: "Succès",
+        description: "Les SOP ont été assignées avec succès",
+      });
+
+      // Refresh the data
+      const updatedGroupsResponse = await fetch("/api/access-groups");
+      const updatedGroupsData = await updatedGroupsResponse.json();
+      setAccessGroups(updatedGroupsData);
+      setIsSopAssignDialogOpen(false);
+      setPendingSopChanges([]);
+    } catch (error) {
+      toast({
+        title: "Erreur",
+        description: "Impossible d'assigner les SOP",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmittingSops(false);
     }
   };
 
@@ -330,6 +440,14 @@ export default function ManageAccessGroupsPage() {
     setIsEditDialogOpen(true);
   };
 
+  const openUserAssignDialog = (group: AccessGroup) => {
+    setSelectedGroup(group);
+    // Initialiser les changements en attente avec les utilisateurs actuellement assignés
+    const currentUserIds = group.users?.map(userGroup => userGroup.user.id) || [];
+    setPendingUserChanges(currentUserIds);
+    setIsAssignDialogOpen(true);
+  };
+
   const openSopAssignDialog = async (group: AccessGroup) => {
     setSelectedGroup(group);
     
@@ -339,6 +457,9 @@ export default function ManageAccessGroupsPage() {
       if (response.ok) {
         const groupWithSops = await response.json();
         setSelectedGroup(groupWithSops);
+        // Initialiser les changements en attente avec les SOP actuellement assignées
+        const currentSopIds = groupWithSops.sops?.map((sopGroup: any) => sopGroup.sop.id) || [];
+        setPendingSopChanges(currentSopIds);
       }
     } catch (error) {
       console.error("Error fetching group SOPs:", error);
@@ -490,10 +611,7 @@ export default function ManageAccessGroupsPage() {
 
               <div className="space-y-2">
                 <Button
-                  onClick={() => {
-                    setSelectedGroup(group);
-                    setIsAssignDialogOpen(true);
-                  }}
+                  onClick={() => openUserAssignDialog(group)}
                   className="w-full"
                   variant="outline"
                   size="sm"
@@ -518,7 +636,12 @@ export default function ManageAccessGroupsPage() {
       </div>
 
       {/* Dialog d'assignation des utilisateurs */}
-      <Dialog open={isAssignDialogOpen} onOpenChange={setIsAssignDialogOpen}>
+      <Dialog open={isAssignDialogOpen} onOpenChange={(open) => {
+        setIsAssignDialogOpen(open);
+        if (!open) {
+          setPendingUserChanges([]);
+        }
+      }}>
         <DialogContent className="max-w-md">
           <DialogHeader>
             <DialogTitle>
@@ -532,9 +655,7 @@ export default function ManageAccessGroupsPage() {
           <ScrollArea className="max-h-96">
             <div className="space-y-2">
               {users.map((user) => {
-                const isAssigned = selectedGroup?.users.some(
-                  (userGroup) => userGroup.user.id === user.id
-                ) || false;
+                const isAssigned = pendingUserChanges.includes(user.id);
 
                 return (
                   <div key={user.id} className="flex items-center space-x-2 p-2 rounded border">
@@ -542,20 +663,7 @@ export default function ManageAccessGroupsPage() {
                       id={user.id}
                       checked={isAssigned}
                       onCheckedChange={(checked) => {
-                        if (!selectedGroup) return;
-
-                        const currentAssignedIds = selectedGroup.users.map(
-                          (userGroup) => userGroup.user.id
-                        );
-                        
-                        let newAssignedIds;
-                        if (checked) {
-                          newAssignedIds = [...currentAssignedIds, user.id];
-                        } else {
-                          newAssignedIds = currentAssignedIds.filter(id => id !== user.id);
-                        }
-
-                        handleAssignUsers(selectedGroup.id, newAssignedIds);
+                        handleUserToggle(user.id, checked as boolean);
                       }}
                     />
                     <div className="flex-1">
@@ -574,6 +682,25 @@ export default function ManageAccessGroupsPage() {
               })}
             </div>
           </ScrollArea>
+          
+          <div className="flex justify-end space-x-2 pt-4 border-t">
+            <Button 
+              variant="outline" 
+              onClick={() => {
+                setIsAssignDialogOpen(false);
+                setPendingUserChanges([]);
+              }}
+              disabled={isSubmittingUsers}
+            >
+              Annuler
+            </Button>
+            <Button 
+              onClick={handleValidateUserAssignments}
+              disabled={isSubmittingUsers}
+            >
+              {isSubmittingUsers ? "Validation..." : "Valider"}
+            </Button>
+          </div>
         </DialogContent>
       </Dialog>
 
@@ -618,7 +745,12 @@ export default function ManageAccessGroupsPage() {
       </Dialog>
 
       {/* Dialog d'assignation des SOP */}
-      <Dialog open={isSopAssignDialogOpen} onOpenChange={setIsSopAssignDialogOpen}>
+      <Dialog open={isSopAssignDialogOpen} onOpenChange={(open) => {
+        setIsSopAssignDialogOpen(open);
+        if (!open) {
+          setPendingSopChanges([]);
+        }
+      }}>
         <DialogContent className="max-w-2xl">
           <DialogHeader>
             <DialogTitle>
@@ -632,9 +764,7 @@ export default function ManageAccessGroupsPage() {
           <ScrollArea className="max-h-96">
             <div className="space-y-2">
               {sops.map((sop) => {
-                const isAssigned = selectedGroup?.sops?.some(
-                  (sopGroup) => sopGroup.sop.id === sop.id
-                ) || false;
+                const isAssigned = pendingSopChanges.includes(sop.id);
 
                 return (
                   <div key={sop.id} className="flex items-center space-x-2 p-3 rounded border">
@@ -642,20 +772,7 @@ export default function ManageAccessGroupsPage() {
                       id={`sop-${sop.id}`}
                       checked={isAssigned}
                       onCheckedChange={(checked) => {
-                        if (!selectedGroup) return;
-
-                        const currentAssignedIds = selectedGroup.sops?.map(
-                          (sopGroup) => sopGroup.sop.id
-                        ) || [];
-                        
-                        let newAssignedIds;
-                        if (checked) {
-                          newAssignedIds = [...currentAssignedIds, sop.id];
-                        } else {
-                          newAssignedIds = currentAssignedIds.filter(id => id !== sop.id);
-                        }
-
-                        handleAssignSops(selectedGroup.id, newAssignedIds);
+                        handleSopToggle(sop.id, checked as boolean);
                       }}
                     />
                     <div className="flex-1">
@@ -679,6 +796,25 @@ export default function ManageAccessGroupsPage() {
               })}
             </div>
           </ScrollArea>
+          
+          <div className="flex justify-end space-x-2 pt-4 border-t">
+            <Button 
+              variant="outline" 
+              onClick={() => {
+                setIsSopAssignDialogOpen(false);
+                setPendingSopChanges([]);
+              }}
+              disabled={isSubmittingSops}
+            >
+              Annuler
+            </Button>
+            <Button 
+              onClick={handleValidateSopAssignments}
+              disabled={isSubmittingSops}
+            >
+              {isSubmittingSops ? "Validation..." : "Valider"}
+            </Button>
+          </div>
         </DialogContent>
       </Dialog>
     </div>
