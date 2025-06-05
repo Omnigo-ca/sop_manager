@@ -7,7 +7,10 @@ import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, Users, FileText, Plus, Settings } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Loader2, Users, FileText, Plus, Settings, Edit, Trash2, ListChecks } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -16,21 +19,24 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 interface AccessGroup {
   id: string;
   name: string;
   description: string;
-  type: 'INTERNAL' | 'PUBLIC' | 'ADMIN';
   _count: {
     sops: number;
     users: number;
@@ -43,6 +49,13 @@ interface AccessGroup {
       role: string;
     };
   }>;
+  sops?: Array<{
+    sop: {
+      id: string;
+      title: string;
+      category: string;
+    };
+  }>;
 }
 
 interface User {
@@ -52,15 +65,31 @@ interface User {
   role: string;
 }
 
+interface SOP {
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  priority: string;
+}
+
 export default function ManageAccessGroupsPage() {
   const { user } = useUser();
   const { toast } = useToast();
   const [accessGroups, setAccessGroups] = useState<AccessGroup[]>([]);
   const [users, setUsers] = useState<User[]>([]);
+  const [sops, setSops] = useState<SOP[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [selectedGroup, setSelectedGroup] = useState<AccessGroup | null>(null);
   const [isAssignDialogOpen, setIsAssignDialogOpen] = useState(false);
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isSopAssignDialogOpen, setIsSopAssignDialogOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    description: ""
+  });
 
   useEffect(() => {
     const fetchCurrentUser = async () => {
@@ -88,20 +117,23 @@ export default function ManageAccessGroupsPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [groupsResponse, usersResponse] = await Promise.all([
+        const [groupsResponse, usersResponse, sopsResponse] = await Promise.all([
           fetch("/api/access-groups"),
-          fetch("/api/users")
+          fetch("/api/users"),
+          fetch("/api/sops")
         ]);
 
-        if (!groupsResponse.ok || !usersResponse.ok) {
+        if (!groupsResponse.ok || !usersResponse.ok || !sopsResponse.ok) {
           throw new Error("Failed to fetch data");
         }
 
         const groupsData = await groupsResponse.json();
         const usersData = await usersResponse.json();
+        const sopsData = await sopsResponse.json();
 
         setAccessGroups(groupsData);
         setUsers(usersData);
+        setSops(sopsData);
       } catch (error) {
         toast({
           title: "Erreur",
@@ -117,6 +149,105 @@ export default function ManageAccessGroupsPage() {
       fetchData();
     }
   }, [toast, currentUser]);
+
+  const handleCreateGroup = async () => {
+    try {
+      const response = await fetch("/api/access-groups", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to create group");
+      }
+
+      toast({
+        title: "Succès",
+        description: "Le groupe a été créé avec succès",
+      });
+
+      // Refresh the data
+      const updatedGroupsResponse = await fetch("/api/access-groups");
+      const updatedGroupsData = await updatedGroupsResponse.json();
+      setAccessGroups(updatedGroupsData);
+      setIsCreateDialogOpen(false);
+      setFormData({ name: "", description: "" });
+    } catch (error) {
+      toast({
+        title: "Erreur",
+        description: "Impossible de créer le groupe",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleUpdateGroup = async () => {
+    if (!selectedGroup) return;
+    
+    try {
+      const response = await fetch(`/api/access-groups/${selectedGroup.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update group");
+      }
+
+      toast({
+        title: "Succès",
+        description: "Le groupe a été modifié avec succès",
+      });
+
+      // Refresh the data
+      const updatedGroupsResponse = await fetch("/api/access-groups");
+      const updatedGroupsData = await updatedGroupsResponse.json();
+      setAccessGroups(updatedGroupsData);
+      setIsEditDialogOpen(false);
+      setSelectedGroup(null);
+      setFormData({ name: "", description: "" });
+    } catch (error) {
+      toast({
+        title: "Erreur",
+        description: "Impossible de modifier le groupe",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const handleDeleteGroup = async (groupId: string) => {
+    try {
+      const response = await fetch(`/api/access-groups/${groupId}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to delete group");
+      }
+
+      toast({
+        title: "Succès",
+        description: "Le groupe a été supprimé avec succès",
+      });
+
+      // Refresh the data
+      const updatedGroupsResponse = await fetch("/api/access-groups");
+      const updatedGroupsData = await updatedGroupsResponse.json();
+      setAccessGroups(updatedGroupsData);
+    } catch (error) {
+      toast({
+        title: "Erreur",
+        description: "Impossible de supprimer le groupe",
+        variant: "destructive",
+      });
+    }
+  };
 
   const handleAssignUsers = async (groupId: string, userIds: string[]) => {
     try {
@@ -154,30 +285,66 @@ export default function ManageAccessGroupsPage() {
     }
   };
 
-  const getGroupTypeColor = (type: string) => {
-    switch (type) {
-      case 'ADMIN':
-        return 'bg-red-100 text-red-800';
-      case 'INTERNAL':
-        return 'bg-blue-100 text-blue-800';
-      case 'PUBLIC':
-        return 'bg-green-100 text-green-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
+  const handleAssignSops = async (groupId: string, sopIds: string[]) => {
+    try {
+      const response = await fetch(`/api/sop-access/assign`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          accessGroupId: groupId,
+          sopIds,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to assign SOPs");
+      }
+
+      toast({
+        title: "Succès",
+        description: "Les SOP ont été assignées avec succès",
+      });
+
+      // Refresh the data
+      const updatedGroupsResponse = await fetch("/api/access-groups");
+      const updatedGroupsData = await updatedGroupsResponse.json();
+      setAccessGroups(updatedGroupsData);
+      setIsSopAssignDialogOpen(false);
+    } catch (error) {
+      toast({
+        title: "Erreur",
+        description: "Impossible d'assigner les SOP",
+        variant: "destructive",
+      });
     }
   };
 
-  const getGroupTypeName = (type: string) => {
-    switch (type) {
-      case 'ADMIN':
-        return 'Administrateurs';
-      case 'INTERNAL':
-        return 'Internes';
-      case 'PUBLIC':
-        return 'Publiques';
-      default:
-        return type;
+  const openEditDialog = (group: AccessGroup) => {
+    setSelectedGroup(group);
+    setFormData({
+      name: group.name,
+      description: group.description || ""
+    });
+    setIsEditDialogOpen(true);
+  };
+
+  const openSopAssignDialog = async (group: AccessGroup) => {
+    setSelectedGroup(group);
+    
+    // Fetch group with SOPs
+    try {
+      const response = await fetch(`/api/access-groups/${group.id}/sops`);
+      if (response.ok) {
+        const groupWithSops = await response.json();
+        setSelectedGroup(groupWithSops);
+      }
+    } catch (error) {
+      console.error("Error fetching group SOPs:", error);
     }
+    
+    setIsSopAssignDialogOpen(true);
   };
 
   if (loading) {
@@ -194,9 +361,53 @@ export default function ManageAccessGroupsPage() {
         <div>
           <h1 className="text-2xl font-bold">Gestion des groupes d'accès</h1>
           <p className="text-muted-foreground">
-            Organisez les accès aux procédures par groupes d'utilisateurs
+            Créez et organisez des groupes pour contrôler l'accès aux procédures
           </p>
         </div>
+        <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+          <DialogTrigger asChild>
+            <Button>
+              <Plus className="h-4 w-4 mr-2" />
+              Créer un groupe
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Créer un nouveau groupe d'accès</DialogTitle>
+              <DialogDescription>
+                Créez un groupe pour organiser l'accès aux procédures. Le nom du groupe définira son type.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div>
+                <Label htmlFor="name">Nom du groupe</Label>
+                <Input
+                  id="name"
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  placeholder="Ex: Marketing, RH, Technique..."
+                />
+              </div>
+              <div>
+                <Label htmlFor="description">Description</Label>
+                <Textarea
+                  id="description"
+                  value={formData.description}
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                  placeholder="Description du groupe et de ses responsabilités..."
+                />
+              </div>
+              <div className="flex justify-end space-x-2">
+                <Button variant="outline" onClick={() => setIsCreateDialogOpen(false)}>
+                  Annuler
+                </Button>
+                <Button onClick={handleCreateGroup} disabled={!formData.name}>
+                  Créer
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -205,9 +416,36 @@ export default function ManageAccessGroupsPage() {
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle className="text-lg">{group.name}</CardTitle>
-                <Badge className={getGroupTypeColor(group.type)}>
-                  {getGroupTypeName(group.type)}
-                </Badge>
+                <div className="flex space-x-1">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => openEditDialog(group)}
+                  >
+                    <Edit className="h-4 w-4" />
+                  </Button>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button variant="ghost" size="sm">
+                        <Trash2 className="h-4 w-4 text-red-500" />
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Êtes-vous sûr ?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          Cette action supprimera définitivement le groupe "{group.name}" et toutes ses assignations.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Annuler</AlertDialogCancel>
+                        <AlertDialogAction onClick={() => handleDeleteGroup(group.id)}>
+                          Supprimer
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </div>
               </div>
               <CardDescription>{group.description}</CardDescription>
             </CardHeader>
@@ -250,17 +488,30 @@ export default function ManageAccessGroupsPage() {
                 </div>
               </div>
 
-              <Button
-                onClick={() => {
-                  setSelectedGroup(group);
-                  setIsAssignDialogOpen(true);
-                }}
-                className="w-full"
-                variant="outline"
-              >
-                <Settings className="h-4 w-4 mr-2" />
-                Gérer les utilisateurs
-              </Button>
+              <div className="space-y-2">
+                <Button
+                  onClick={() => {
+                    setSelectedGroup(group);
+                    setIsAssignDialogOpen(true);
+                  }}
+                  className="w-full"
+                  variant="outline"
+                  size="sm"
+                >
+                  <Settings className="h-4 w-4 mr-2" />
+                  Gérer les utilisateurs
+                </Button>
+                
+                <Button
+                  onClick={() => openSopAssignDialog(group)}
+                  className="w-full"
+                  variant="outline"
+                  size="sm"
+                >
+                  <ListChecks className="h-4 w-4 mr-2" />
+                  Gérer les SOP
+                </Button>
+              </div>
             </CardContent>
           </Card>
         ))}
@@ -325,6 +576,111 @@ export default function ManageAccessGroupsPage() {
           </ScrollArea>
         </DialogContent>
       </Dialog>
+
+      {/* Dialog d'édition de groupe */}
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Modifier le groupe d'accès</DialogTitle>
+            <DialogDescription>
+              Modifiez les informations du groupe "{selectedGroup?.name}".
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="edit-name">Nom du groupe</Label>
+              <Input
+                id="edit-name"
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                placeholder="Ex: Marketing, RH, Technique..."
+              />
+            </div>
+            <div>
+              <Label htmlFor="edit-description">Description</Label>
+              <Textarea
+                id="edit-description"
+                value={formData.description}
+                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                placeholder="Description du groupe..."
+              />
+            </div>
+            <div className="flex justify-end space-x-2">
+              <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>
+                Annuler
+              </Button>
+              <Button onClick={handleUpdateGroup} disabled={!formData.name}>
+                Modifier
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Dialog d'assignation des SOP */}
+      <Dialog open={isSopAssignDialogOpen} onOpenChange={setIsSopAssignDialogOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>
+              Gérer les SOP - {selectedGroup?.name}
+            </DialogTitle>
+            <DialogDescription>
+              Sélectionnez les procédures qui seront accessibles à ce groupe.
+            </DialogDescription>
+          </DialogHeader>
+
+          <ScrollArea className="max-h-96">
+            <div className="space-y-2">
+              {sops.map((sop) => {
+                const isAssigned = selectedGroup?.sops?.some(
+                  (sopGroup) => sopGroup.sop.id === sop.id
+                ) || false;
+
+                return (
+                  <div key={sop.id} className="flex items-center space-x-2 p-3 rounded border">
+                    <Checkbox
+                      id={`sop-${sop.id}`}
+                      checked={isAssigned}
+                      onCheckedChange={(checked) => {
+                        if (!selectedGroup) return;
+
+                        const currentAssignedIds = selectedGroup.sops?.map(
+                          (sopGroup) => sopGroup.sop.id
+                        ) || [];
+                        
+                        let newAssignedIds;
+                        if (checked) {
+                          newAssignedIds = [...currentAssignedIds, sop.id];
+                        } else {
+                          newAssignedIds = currentAssignedIds.filter(id => id !== sop.id);
+                        }
+
+                        handleAssignSops(selectedGroup.id, newAssignedIds);
+                      }}
+                    />
+                    <div className="flex-1">
+                      <div className="font-medium text-sm">
+                        {sop.title}
+                      </div>
+                      <div className="text-xs text-muted-foreground">
+                        {sop.description}
+                      </div>
+                      <div className="flex items-center space-x-2 mt-1">
+                        <Badge variant="outline" className="text-xs">
+                          {sop.category}
+                        </Badge>
+                        <Badge variant="outline" className="text-xs">
+                          {sop.priority}
+                        </Badge>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </ScrollArea>
+        </DialogContent>
+      </Dialog>
     </div>
   );
-} 
+}

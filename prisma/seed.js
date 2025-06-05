@@ -19,9 +19,7 @@ async function main() {
     update: {},
     create: {
       name: 'Procédures Internes',
-      description: 'Accès aux procédures internes de l\'organisation',
-      type: 'INTERNAL',
-      updatedAt: new Date()
+      description: 'Accès aux procédures internes de l\'organisation'
     }
   });
 
@@ -30,9 +28,7 @@ async function main() {
     update: {},
     create: {
       name: 'Procédures Publiques',
-      description: 'Accès aux procédures publiques pour les clients',
-      type: 'PUBLIC',
-      updatedAt: new Date()
+      description: 'Accès aux procédures publiques pour les clients'
     }
   });
 
@@ -41,9 +37,35 @@ async function main() {
     update: {},
     create: {
       name: 'Procédures Administratives',
-      description: 'Accès aux procédures administratives pour la gestion',
-      type: 'ADMINISTRATIVE',
-      updatedAt: new Date()
+      description: 'Accès aux procédures administratives pour la gestion'
+    }
+  });
+
+  // Créer quelques groupes supplémentaires comme exemples
+  const marketingGroup = await prisma.accessGroup.upsert({
+    where: { name: 'Marketing' },
+    update: {},
+    create: {
+      name: 'Marketing',
+      description: 'Procédures de marketing et communication'
+    }
+  });
+
+  const rhGroup = await prisma.accessGroup.upsert({
+    where: { name: 'Ressources Humaines' },
+    update: {},
+    create: {
+      name: 'Ressources Humaines',
+      description: 'Procédures RH, recrutement et gestion du personnel'
+    }
+  });
+
+  const techniqueGroup = await prisma.accessGroup.upsert({
+    where: { name: 'Support Technique' },
+    update: {},
+    create: {
+      name: 'Support Technique',
+      description: 'Procédures techniques, maintenance et dépannage'
     }
   });
 
@@ -86,26 +108,45 @@ async function main() {
 
   // Assignation des utilisateurs aux groupes d'accès
   console.log('🔄 Attribution des utilisateurs aux groupes d\'accès...');
-  // Admin a accès aux procédures administratives
-  await prisma.userAccessGroup.create({
-    data: {
-      userId: admin.id,
-      accessGroupId: administrativeGroup.id
-    }
-  });
+  
+  // Admin a accès à tous les groupes
+  const adminGroups = [administrativeGroup.id, internalGroup.id, publicGroup.id, marketingGroup.id, rhGroup.id, techniqueGroup.id];
+  for (const groupId of adminGroups) {
+    await prisma.userAccessGroup.create({
+      data: {
+        userId: admin.id,
+        accessGroupId: groupId
+      }
+    });
+  }
 
-  // Les utilisateurs normaux ont accès aux procédures publiques
+  // jojo (utilisateur) a accès aux procédures publiques et marketing
   await prisma.userAccessGroup.create({
     data: {
       userId: jojo.id,
       accessGroupId: publicGroup.id
     }
   });
+  
+  await prisma.userAccessGroup.create({
+    data: {
+      userId: jojo.id,
+      accessGroupId: marketingGroup.id
+    }
+  });
 
+  // user (utilisateur) a accès aux procédures publiques et support technique
   await prisma.userAccessGroup.create({
     data: {
       userId: user.id,
       accessGroupId: publicGroup.id
+    }
+  });
+  
+  await prisma.userAccessGroup.create({
+    data: {
+      userId: user.id,
+      accessGroupId: techniqueGroup.id
     }
   });
 
@@ -187,6 +228,25 @@ async function main() {
       groupsToAssign.push(administrativeGroup.id);
     }
 
+    // Assignations spécifiques par type de contenu
+    const title = sop.title.toLowerCase();
+    const category = sop.category.toLowerCase();
+
+    // Procédures Marketing
+    if (title.includes('marketing') || title.includes('communication') || title.includes('publicité') || title.includes('promotion') || category.includes('marketing')) {
+      groupsToAssign.push(marketingGroup.id);
+    }
+
+    // Procédures RH
+    if (title.includes('recrutement') || title.includes('embauche') || title.includes('formation') || title.includes('évaluation') || title.includes('personnel') || category.includes('rh') || category.includes('ressources humaines')) {
+      groupsToAssign.push(rhGroup.id);
+    }
+
+    // Procédures Techniques
+    if (title.includes('technique') || title.includes('maintenance') || title.includes('dépannage') || title.includes('installation') || title.includes('support') || category.includes('technique') || category.includes('it')) {
+      groupsToAssign.push(techniqueGroup.id);
+    }
+
     // Ajouter aux groupes multiples si applicable
     if (isMultiGroup(sop)) {
       // Ces procédures apparaissent dans plusieurs groupes
@@ -253,7 +313,7 @@ async function main() {
       accessGroups: {
         some: {
           accessGroupId: {
-            in: [internalGroup.id, publicGroup.id, administrativeGroup.id]
+            in: [internalGroup.id, publicGroup.id, administrativeGroup.id, marketingGroup.id, rhGroup.id, techniqueGroup.id]
           }
         }
       }

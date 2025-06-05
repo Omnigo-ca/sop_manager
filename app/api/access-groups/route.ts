@@ -87,9 +87,6 @@ export async function GET(request: NextRequest) {
  *                 type: string
  *               description:
  *                 type: string
- *               type:
- *                 type: string
- *                 enum: [INTERNAL, PUBLIC, ADMIN]
  *     responses:
  *       200:
  *         description: Groupe d'accès créé avec succès
@@ -119,17 +116,16 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { name, description, type } = body;
+    const { name, description } = body;
 
-    if (!name || !type) {
-      return new NextResponse("Le nom et le type sont requis", { status: 400 });
+    if (!name) {
+      return new NextResponse("Le nom est requis", { status: 400 });
     }
 
     const accessGroup = await prisma.accessGroup.create({
       data: {
         name,
-        description,
-        type
+        description
       }
     });
 
