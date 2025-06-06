@@ -104,9 +104,9 @@ export function SOPManager() {
   }, [sops, searchTerm, filterCategory, filterPriority, filterAuthor, sortBy]);
 
   // Event handlers
-  const handleCreateSOP = async (newSOP: Omit<SOP, 'id' | 'createdAt' | 'updatedAt' | 'editedAt'>) => {
+  const handleCreateSOP = async (newSOP: Omit<SOP, 'id' | 'createdAt' | 'updatedAt' | 'editedAt'>, accessGroupIds?: string[]) => {
     try {
-      const sop = await createSOP(newSOP);
+      const sop = await createSOP(newSOP, accessGroupIds);
       setSops(prev => [sop, ...prev]);
       setIsCreateDialogOpen(false);
       
@@ -319,7 +319,6 @@ export function SOPManager() {
           open={isCreateDialogOpen}
           onOpenChange={setIsCreateDialogOpen}
           onSubmit={handleCreateSOP}
-          users={users}
         />
       )}
       

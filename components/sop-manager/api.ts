@@ -1,4 +1,11 @@
-import { SOP } from "./types"
+import { SOP, User } from "./types"
+
+export type AccessGroup = {
+  id: string
+  name: string
+  description?: string
+  type?: string
+}
 
 export const fetchSOPs = async (): Promise<SOP[]> => {
   const res = await fetch('/api/sops')
@@ -8,15 +15,49 @@ export const fetchSOPs = async (): Promise<SOP[]> => {
   return res.json()
 }
 
-export const fetchUsers = async (): Promise<{ id: string; name: string }[]> => {
+export const fetchUsers = async (): Promise<User[]> => {
   const res = await fetch('/api/users')
+  
   if (!res.ok) {
-    throw new Error('Erreur lors du chargement des utilisateurs')
+    throw new Error('Erreur lors de la récupération des utilisateurs')
   }
+  
   return res.json()
 }
 
-export const createSOP = async (newSOP: Omit<SOP, 'id' | 'createdAt' | 'updatedAt' | 'editedAt'>): Promise<SOP> => {
+export const fetchAccessGroups = async () => {
+  const res = await fetch('/api/access-groups')
+  
+  if (!res.ok) {
+    throw new Error('Erreur lors de la récupération des groupes d\'accès')
+  }
+  
+  return res.json()
+}
+
+export const createSOP = async (newSOP: Omit<SOP, 'id' | 'createdAt' | 'updatedAt' | 'editedAt'>, accessGroupIds?: string[]): Promise<SOP> => {
+  // Si des groupes d'accès sont spécifiés, utiliser l'endpoint create-with-group
+  if (accessGroupIds && accessGroupIds.length > 0) {
+    const res = await fetch('/api/sops/create-with-groups', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        ...newSOP,
+        accessGroupIds,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      })
+    })
+    
+    if (!res.ok) {
+      const errorText = await res.text()
+      throw new Error(errorText || 'Erreur lors de la création de la SOP')
+    }
+    
+    return res.json()
+  }
+  
+  // Sinon, utiliser l'endpoint standard qui assigne automatiquement les groupes
   const res = await fetch('/api/sops', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

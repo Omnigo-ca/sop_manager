@@ -1,5 +1,5 @@
-import React, { useState } from "react"
-import { Download, Edit, User, Tag, Calendar, Trash2, ChevronRight, ChevronDown } from "lucide-react"
+import React, { useState, useRef, useEffect } from "react"
+import { Download, Edit, User, Tag, Calendar, Trash2, ChevronRight, ChevronDown, Eye } from "lucide-react"
 import { Card } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -30,6 +30,39 @@ export function CategoriesView({
   // State for expanded categories
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set())
 
+  // State and refs for resizing
+  const [sidebarWidth, setSidebarWidth] = useState(300) 
+  const [isResizing, setIsResizing] = useState(false)
+  const resizerRef = useRef<HTMLDivElement>(null)
+
+  // Handle mouse events for resizing
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!isResizing) return
+
+      // Calculate new width (minimum 200px, maximum 500px)
+      const newWidth = Math.max(200, Math.min(500, e.clientX))
+      setSidebarWidth(newWidth)
+    }
+
+    const handleMouseUp = () => {
+      setIsResizing(false)
+      document.body.classList.remove('resizing')
+    }
+
+    if (isResizing) {
+      document.body.classList.add('resizing')
+      document.addEventListener('mousemove', handleMouseMove)
+      document.addEventListener('mouseup', handleMouseUp)
+    }
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove)
+      document.removeEventListener('mouseup', handleMouseUp)
+      document.body.classList.remove('resizing')
+    }
+  }, [isResizing])
+
   // Toggle category expansion
   const toggleCategory = (category: string) => {
     const newExpanded = new Set(expandedCategories)
@@ -45,7 +78,14 @@ export function CategoriesView({
   return (
     <div className="flex bg-white rounded-lg shadow overflow-hidden">
       {/* Sidebar - Categories Navigation */}
-      <div className="w-64 bg-gray-50 border-r overflow-y-auto" style={{ maxHeight: 'calc(100vh - 300px)' }}>
+      <div 
+        className="bg-gray-50 border-r overflow-y-auto" 
+        style={{ 
+          width: `${sidebarWidth}px`,
+          maxHeight: 'calc(100vh - 300px)',
+          flexShrink: 0
+        }}
+      >
         <div className="p-4">
           <h3 className="font-semibold text-gray-600 uppercase text-sm mb-4">Catégories</h3>
           <div className="space-y-1">
@@ -54,15 +94,28 @@ export function CategoriesView({
               const isExpanded = expandedCategories.has(category)
               return (
                 <div key={category} className="space-y-1">
-                  <Button
-                    variant={selectedCategory === category ? "secondary" : "ghost"}
-                    className="w-full justify-start font-normal"
-                    onClick={() => toggleCategory(category)}
-                  >
-                    {isExpanded ? <ChevronDown className="h-4 w-4 mr-2" /> : <ChevronRight className="h-4 w-4 mr-2" />}
-                    <span className="truncate">{category}</span>
-                    <span className="ml-auto text-xs text-gray-500">{sopsInCategory.length}</span>
-                  </Button>
+                  <div className="flex items-center">
+                    <Button
+                      variant={selectedCategory === category ? "secondary" : "ghost"}
+                      className="flex-1 justify-start font-normal"
+                      onClick={() => toggleCategory(category)}
+                    >
+                      {isExpanded ? <ChevronDown className="h-4 w-4 mr-2" /> : <ChevronRight className="h-4 w-4 mr-2" />}
+                      <span className="truncate">{category}</span>
+                      <span className="ml-auto text-xs text-gray-500">{sopsInCategory.length}</span>
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="ml-1 h-8 w-8"
+                      onClick={() => {
+                        onSelectCategory(category)
+                        onSelectSop(null)
+                      }}
+                    >
+                      <Eye className="h-4 w-4 text-gray-500 hover:text-primary" />
+                    </Button>
+                  </div>
                   
                   {/* Liste des procédures de la catégorie */}
                   {isExpanded && (
@@ -85,6 +138,17 @@ export function CategoriesView({
           </div>
         </div>
       </div>
+
+      {/* Resizer */}
+      <div
+        ref={resizerRef}
+        className="w-1 bg-gray-200 hover:bg-primary hover:w-1 cursor-col-resize transition-colors"
+        onMouseDown={() => setIsResizing(true)}
+        style={{
+          touchAction: 'none',
+          flexShrink: 0
+        }}
+      />
 
       {/* Main Content Area */}
       <div className="flex-1 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 300px)' }}>
