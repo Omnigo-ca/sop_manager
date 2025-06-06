@@ -32,3 +32,6 @@ next-env.d.ts
 
 # clerk configuration (can include secrets)
 /.clerk/
+
+SOP1.md
+SOP2.md

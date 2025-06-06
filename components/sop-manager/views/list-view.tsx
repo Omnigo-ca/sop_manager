@@ -22,7 +22,7 @@ export function ListView({ sops, onViewDetails, onEdit }: ListViewProps) {
                 <div className="flex items-center gap-2 mb-3">
                   <h3 className="text-xl font-semibold">{sop.title}</h3>
                   {sop.editedAt && (
-                    <Badge variant="outline" className="text-xs bg-primary text-black border-black">
+                    <Badge variant="outline" className="text-xs bg-primary text-primary-foreground">
                       Modifié
                     </Badge>
                   )}
@@ -31,9 +31,9 @@ export function ListView({ sops, onViewDetails, onEdit }: ListViewProps) {
                   </Badge>
                 </div>
                 {sop.description && (
-                  <p className="text-gray-600 mb-4">{sop.description}</p>
+                  <p className="text-muted-foreground mb-4">{sop.description}</p>
                 )}
-                <div className="flex flex-wrap gap-4 text-sm text-gray-600 mb-4">
+                <div className="flex flex-wrap gap-4 text-sm text-muted-foreground mb-4">
                   <div className="flex items-center gap-1">
                     <User className="h-4 w-4" />
                     {sop.author}

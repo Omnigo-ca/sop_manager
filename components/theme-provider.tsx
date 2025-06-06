@@ -36,16 +36,17 @@ export function ThemeProvider({
   const [theme, setTheme] = useState<Theme>(defaultTheme)
 
   useEffect(() => {
+    const savedTheme = localStorage.getItem(storageKey) as Theme
+    if (savedTheme && (savedTheme === "light" || savedTheme === "dark")) {
+      setTheme(savedTheme)
+    }
+  }, [storageKey])
+
+  useEffect(() => {
     const root = window.document.documentElement
 
     root.classList.remove("light", "dark")
-    root.classList.add(theme)
-    root.style.setProperty("--primary-light", "#7DF9FF")
-    root.style.setProperty("--primary", "#7DF9FF")
-    root.style.setProperty("--primary-foreground", "#000000")
-    root.style.setProperty("--border", "#000000")
-    root.style.setProperty("--ring", "#000000")
-
+    
     if (attribute === "class") {
       root.classList.add(theme)
     } else {
@@ -56,6 +57,7 @@ export function ThemeProvider({
   const value = {
     theme,
     setTheme: (theme: Theme) => {
+      localStorage.setItem(storageKey, theme)
       setTheme(theme)
     },
   }

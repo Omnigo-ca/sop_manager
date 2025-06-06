@@ -209,41 +209,41 @@
     --sidebar-ring: 181 93% 74%;
   }
   .dark {
-    --background: 0 0% 3.9%;
+    --background: 0 0% 0%;
     --foreground: 0 0% 98%;
-    --card: 0 0% 3.9%;
+    --card: 0 0% 2%;
     --card-foreground: 0 0% 98%;
-    --popover: 0 0% 3.9%;
+    --popover: 0 0% 2%;
     --popover-foreground: 0 0% 98%;
     --primary: 181 93% 74%;
     --primary-foreground: 0 0% 0%;
-    --secondary: 0 0% 14.9%;
+    --secondary: 0 0% 8%;
     --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 14.9%;
-    --muted-foreground: 0 0% 63.9%;
-    --accent: 0 0% 14.9%;
+    --muted: 0 0% 8%;
+    --muted-foreground: 0 0% 70%;
+    --accent: 0 0% 8%;
     --accent-foreground: 0 0% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 0%;
-    --input: 0 0% 0%;
-    --ring: 0 0% 0%;
+    --border: 0 0% 20%;
+    --input: 0 0% 15%;
+    --ring: 181 93% 74%;
     --chart-1: 220 70% 50%;
     --chart-2: 181 93% 74%;
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-background: 0 0% 2%;
+    --sidebar-foreground: 0 0% 95%;
     --sidebar-primary: 181 93% 74%;
     --sidebar-primary-foreground: 0 0% 0%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 0 0% 0%;
+    --sidebar-accent: 0 0% 8%;
+    --sidebar-accent-foreground: 0 0% 95%;
+    --sidebar-border: 0 0% 20%;
     --sidebar-ring: 181 93% 74%;
   }
   body {
-    @apply bg-white text-black font-meutas;
+    @apply bg-background text-foreground font-meutas;
   }
 }
 
@@ -255,19 +255,19 @@
 
 @layer components {
   .btn-primary {
-    @apply bg-primary text-black hover:bg-primary-light hover:text-black transition-colors border border-black;
+    @apply bg-primary text-primary-foreground hover:bg-primary/90 transition-colors border border-border;
   }
 
   .card {
-    @apply rounded-lg border border-black bg-white p-4 shadow-md;
+    @apply rounded-lg border border-border bg-card text-card-foreground p-4 shadow-md;
   }
 
   .input-field {
-    @apply border border-black rounded-md px-3 py-2 focus:ring-2 focus:ring-primary focus:border-primary;
+    @apply border border-border rounded-md px-3 py-2 focus:ring-2 focus:ring-ring focus:border-ring bg-background text-foreground;
   }
 
   .nav-link {
-    @apply text-black hover:text-primary transition-colors;
+    @apply text-foreground hover:text-primary transition-colors;
   }
 }
 

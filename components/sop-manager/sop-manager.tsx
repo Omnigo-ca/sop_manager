@@ -190,12 +190,12 @@ export function SOPManager() {
   
   // Render component
   return (
-    <div className="p-6 bg-white min-h-screen">
+    <div className="p-6 bg-background min-h-screen">
       {/* Header */}
       <div className="flex flex-col items-center justify-center text-center mb-8">
         <div>
-          <h1 className="text-3xl font-meutas font-bold text-black mb-2">Gestionnaire de procédures</h1>
-          <p className="text-gray-600 font-meutas font-light">Gérez vos procédures opérationnelles standardisées</p>
+          <h1 className="text-3xl font-meutas font-bold text-foreground mb-2">Gestionnaire de procédures</h1>
+          <p className="text-muted-foreground font-meutas font-light">Gérez vos procédures opérationnelles standardisées</p>
         </div>
       </div>
 
@@ -210,7 +210,7 @@ export function SOPManager() {
           {canCreateSop && (
             <Button
               onClick={() => setIsCreateDialogOpen(true)}
-              className="bg-primary hover:bg-primary-light text-black font-meutas font-semibold border border-black"
+              className="font-meutas font-semibold"
             >
               <Plus className="mr-2 h-4 w-4" /> Nouvelle procédure
             </Button>
@@ -222,10 +222,10 @@ export function SOPManager() {
             placeholder="Rechercher..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="border-black focus:ring-primary focus:border-primary font-meutas font-normal"
+            className="font-meutas font-normal"
           />
           <Select value={viewMode} onValueChange={(value: ViewMode) => setViewMode(value)}>
-            <SelectTrigger className="w-[180px] border-black font-meutas font-normal">
+            <SelectTrigger className="w-[180px] font-meutas font-normal">
               <SelectValue placeholder="Vue" />
             </SelectTrigger>
             <SelectContent>
@@ -240,7 +240,7 @@ export function SOPManager() {
 
         <div className="flex gap-2">
           <Select value={filterCategory} onValueChange={setFilterCategory}>
-            <SelectTrigger className="w-[180px] border-black font-meutas font-normal">
+            <SelectTrigger className="w-[180px] font-meutas font-normal">
               <SelectValue placeholder="Catégorie" />
             </SelectTrigger>
             <SelectContent>
@@ -252,7 +252,7 @@ export function SOPManager() {
           </Select>
 
           <Select value={filterPriority} onValueChange={setFilterPriority}>
-            <SelectTrigger className="w-[180px] border-black font-meutas font-normal">
+            <SelectTrigger className="w-[180px] font-meutas font-normal">
               <SelectValue placeholder="Priorité" />
             </SelectTrigger>
             <SelectContent>

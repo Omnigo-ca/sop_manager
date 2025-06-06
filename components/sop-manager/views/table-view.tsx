@@ -12,48 +12,48 @@ interface TableViewProps {
 
 export function TableView({ sops, onViewDetails, onEdit }: TableViewProps) {
   return (
-    <div className="bg-white rounded-lg shadow overflow-hidden">
-      <table className="min-w-full divide-y divide-gray-200">
-        <thead className="bg-gray-50">
+    <div className="bg-card rounded-lg shadow overflow-hidden">
+      <table className="min-w-full divide-y divide-border">
+        <thead className="bg-muted">
           <tr>
-            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
               Titre
             </th>
-            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
               Catégorie
             </th>
-            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
               Auteur
             </th>
-            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
               Priorité
             </th>
-            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
               Date
             </th>
-            <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+            <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-muted-foreground uppercase tracking-wider">
               Actions
             </th>
           </tr>
         </thead>
-        <tbody className="bg-white divide-y divide-gray-200">
+        <tbody className="bg-card divide-y divide-border">
           {sops.map((sop) => (
-            <tr key={sop.id} className="hover:bg-gray-50 transition-colors">
+            <tr key={sop.id} className="hover:bg-muted transition-colors">
               <td className="px-6 py-4 whitespace-nowrap">
-                <div className="font-medium text-gray-900">{sop.title}</div>
+                <div className="font-medium text-card-foreground">{sop.title}</div>
               </td>
               <td className="px-6 py-4 whitespace-nowrap">
-                <div className="text-sm text-gray-900">{sop.category}</div>
+                <div className="text-sm text-card-foreground">{sop.category}</div>
               </td>
               <td className="px-6 py-4 whitespace-nowrap">
-                <div className="text-sm text-gray-900">{sop.author}</div>
+                <div className="text-sm text-card-foreground">{sop.author}</div>
               </td>
               <td className="px-6 py-4 whitespace-nowrap">
                 <Badge className={priorityColors[sop.priority.toLowerCase() as SOP["priority"]]}>
                   {priorityLabels[sop.priority.toLowerCase() as SOP["priority"]]}
                 </Badge>
               </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-muted-foreground">
                 {new Date(sop.createdAt).toLocaleDateString("fr-FR")}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">

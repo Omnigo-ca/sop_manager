@@ -14,31 +14,31 @@ export function StatsOverview({ sops }: StatsOverviewProps) {
   
   return (
     <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-      <Card className="border-black bg-white hover:shadow-md transition-shadow">
+      <Card className="hover:shadow-md transition-shadow">
         <CardContent className="p-6">
           <div className="text-3xl font-meutas text-primary">{totalSops}</div>
-          <div className="text-sm font-meutas text-gray-600">Total procédures</div>
+          <div className="text-sm font-meutas text-muted-foreground">Total procédures</div>
         </CardContent>
       </Card>
       
-      <Card className="border-black bg-white hover:shadow-md transition-shadow">
+      <Card className="hover:shadow-md transition-shadow">
         <CardContent className="p-6">
           <div className="text-3xl font-meutas text-primary">{categories.length}</div>
-          <div className="text-sm font-meutas text-gray-600">Catégories</div>
+          <div className="text-sm font-meutas text-muted-foreground">Catégories</div>
         </CardContent>
       </Card>
       
-      <Card className="border-black bg-white hover:shadow-md transition-shadow">
+      <Card className="hover:shadow-md transition-shadow">
         <CardContent className="p-6">
           <div className="text-3xl font-meutas text-primary">{authors.length}</div>
-          <div className="text-sm font-meutas text-gray-600">Auteurs</div>
+          <div className="text-sm font-meutas text-muted-foreground">Auteurs</div>
         </CardContent>
       </Card>
       
-      <Card className="border-black bg-white hover:shadow-md transition-shadow">
+      <Card className="hover:shadow-md transition-shadow">
         <CardContent className="p-6">
           <div className="text-3xl font-meutas text-primary">{highPrioritySops}</div>
-          <div className="text-sm font-meutas text-gray-600">Haute priorité</div>
+          <div className="text-sm font-meutas text-muted-foreground">Haute priorité</div>
         </CardContent>
       </Card>
     </div>

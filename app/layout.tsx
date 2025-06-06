@@ -39,7 +39,7 @@ export default function RootLayout({
         <head>
           <link rel="icon" href="/favicon.png" />
         </head>
-        <body className="min-h-screen bg-white">
+        <body className="min-h-screen">
           <ThemeProvider
             attribute="class"
             defaultTheme="light"

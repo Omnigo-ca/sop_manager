@@ -76,10 +76,10 @@ export function CategoriesView({
   }
 
   return (
-    <div className="flex bg-white rounded-lg shadow overflow-hidden">
+    <div className="flex bg-card rounded-lg shadow overflow-hidden">
       {/* Sidebar - Categories Navigation */}
       <div 
-        className="bg-gray-50 border-r overflow-y-auto" 
+        className="bg-muted border-r overflow-y-auto" 
         style={{ 
           width: `${sidebarWidth}px`,
           maxHeight: 'calc(100vh - 300px)',
@@ -87,7 +87,7 @@ export function CategoriesView({
         }}
       >
         <div className="p-4">
-          <h3 className="font-semibold text-gray-600 uppercase text-sm mb-4">Catégories</h3>
+          <h3 className="font-semibold text-muted-foreground uppercase text-sm mb-4">Catégories</h3>
           <div className="space-y-1">
             {categories.map((category) => {
               const sopsInCategory = sops.filter((sop) => sop.category === category)
@@ -102,7 +102,7 @@ export function CategoriesView({
                     >
                       {isExpanded ? <ChevronDown className="h-4 w-4 mr-2" /> : <ChevronRight className="h-4 w-4 mr-2" />}
                       <span className="truncate">{category}</span>
-                      <span className="ml-auto text-xs text-gray-500">{sopsInCategory.length}</span>
+                      <span className="ml-auto text-xs text-muted-foreground">{sopsInCategory.length}</span>
                     </Button>
                     <Button
                       variant="ghost"
@@ -113,7 +113,7 @@ export function CategoriesView({
                         onSelectSop(null)
                       }}
                     >
-                      <Eye className="h-4 w-4 text-gray-500 hover:text-primary" />
+                      <Eye className="h-4 w-4 text-muted-foreground hover:text-primary" />
                     </Button>
                   </div>
                   
@@ -124,7 +124,7 @@ export function CategoriesView({
                         <Button
                           key={sop.id}
                           variant="ghost"
-                          className={`w-full justify-start pl-2 py-1 text-sm ${selectedSop?.id === sop.id ? 'bg-gray-100 text-primary font-medium' : 'text-gray-700'}`}
+                          className={`w-full justify-start pl-2 py-1 text-sm ${selectedSop?.id === sop.id ? 'bg-accent text-primary font-medium' : 'text-muted-foreground'}`}
                           onClick={() => onSelectSop(sop)}
                         >
                           <span className="truncate">{sop.title}</span>
@@ -142,7 +142,7 @@ export function CategoriesView({
       {/* Resizer */}
       <div
         ref={resizerRef}
-        className="w-1 bg-gray-200 hover:bg-primary hover:w-1 cursor-col-resize transition-colors"
+        className="w-1 bg-border hover:bg-primary hover:w-1 cursor-col-resize transition-colors"
         onMouseDown={() => setIsResizing(true)}
         style={{
           touchAction: 'none',
@@ -183,20 +183,20 @@ export function CategoriesView({
               </div>
 
               <div className="prose prose-sm max-w-none">
-                <p className="text-gray-600 text-lg mb-6">{selectedSop.description}</p>
+                <p className="text-muted-foreground text-lg mb-6">{selectedSop.description}</p>
 
                 {selectedSop.steps && selectedSop.steps.length > 0 && (
                   <div className="mt-8">
                     <h4 className="font-medium text-lg mb-6">Étapes illustrées :</h4>
                     <div className="space-y-8">
                       {selectedSop.steps.map((step, idx) => (
-                        <div key={idx} className="border border-gray-200 rounded-lg p-6 bg-gray-50">
+                        <div key={idx} className="border border-border rounded-lg p-6 bg-muted">
                           <div className="flex items-start gap-4">
-                            <div className="flex-shrink-0 w-8 h-8 bg-primary text-black rounded-full flex items-center justify-center font-bold text-sm">
+                            <div className="flex-shrink-0 w-8 h-8 bg-primary text-primary-foreground rounded-full flex items-center justify-center font-bold text-sm">
                               {idx + 1}
                             </div>
                             <div className="flex-1">
-                              <div className="font-semibold text-lg mb-4 text-gray-800">{step.text}</div>
+                              <div className="font-semibold text-lg mb-4 text-foreground">{step.text}</div>
                               {step.image && (
                                 <div className="mt-4">
                                   <img
@@ -217,7 +217,7 @@ export function CategoriesView({
                 )}
 
                 {/* Metadata */}
-                <div className="flex flex-wrap gap-4 text-sm text-gray-600 border-t mt-8 pt-4">
+                <div className="flex flex-wrap gap-4 text-sm text-muted-foreground border-t border-border mt-8 pt-4">
                   <div className="flex items-center gap-1">
                     <User className="h-4 w-4" />
                     {selectedSop.author}
@@ -231,7 +231,7 @@ export function CategoriesView({
                     Créé le {new Date(selectedSop.createdAt).toLocaleDateString("fr-FR")}
                   </div>
                   {selectedSop.editedAt && (
-                    <div className="flex items-center gap-1 text-primary border-b border-black">
+                    <div className="flex items-center gap-1 text-primary border-b border-border">
                       <Edit className="h-4 w-4" />
                       Modifié le {new Date(selectedSop.editedAt).toLocaleDateString("fr-FR")}
                     </div>
@@ -258,13 +258,13 @@ export function CategoriesView({
                           {sop.title}
                         </h3>
                         {sop.description && (
-                          <p className="text-gray-600 text-sm line-clamp-2 mb-2">{sop.description}</p>
+                          <p className="text-muted-foreground text-sm line-clamp-2 mb-2">{sop.description}</p>
                         )}
                         <div className="flex gap-2 items-center">
                           <Badge className={priorityColors[sop.priority.toLowerCase() as SOP["priority"]]}>
                             {priorityLabels[sop.priority.toLowerCase() as SOP["priority"]]}
                           </Badge>
-                          <span className="text-xs text-gray-500">
+                          <span className="text-xs text-muted-foreground">
                             {new Date(sop.createdAt).toLocaleDateString("fr-FR")}
                           </span>
                         </div>
@@ -289,11 +289,11 @@ export function CategoriesView({
         ) : (
           /* No selection - Instructions */
           <div className="text-center py-10">
-            <div className="mb-4 text-gray-400">
+            <div className="mb-4 text-muted-foreground">
               <Tag className="h-16 w-16 mx-auto" />
             </div>
-            <h3 className="text-xl font-medium mb-2">Sélectionnez une catégorie</h3>
-            <p className="text-gray-500">
+            <h3 className="text-xl font-medium mb-2 text-foreground">Sélectionnez une catégorie</h3>
+            <p className="text-muted-foreground">
               Choisissez une catégorie dans le menu de gauche pour afficher les SOPs correspondantes
             </p>
           </div>

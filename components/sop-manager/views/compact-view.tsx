@@ -12,17 +12,17 @@ interface CompactViewProps {
 
 export function CompactView({ sops, onViewDetails, onEdit }: CompactViewProps) {
   return (
-    <div className="bg-white rounded-lg shadow overflow-hidden">
-      <div className="divide-y">
+    <div className="bg-card rounded-lg shadow overflow-hidden">
+      <div className="divide-y divide-border">
         {sops.map((sop) => (
-          <div key={sop.id} className="p-4 hover:bg-gray-50 transition-colors flex items-center justify-between">
+          <div key={sop.id} className="p-4 hover:bg-muted transition-colors flex items-center justify-between">
             <div className="flex items-center gap-3 flex-1">
               <Badge className={priorityColors[sop.priority.toLowerCase() as SOP["priority"]]}>
                 {priorityLabels[sop.priority.toLowerCase() as SOP["priority"]]}
               </Badge>
               <div>
-                <h3 className="font-medium">{sop.title}</h3>
-                <div className="text-sm text-gray-500 flex gap-3 mt-1">
+                <h3 className="font-medium text-card-foreground">{sop.title}</h3>
+                <div className="text-sm text-muted-foreground flex gap-3 mt-1">
                   <span>{sop.category}</span>
                   <span>•</span>
                   <span>{sop.author}</span>

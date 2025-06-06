@@ -18,7 +18,7 @@ export function GridView({ sops, onSelect, onEdit, onDelete }: GridViewProps) {
       {sops.map((sop) => (
         <Card 
           key={sop.id} 
-          className="hover:shadow-md transition-shadow flex flex-col justify-between border-black bg-white"
+          className="hover:shadow-md transition-shadow flex flex-col justify-between"
         >
           <CardHeader className="space-y-2">
             <div className="flex justify-between items-start gap-2">
@@ -42,15 +42,15 @@ export function GridView({ sops, onSelect, onEdit, onDelete }: GridViewProps) {
             </div>
 
             {sop.description && (
-              <CardDescription className="text-sm line-clamp-3 text-gray-600">
+              <CardDescription className="text-sm line-clamp-3">
                 {sop.description}
               </CardDescription>
             )}
 
-            <div className="flex items-center gap-2 text-sm text-gray-500">
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <span>Catégorie: {sop.category}</span>
               {sop.editedAt && (
-                <Badge variant="outline" className="text-xs bg-primary text-black border-black">
+                <Badge variant="outline" className="text-xs bg-primary text-primary-foreground">
                   Modifié
                 </Badge>
               )}
