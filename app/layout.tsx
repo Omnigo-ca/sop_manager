@@ -9,7 +9,17 @@ export const metadata: Metadata = {
   title: 'SOP Manager',
   description: 'Gestionnaire de procédures opérationnelles standardisées',
   icons: {
-    icon: '/favicon.png',
+    icon: [
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
+      { url: '/favicon.png', sizes: '32x32', type: 'image/png' },
+      { url: '/icon-192x192.png', sizes: '192x192', type: 'image/png' },
+      { url: '/icon-512x512.png', sizes: '512x512', type: 'image/png' },
+    ],
+    shortcut: '/favicon.ico',
+    apple: [
+      { url: '/icon-192x192.png', sizes: '192x192', type: 'image/png' },
+    ],
   },
 }
 
@@ -36,9 +46,6 @@ export default function RootLayout({
       publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
     >
       <html lang="fr">
-        <head>
-          <link rel="icon" href="/favicon.png" />
-        </head>
         <body className="min-h-screen">
           <ThemeProvider
             attribute="class"
