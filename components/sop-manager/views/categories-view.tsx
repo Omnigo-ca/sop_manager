@@ -187,22 +187,32 @@ export function CategoriesView({
 
                 {selectedSop.steps && selectedSop.steps.length > 0 && (
                   <div className="mt-8">
-                    <h4 className="font-medium text-lg mb-4">Étapes illustrées :</h4>
-                    <ol className="space-y-6 list-decimal list-inside">
+                    <h4 className="font-medium text-lg mb-6">Étapes illustrées :</h4>
+                    <div className="space-y-8">
                       {selectedSop.steps.map((step, idx) => (
-                        <li key={idx} className="mb-4">
-                          <div className="font-semibold mb-2">{step.text}</div>
-                          {step.image && (
-                            <img
-                              src={step.image}
-                              alt={step.text}
-                              className="max-w-full h-auto rounded border shadow-sm"
-                              style={{ maxHeight: 200 }}
-                            />
-                          )}
-                        </li>
+                        <div key={idx} className="border border-gray-200 rounded-lg p-6 bg-gray-50">
+                          <div className="flex items-start gap-4">
+                            <div className="flex-shrink-0 w-8 h-8 bg-primary text-black rounded-full flex items-center justify-center font-bold text-sm">
+                              {idx + 1}
+                            </div>
+                            <div className="flex-1">
+                              <div className="font-semibold text-lg mb-4 text-gray-800">{step.text}</div>
+                              {step.image && (
+                                <div className="mt-4">
+                                  <img
+                                    src={step.image}
+                                    alt={step.text}
+                                    className="max-w-full h-auto rounded-lg border shadow-md hover:shadow-lg transition-shadow"
+                                    style={{ maxHeight: 400, cursor: 'pointer' }}
+                                    onClick={() => window.open(step.image, '_blank')}
+                                  />
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        </div>
                       ))}
-                    </ol>
+                    </div>
                   </div>
                 )}
 

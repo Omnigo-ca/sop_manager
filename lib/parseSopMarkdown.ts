@@ -143,7 +143,6 @@ export function parseMarkdownToSop(markdown: string): ParsedSOP {
   let description = '';
   let steps: { text: string; image?: string }[] = [];
   let currentStep: { text: string; image?: string } | null = null;
-  let stepContent = '';
   
   // Extraire le titre (premier h1)
   for (let i = 0; i < tokens.length; i++) {
@@ -157,7 +156,6 @@ export function parseMarkdownToSop(markdown: string): ParsedSOP {
 
   // Diviser le contenu en sections basées sur les étapes numérotées
   const content = markdown.split('\n');
-  let inStep = false;
   let foundFirstStep = false;
   
   for (let i = 0; i < content.length; i++) {
@@ -179,15 +177,13 @@ export function parseMarkdownToSop(markdown: string): ParsedSOP {
       // Extraire le numéro et le texte de l'étape
       const [, stepNumber, stepText] = line.match(/^(\d+)\\\.\s*(.*)$/) || [];
       
-      // Créer une nouvelle étape
-      stepContent = `## Étape ${stepNumber}\n\n${stepText}`;
-      currentStep = { text: stepContent };
-      inStep = true;
+      // Créer une nouvelle étape avec le texte nettoyé (sans ##)
+      currentStep = { text: stepText || '' };
       continue;
     }
     
     // Si on est dans une étape et qu'on trouve une image
-    if (inStep && line.startsWith('![') && currentStep) {
+    if (currentStep && line.startsWith('![')) {
       const imgMatch = line.match(/\!\[(.*)\]\((.*)\)/);
       if (imgMatch) {
         currentStep.image = imgMatch[2];
@@ -196,15 +192,13 @@ export function parseMarkdownToSop(markdown: string): ParsedSOP {
       continue;
     }
     
-    // Si on est dans une étape et qu'on trouve du texte additionnel
-    if (inStep && line.trim() && currentStep && !line.startsWith('![')) {
-      currentStep.text = `${currentStep.text}\n${line}`;
-    }
-    
-    // Si on trouve une ligne vide et qu'on n'est pas au début d'une étape,
-    // on considère que c'est une séparation entre les étapes
-    if (!line.trim() && inStep) {
-      inStep = false;
+    // Si on est dans une étape et qu'on trouve du texte additionnel (mais pas de nouvelle étape)
+    if (currentStep && line.trim() && !line.startsWith('![') && !line.match(/^\d+\\\./)) {
+      // Nettoyer le texte des caractères markdown indésirables
+      const cleanLine = line.replace(/^#+\s*/, '').trim();
+      if (cleanLine) {
+        currentStep.text = currentStep.text ? `${currentStep.text} ${cleanLine}` : cleanLine;
+      }
     }
   }
   
