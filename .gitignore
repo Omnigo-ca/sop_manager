@@ -30,6 +30,9 @@ yarn-error.log*
 next-env.d.ts
 /lib/generated/prisma
 
+# test coverage
+/coverage
+
 # clerk configuration (can include secrets)
 /.clerk/
 

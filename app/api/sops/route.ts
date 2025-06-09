@@ -201,6 +201,15 @@ export async function POST(req: Request) {
     const data = await req.json();
     const { author, ...rest } = data;
     
+    // Validation des données d'entrée
+    if (!rest.title || rest.title.trim() === '') {
+      return NextResponse.json({ error: 'Le titre est requis' }, { status: 400 });
+    }
+    
+    if (!rest.content || rest.content.trim() === '') {
+      return NextResponse.json({ error: 'Le contenu est requis' }, { status: 400 });
+    }
+    
     // Generate a unique ID for the SOP
     const id = 'sop-' + Date.now() + '-' + crypto.randomBytes(4).toString('hex');
     
@@ -208,9 +217,9 @@ export async function POST(req: Request) {
     
     // Récupérer les groupes d'accès pour assigner automatiquement
     const groups = await prisma.accessGroup.findMany();
-    const internalGroup = groups.find(g => g.type === 'INTERNAL');
-    const publicGroup = groups.find(g => g.type === 'PUBLIC');
-    const administrativeGroup = groups.find(g => g.type === 'ADMINISTRATIVE');
+    const internalGroup = groups.find(g => g.name === 'INTERNAL' || g.name === 'Interne');
+    const publicGroup = groups.find(g => g.name === 'PUBLIC' || g.name === 'Public');
+    const administrativeGroup = groups.find(g => g.name === 'ADMINISTRATIVE' || g.name === 'Administratif');
     
     if (!internalGroup || !administrativeGroup) {
       return NextResponse.json({ error: 'Groupes d\'accès manquants' }, { status: 500 });
@@ -226,7 +235,7 @@ export async function POST(req: Request) {
     }
     
     // Vérifier si c'est une procédure administrative
-    const isAdministrative = (title, category) => {
+    const isAdministrative = (title: string, category: string) => {
       const titleLower = title?.toLowerCase() || '';
       const categoryLower = category?.toLowerCase() || '';
       return titleLower.includes('gestion') || 
@@ -285,7 +294,7 @@ export async function POST(req: Request) {
     return NextResponse.json({
       ...sopWithGroups,
       author: sopWithGroups?.user?.name || sopWithGroups?.authorId,
-    });
+    }, { status: 201 });
   } catch (error: any) {
     console.error('Erreur lors de la création du SOP:', error);
     return NextResponse.json({ 

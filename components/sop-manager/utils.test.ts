@@ -1,4 +1,4 @@
-import { formatDate, getUniqueValues, filterSops, sortSops } from './utils'
+import { formatDate, getUniqueValues, filterSops, sortSops, handleStepImageUpload } from './utils'
 import { SOP } from './types'
 
 describe('utils.ts', () => {
@@ -97,5 +97,25 @@ describe('utils.ts', () => {
     const sorted = sortSops(sops, 'author')
     expect(sorted[0].author).toBe('Alice')
     expect(sorted[2].author).toBe('Bob')
+  })
+
+  test('handleStepImageUpload convertit un fichier en base64', async () => {
+    // Mock d'un fichier image
+    const file = new File(['test image content'], 'test.jpg', { type: 'image/jpeg' })
+    
+    // Mock de FileReader
+    const mockFileReader = {
+      onload: null as any,
+      readAsDataURL: jest.fn(function(this: any) {
+        this.onload({ target: { result: 'data:image/jpeg;base64,dGVzdCBpbWFnZSBjb250ZW50' } })
+      })
+    }
+    
+    global.FileReader = jest.fn(() => mockFileReader) as any
+
+    const result = await handleStepImageUpload(file)
+    
+    expect(result).toBe('data:image/jpeg;base64,dGVzdCBpbWFnZSBjb250ZW50')
+    expect(mockFileReader.readAsDataURL).toHaveBeenCalledWith(file)
   })
 }) 

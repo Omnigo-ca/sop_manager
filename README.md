@@ -213,3 +213,50 @@ Pour déployer l'application complète avec Docker Compose:
 ## 📝 Licence
 
 Tous droits réservés. Ce logiciel est la propriété de l'entreprise.
+
+## 📊 Couverture de Tests
+
+### Interface de couverture interactive
+
+Cette application intègre une interface HTML complète pour visualiser la couverture de code :
+
+#### 🚀 **Accès local**
+```bash
+# Générer et voir la couverture
+npm run test:coverage
+
+# Ouvrir l'interface HTML
+npm run coverage:view
+```
+
+#### 🌐 **Accès distant (SSH/Cursor)**
+
+Pour les développeurs utilisant Cursor via SSH avec port forwarding :
+
+```bash
+# Solution simple et fiable (Recommandée)
+npm run coverage:dev
+
+# Solution avec gestion d'erreurs avancée
+npm run coverage:remote
+
+# Génération seule (sans seuils)
+npm run test:coverage:no-threshold
+```
+
+**Configuration Cursor :**
+1. Configurer le port forwarding `3001` dans Cursor
+2. Ouvrir `http://localhost:3001` dans votre navigateur Windows
+3. Explorer l'interface interactive de couverture
+
+#### 📋 **Documentation complète**
+- 📚 [**Index de toute la documentation**](docs/README.md) - Vue d'ensemble
+- 🚀 [**Guide de démarrage rapide**](docs/QUICK_START_COVERAGE.md) - Pour commencer en 30 secondes
+- 🌐 [**Accès distant SSH/Cursor**](docs/COVERAGE_REMOTE_ACCESS.md) - Configuration détaillée pour Cursor
+- 📊 [**Guide complet de la couverture**](docs/TESTING_COVERAGE.md) - Documentation exhaustive
+
+#### 🎯 **Métriques de couverture**
+- **Lines** : >50% (Lignes de code exécutées)
+- **Functions** : >40% (Fonctions appelées)
+- **Branches** : >40% (Conditions testées)
+- **Statements** : >50% (Instructions exécutées)
