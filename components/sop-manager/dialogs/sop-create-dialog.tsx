@@ -282,7 +282,7 @@ export function SopCreateDialog({ open, onOpenChange, onSubmit }: SopCreateDialo
                         type="button"
                         onClick={handleAddStep}
                         size="sm"
-                        className="bg-primary hover:bg-primary-light text-black border border-black"
+                        className="bg-primary hover:bg-primary-light text-primary-foreground border border-black"
                       >
                         <Plus className="h-4 w-4 mr-1" />
                         Ajouter une étape
@@ -417,7 +417,7 @@ export function SopCreateDialog({ open, onOpenChange, onSubmit }: SopCreateDialo
             </Button>
             <Button
               type="submit"
-              className="bg-primary hover:bg-primary-light text-black font-meutas border border-black"
+              className="bg-primary hover:bg-primary-light text-primary-foreground font-meutas border border-black"
             >
               Créer la procédure
             </Button>

@@ -12,12 +12,15 @@ const config: Config = {
   	extend: {
   		colors: {
   			'primary-light': '#7DF9FF',
-  			'primary': '#7DF9FF',
-  			border: "black",
-  			input: "black",
-  			ring: "black",
+  			border: 'hsl(var(--border))',
+  			input: 'hsl(var(--input))',
+  			ring: 'hsl(var(--ring))',
   			background: "hsl(var(--background))",
   			foreground: "hsl(var(--foreground))",
+  			primary: {
+  				DEFAULT: 'hsl(var(--primary))',
+  				foreground: 'hsl(var(--primary-foreground))'
+  			},
   			card: {
   				DEFAULT: 'hsl(var(--card))',
   				foreground: 'hsl(var(--card-foreground))'
@@ -42,7 +45,6 @@ const config: Config = {
   				DEFAULT: 'hsl(var(--destructive))',
   				foreground: 'hsl(var(--destructive-foreground))'
   			},
-  			border: 'hsl(var(--border))',
   			chart: {
   				'1': 'hsl(var(--chart-1))',
   				'2': 'hsl(var(--chart-2))',
@@ -98,7 +100,10 @@ const config: Config = {
   			black: '900',
   		},
   		borderColor: {
-  			DEFAULT: "black",
+  			DEFAULT: 'hsl(var(--border))',
+  		},
+  		ringOffsetWidth: {
+  			'0': '0px',
   		},
   	}
   },

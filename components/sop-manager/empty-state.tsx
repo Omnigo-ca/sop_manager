@@ -8,14 +8,14 @@ interface EmptyStateProps {
 
 export function EmptyState({ hasSops = false }: EmptyStateProps) {
   return (
-    <Card className="border-black bg-white">
+    <Card className="border-black bg-white dark:bg-background dark:border-none dark:rounded-none">
       <CardContent className="p-8 text-center">
-        <div className="text-black">
+        <div className="text-black dark:text-white">
           {!hasSops ? (
             <>
               <AlertCircle className="h-12 w-12 mx-auto mb-4 text-primary" />
               <h3 className="text-xl font-meutas mb-2">Aucune procédure</h3>
-              <p className="text-gray-600">Commencez par créer votre première procédure</p>
+              <p className="text-gray-600 dark:text-gray-400">Commencez par créer votre première procédure</p>
             </>
           ) : (
             <>
