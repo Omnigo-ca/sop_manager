@@ -1,6 +1,5 @@
 import type { Metadata } from 'next'
 import './globals.css'
-import '../public/fonts/Meutas.css'
 import { ClerkProviderWithSync } from '@/components/auth/ClerkProviderWithSync'
 import { ThemeProvider } from '@/components/theme-provider'
 import { Header } from '@/components/layout/header'
