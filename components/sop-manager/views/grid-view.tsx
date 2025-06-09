@@ -42,9 +42,10 @@ export function GridView({ sops, onSelect, onEdit, onDelete }: GridViewProps) {
             </div>
 
             {sop.description && (
-              <CardDescription className="text-sm line-clamp-3">
-                {sop.description}
-              </CardDescription>
+              <CardDescription 
+                className="text-sm line-clamp-3"
+                dangerouslySetInnerHTML={{ __html: sop.description }}
+              />
             )}
 
             <div className="flex items-center gap-2 text-sm text-muted-foreground">

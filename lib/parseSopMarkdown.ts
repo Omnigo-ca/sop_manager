@@ -18,6 +18,23 @@ export interface ParsedSOP {
 const DEFAULT_PRIORITY: Priority = "medium";
 
 /**
+ * Convertit les liens markdown en HTML tout en gardant le reste du texte intact
+ */
+export function convertMarkdownLinksToHtml(text: string): string {
+  // Regex pour capturer les liens markdown: [texte](url)
+  const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
+  
+  return text.replace(linkRegex, (match, linkText, url) => {
+    // Vérifie si c'est un lien mailto
+    if (url.startsWith('mailto:')) {
+      return `<a href="${url}" class="text-blue-600 hover:text-blue-800 underline">${linkText}</a>`;
+    }
+    // Lien normal avec target="_blank"
+    return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:text-blue-800 underline">${linkText}</a>`;
+  });
+}
+
+/**
  * Parse un markdown structuré en SOP.
  *
  * Format attendu :
@@ -59,7 +76,7 @@ export function parseSopMarkdown(markdown: string): ParsedSOP {
 
   // Description
   const descMatch = markdown.match(/## Description\s+([\s\S]*?)(?=^## |$)/m);
-  const description = descMatch ? descMatch[1].trim() : '';
+  const description = descMatch ? convertMarkdownLinksToHtml(descMatch[1].trim()) : '';
 
   // Instructions - On garde le champ mais on le vide
   const instructions = '';
@@ -106,15 +123,17 @@ export function parseSopMarkdown(markdown: string): ParsedSOP {
       // Ancien format (liste markdown)
       const imgMatch = line.match(/^[-*] \!\[(.*)\]\((.*)\)/);
       if (imgMatch) {
-        steps.push({ text: imgMatch[1].trim(), image: imgMatch[2].trim() });
+        steps.push({ text: convertMarkdownLinksToHtml(imgMatch[1].trim()), image: imgMatch[2].trim() });
       } else {
         const txtMatch = line.match(/^[-*] (.+)/);
-        if (txtMatch) steps.push({ text: txtMatch[1].trim() });
+        if (txtMatch) steps.push({ text: convertMarkdownLinksToHtml(txtMatch[1].trim()) });
       }
     }
     
     // Ajouter le dernier step s'il existe
     if (currentStep) {
+      // Convertir les liens markdown en HTML avant de sauvegarder
+      currentStep.text = convertMarkdownLinksToHtml(currentStep.text);
       steps.push(currentStep);
     }
   }
@@ -171,6 +190,8 @@ export function parseMarkdownToSop(markdown: string): ParsedSOP {
       
       // Si on était déjà dans une étape, on la sauvegarde
       if (currentStep) {
+        // Convertir les liens markdown en HTML avant de sauvegarder
+        currentStep.text = convertMarkdownLinksToHtml(currentStep.text);
         steps.push(currentStep);
       }
       
@@ -204,12 +225,14 @@ export function parseMarkdownToSop(markdown: string): ParsedSOP {
   
   // Ajouter la dernière étape si elle existe
   if (currentStep) {
+    // Convertir les liens markdown en HTML avant de sauvegarder
+    currentStep.text = convertMarkdownLinksToHtml(currentStep.text);
     steps.push(currentStep);
   }
 
   const parsedSop: ParsedSOP = {
     title,
-    description,
+    description: convertMarkdownLinksToHtml(description),
     instructions: '', // On ne conserve plus les instructions
     steps,
     author: 'Patrice Robitaille', // Extrait du markdown

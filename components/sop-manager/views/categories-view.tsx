@@ -183,7 +183,10 @@ export function CategoriesView({
               </div>
 
               <div className="prose prose-sm max-w-none">
-                <p className="text-muted-foreground text-lg mb-6">{selectedSop.description}</p>
+                <p 
+                  className="text-muted-foreground text-lg mb-6"
+                  dangerouslySetInnerHTML={{ __html: selectedSop.description }}
+                />
 
                 {selectedSop.steps && selectedSop.steps.length > 0 && (
                   <div className="mt-8">
@@ -196,7 +199,10 @@ export function CategoriesView({
                               {idx + 1}
                             </div>
                             <div className="flex-1">
-                              <div className="font-semibold text-lg mb-4 text-foreground">{step.text}</div>
+                              <div 
+                                className="font-semibold text-lg mb-4 text-foreground"
+                                dangerouslySetInnerHTML={{ __html: step.text }}
+                              />
                               {step.image && (
                                 <div className="mt-4">
                                   <img
@@ -258,7 +264,10 @@ export function CategoriesView({
                           {sop.title}
                         </h3>
                         {sop.description && (
-                          <p className="text-muted-foreground text-sm line-clamp-2 mb-2">{sop.description}</p>
+                          <p 
+                            className="text-muted-foreground text-sm line-clamp-2 mb-2"
+                            dangerouslySetInnerHTML={{ __html: sop.description }}
+                          />
                         )}
                         <div className="flex gap-2 items-center">
                           <Badge className={priorityColors[sop.priority.toLowerCase() as SOP["priority"]]}>

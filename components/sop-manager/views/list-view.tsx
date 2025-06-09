@@ -31,7 +31,10 @@ export function ListView({ sops, onViewDetails, onEdit }: ListViewProps) {
                   </Badge>
                 </div>
                 {sop.description && (
-                  <p className="text-muted-foreground mb-4">{sop.description}</p>
+                  <p 
+                    className="text-muted-foreground mb-4"
+                    dangerouslySetInnerHTML={{ __html: sop.description }}
+                  />
                 )}
                 <div className="flex flex-wrap gap-4 text-sm text-muted-foreground mb-4">
                   <div className="flex items-center gap-1">
