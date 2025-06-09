@@ -21,12 +21,22 @@ export default function ApiDocs() {
             <p className="text-sm text-muted-foreground mb-4">
               Accédez aux endpoints pour créer, lire, mettre à jour et supprimer les procédures opérationnelles.
             </p>
-            <Button asChild>
-              <a href="/api/docs" target="_blank" rel="noopener noreferrer">
-                Voir la documentation
-                <ExternalLink className="ml-2 h-4 w-4" />
-              </a>
-            </Button>
+            <div className="flex gap-2 flex-wrap">
+              <Button asChild>
+                <a href="/api/docs" target="_blank" rel="noopener noreferrer">
+                  JSON Specs
+                  <ExternalLink className="ml-2 h-4 w-4" />
+                </a>
+              </Button>
+              {process.env.NODE_ENV === 'development' && (
+                <Button asChild variant="outline">
+                  <a href="/api/docs/swagger-ui" target="_blank" rel="noopener noreferrer">
+                    Interface Interactive
+                    <ExternalLink className="ml-2 h-4 w-4" />
+                  </a>
+                </Button>
+              )}
+            </div>
           </CardContent>
         </Card>
 

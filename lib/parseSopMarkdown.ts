@@ -18,20 +18,74 @@ export interface ParsedSOP {
 const DEFAULT_PRIORITY: Priority = "medium";
 
 /**
+ * Nettoie le markdown en supprimant les lignes "Made with Scribe"
+ */
+export function cleanScribeSignature(markdown: string): string {
+  // Supprimer les lignes qui contiennent "Made with Scribe" avec différentes variations
+  const scribeRegex = /^#{1,6}\s*\[?\s*Made with Scribe\s*\]?\s*\(.*?\)?.*$/gmi;
+  return markdown.replace(scribeRegex, '').trim();
+}
+
+/**
+ * Convertit les URLs brutes en liens HTML stylisés
+ */
+export function convertRawUrlsToHtml(text: string): string {
+  // Regex pour capturer les URLs brutes (http, https, www, mailto)
+  const urlRegex = /((?:https?:\/\/|www\.)[^\s<>"{}|\\^`[\]]+|[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g;
+  
+  return text.replace(urlRegex, (match) => {
+    // Si c'est un email
+    if (match.includes('@') && !match.startsWith('http')) {
+      return `<a href="mailto:${match}" class="text-primary hover:text-primary/80 underline italic transition-colors">${match}</a>`;
+    }
+    // Si ça commence par www, ajouter http://
+    if (match.startsWith('www.')) {
+      return `<a href="http://${match}" target="_blank" rel="noopener noreferrer" class="text-primary hover:text-primary/80 underline italic transition-colors">${match}</a>`;
+    }
+    // URL normale
+    return `<a href="${match}" target="_blank" rel="noopener noreferrer" class="text-primary hover:text-primary/80 underline italic transition-colors">${match}</a>`;
+  });
+}
+
+/**
  * Convertit les liens markdown en HTML tout en gardant le reste du texte intact
  */
 export function convertMarkdownLinksToHtml(text: string): string {
-  // Regex pour capturer les liens markdown: [texte](url)
+  // D'abord traiter les liens markdown
   const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
   
-  return text.replace(linkRegex, (match, linkText, url) => {
+  let result = text.replace(linkRegex, (match, linkText, url) => {
     // Vérifie si c'est un lien mailto
     if (url.startsWith('mailto:')) {
-      return `<a href="${url}" class="text-blue-600 hover:text-blue-800 underline">${linkText}</a>`;
+      return `<a href="${url}" class="text-primary hover:text-primary/80 underline italic transition-colors">${linkText}</a>`;
     }
     // Lien normal avec target="_blank"
-    return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:text-blue-800 underline">${linkText}</a>`;
+    return `<a href="${url}" target="_blank" rel="noopener noreferrer" class="text-primary hover:text-primary/80 underline italic transition-colors">${linkText}</a>`;
   });
+  
+  // Ensuite traiter les URLs brutes qui ne sont pas déjà dans des liens
+  // On évite de traiter les URLs qui sont déjà dans des balises <a>
+  const linkTagRegex = /<a[^>]*>.*?<\/a>/g;
+  const linkTags = result.match(linkTagRegex) || [];
+  const placeholders: string[] = [];
+  
+  // Remplacer temporairement les liens existants par des placeholders
+  linkTags.forEach((link, index) => {
+    const placeholder = `__LINK_PLACEHOLDER_${index}__`;
+    placeholders.push(link);
+    result = result.replace(link, placeholder);
+  });
+  
+  // Traiter les URLs brutes dans le texte restant
+  result = convertRawUrlsToHtml(result);
+  
+  // Remettre les liens originaux
+  placeholders.forEach((link, index) => {
+    const placeholder = `__LINK_PLACEHOLDER_${index}__`;
+    result = result.replace(placeholder, link);
+  });
+  
+  return result;
 }
 
 /**
@@ -57,32 +111,35 @@ export function convertMarkdownLinksToHtml(text: string): string {
  * ...
  */
 export function parseSopMarkdown(markdown: string): ParsedSOP {
+  // Nettoyer le markdown en supprimant les lignes "Made with Scribe"
+  const cleanedMarkdown = cleanScribeSignature(markdown);
+  
   const md = new MarkdownIt();
   // Extraction manuelle des champs via regex pour robustesse
-  const titleMatch = markdown.match(/^# (.+)$/m);
+  const titleMatch = cleanedMarkdown.match(/^# (.+)$/m);
   const title = titleMatch ? titleMatch[1].trim() : '';
 
-  const authorMatch = markdown.match(/\*\*Auteur\*\*\s*:\s*(.+)/i);
+  const authorMatch = cleanedMarkdown.match(/\*\*Auteur\*\*\s*:\s*(.+)/i);
   const author = authorMatch ? authorMatch[1].trim() : '';
 
-  const categoryMatch = markdown.match(/\*\*Cat[ée]gorie\*\*\s*:\s*(.+)/i);
+  const categoryMatch = cleanedMarkdown.match(/\*\*Cat[ée]gorie\*\*\s*:\s*(.+)/i);
   const category = categoryMatch ? categoryMatch[1].trim() : '';
 
-  const priorityMatch = markdown.match(/\*\*Priorit[ée]\*\*\s*:\s*(.+)/i);
+  const priorityMatch = cleanedMarkdown.match(/\*\*Priorit[ée]\*\*\s*:\s*(.+)/i);
   const priority = (priorityMatch ? priorityMatch[1].trim().toLowerCase() : 'medium') as Priority;
 
-  const tagsMatch = markdown.match(/\*\*Tags\*\*\s*:\s*(.+)/i);
+  const tagsMatch = cleanedMarkdown.match(/\*\*Tags\*\*\s*:\s*(.+)/i);
   const tags = tagsMatch ? tagsMatch[1].split(',').map(t => t.trim()).filter(Boolean) : [];
 
   // Description
-  const descMatch = markdown.match(/## Description\s+([\s\S]*?)(?=^## |$)/m);
+  const descMatch = cleanedMarkdown.match(/## Description\s+([\s\S]*?)(?=^## |$)/m);
   const description = descMatch ? convertMarkdownLinksToHtml(descMatch[1].trim()) : '';
 
   // Instructions - On garde le champ mais on le vide
   const instructions = '';
   
   // Steps (liste markdown)
-  const stepsSection = markdown.match(/## [ÉE]tapes\s+([\s\S]*)/m);
+  const stepsSection = cleanedMarkdown.match(/## [ÉE]tapes\s+([\s\S]*)/m);
   let steps: { text: string; image?: string }[] = [];
   if (stepsSection) {
     const lines = stepsSection[1].split(/\r?\n/).map(l => l.trim()).filter(Boolean);
@@ -155,8 +212,11 @@ export function parseSopMarkdown(markdown: string): ParsedSOP {
 }
 
 export function parseMarkdownToSop(markdown: string): ParsedSOP {
+  // Nettoyer le markdown en supprimant les lignes "Made with Scribe"
+  const cleanedMarkdown = cleanScribeSignature(markdown);
+  
   const md = new MarkdownIt();
-  const tokens = md.parse(markdown, {});
+  const tokens = md.parse(cleanedMarkdown, {});
   
   let title = '';
   let description = '';
@@ -174,7 +234,7 @@ export function parseMarkdownToSop(markdown: string): ParsedSOP {
   }
 
   // Diviser le contenu en sections basées sur les étapes numérotées
-  const content = markdown.split('\n');
+  const content = cleanedMarkdown.split('\n');
   let foundFirstStep = false;
   
   for (let i = 0; i < content.length; i++) {
