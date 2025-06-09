@@ -82,7 +82,7 @@ export function CategoriesView({
         className="bg-muted border-r overflow-y-auto" 
         style={{ 
           width: `${sidebarWidth}px`,
-          maxHeight: 'calc(100vh - 300px)',
+          maxHeight: 'calc(100vh - 100px)',
           flexShrink: 0
         }}
       >
@@ -151,7 +151,7 @@ export function CategoriesView({
       />
 
       {/* Main Content Area */}
-      <div className="flex-1 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 300px)' }}>
+      <div className="flex-1 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 100px)' }}>
         {selectedSop ? (
           /* Selected SOP Detail View */
           <div className="p-6">

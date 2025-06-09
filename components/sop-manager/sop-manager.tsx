@@ -20,7 +20,6 @@ import { fetchSOPs, fetchUsers, createSOP, updateSOP, deleteSOP } from "./api"
 import { getUniqueValues, filterSops, sortSops, handleStepImageUpload } from "./utils"
 import { GridView, ListView, CompactView, TableView, CategoriesView } from "./views"
 import { EmptyState } from "./empty-state"
-import { StatsOverview } from "./stats-overview"
 import { SopCreateDialog, SopEditDialog, SopDeleteDialog } from "./dialogs"
 
 export function SOPManager() {
@@ -191,18 +190,7 @@ export function SOPManager() {
   // Render component
   return (
     <div className="p-6 bg-background min-h-screen">
-      {/* Header */}
-      <div className="flex flex-col items-center justify-center text-center mb-8">
-        <div>
-          <h1 className="text-3xl font-meutas font-bold text-foreground mb-2">Gestionnaire de procédures</h1>
-          <p className="text-muted-foreground font-meutas font-light">Gérez vos procédures opérationnelles standardisées</p>
-        </div>
-      </div>
 
-      {/* Stats Overview */}
-      <div className="mb-8">
-        <StatsOverview sops={sops} />
-      </div>
 
       {/* Actions and Filters */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
