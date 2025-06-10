@@ -2,8 +2,6 @@
 
 import { useUser } from '@clerk/nextjs'
 import { SOPManager } from "@/components/sop-manager/sop-manager"
-import { Button } from "@/components/ui/button"
-import { SignInButton, SignUpButton } from '@clerk/nextjs'
 import { FileText, Users, CheckSquare, Shield } from 'lucide-react'
 
 export default function SopManagerPage() {
@@ -13,7 +11,7 @@ export default function SopManagerPage() {
   
   if (!isSignedIn) {
     return (
-      <div className="flex flex-col items-center justify-center h-[80vh] px-4">
+      <div className="flex flex-col items-center justify-center h-[70vh] px-4">
         <div className="max-w-3xl w-full text-center space-y-12">
           <div className="space-y-4">
             <h1 className="text-4xl font-meutas font-bold text-foreground">Bienvenue sur SOP Manager</h1>
@@ -48,19 +46,7 @@ export default function SopManagerPage() {
             </div>
           </div>
           
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
-            <SignInButton>
-              <Button variant="outline" size="lg" className="font-meutas text-lg px-8">
-                Connexion
-              </Button>
-            </SignInButton>
-            
-            <SignUpButton>
-              <Button size="lg" className="font-meutas text-lg px-8">
-                Inscription
-              </Button>
-            </SignUpButton>
-          </div>
+
         </div>
       </div>
     );

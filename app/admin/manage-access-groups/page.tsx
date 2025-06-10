@@ -97,6 +97,12 @@ export default function ManageAccessGroupsPage() {
   const [isSubmittingUsers, setIsSubmittingUsers] = useState(false);
   const [isSubmittingSops, setIsSubmittingSops] = useState(false);
 
+  // Fonction helper pour vérifier si un groupe est protégé contre la suppression
+  const isProtectedGroup = (groupName: string) => {
+    const protectedGroups = ["Procédures Internes", "Procédures Publiques"];
+    return protectedGroups.includes(groupName);
+  };
+
   useEffect(() => {
     const fetchCurrentUser = async () => {
       try {
@@ -203,6 +209,15 @@ export default function ManageAccessGroupsPage() {
       });
 
       if (!response.ok) {
+        const errorText = await response.text();
+        if (response.status === 403) {
+          toast({
+            title: "Modification interdite",
+            description: errorText || "Le nom de ce groupe système ne peut pas être modifié",
+            variant: "destructive",
+          });
+          return;
+        }
         throw new Error("Failed to update group");
       }
 
@@ -234,6 +249,15 @@ export default function ManageAccessGroupsPage() {
       });
 
       if (!response.ok) {
+        const errorText = await response.text();
+        if (response.status === 403) {
+          toast({
+            title: "Suppression interdite",
+            description: errorText || "Ce groupe système ne peut pas être supprimé",
+            variant: "destructive",
+          });
+          return;
+        }
         throw new Error("Failed to delete group");
       }
 
@@ -536,7 +560,14 @@ export default function ManageAccessGroupsPage() {
           <Card key={group.id} className="relative">
             <CardHeader>
               <div className="flex items-center justify-between">
-                <CardTitle className="text-lg font-meutas">{group.name}</CardTitle>
+                <div className="flex items-center gap-2">
+                  <CardTitle className="text-lg font-meutas">{group.name}</CardTitle>
+                  {isProtectedGroup(group.name) && (
+                    <Badge variant="secondary" className="text-xs">
+                      Système
+                    </Badge>
+                  )}
+                </div>
                 <div className="flex space-x-1">
                   <Button
                     variant="ghost"
@@ -545,27 +576,29 @@ export default function ManageAccessGroupsPage() {
                   >
                     <Edit className="h-4 w-4" />
                   </Button>
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <Button variant="ghost" size="sm">
-                        <Trash2 className="h-4 w-4 text-red-500" />
-                      </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>Êtes-vous sûr ?</AlertDialogTitle>
-                        <AlertDialogDescription>
-                          Cette action supprimera définitivement le groupe "{group.name}" et toutes ses assignations.
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel>Annuler</AlertDialogCancel>
-                        <AlertDialogAction onClick={() => handleDeleteGroup(group.id)}>
-                          Supprimer
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
+                  {!isProtectedGroup(group.name) && (
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button variant="ghost" size="sm">
+                          <Trash2 className="h-4 w-4 text-red-500" />
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Êtes-vous sûr ?</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Cette action supprimera définitivement le groupe "{group.name}" et toutes ses assignations.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Annuler</AlertDialogCancel>
+                          <AlertDialogAction onClick={() => handleDeleteGroup(group.id)}>
+                            Supprimer
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  )}
                 </div>
               </div>
               <CardDescription className="font-meutas">{group.description}</CardDescription>
@@ -610,15 +643,23 @@ export default function ManageAccessGroupsPage() {
               </div>
 
               <div className="space-y-2">
-                <Button
-                  onClick={() => openUserAssignDialog(group)}
-                  className="w-full font-meutas hover:text-primary hover:border-primary hover:bg-black transition-colors"
-                  variant="outline"
-                  size="sm"
-                >
-                  <Settings className="h-4 w-4 mr-2" />
-                  Gérer les utilisateurs
-                </Button>
+                {group.name !== "Procédures Publiques" ? (
+                  <Button
+                    onClick={() => openUserAssignDialog(group)}
+                    className="w-full font-meutas hover:text-primary hover:border-primary hover:bg-black transition-colors"
+                    variant="outline"
+                    size="sm"
+                  >
+                    <Settings className="h-4 w-4 mr-2" />
+                    Gérer les utilisateurs
+                  </Button>
+                ) : (
+                  <div className="w-full p-2 border border-dashed border-gray-300 rounded text-center">
+                    <p className="text-xs text-muted-foreground font-meutas">
+                      Les procédures publiques sont accessibles à tous
+                    </p>
+                  </div>
+                )}
                 
                 <Button
                   onClick={() => openSopAssignDialog(group)}
@@ -721,7 +762,13 @@ export default function ManageAccessGroupsPage() {
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 placeholder="Ex: Marketing, RH, Technique..."
+                disabled={selectedGroup ? isProtectedGroup(selectedGroup.name) : false}
               />
+              {selectedGroup && isProtectedGroup(selectedGroup.name) && (
+                <p className="text-xs text-muted-foreground mt-1">
+                  Le nom de ce groupe système ne peut pas être modifié.
+                </p>
+              )}
             </div>
             <div>
               <Label htmlFor="edit-description">Description</Label>

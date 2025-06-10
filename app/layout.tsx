@@ -1,9 +1,9 @@
 import type { Metadata } from 'next'
 import './globals.css'
-import '../public/fonts/Meutas.css'
 import { ClerkProviderWithSync } from '@/components/auth/ClerkProviderWithSync'
 import { ThemeProvider } from '@/components/theme-provider'
 import { Header } from '@/components/layout/header'
+import { Footer } from '@/components/layout/footer'
 
 export const metadata: Metadata = {
   title: 'SOP Manager',
@@ -46,7 +46,7 @@ export default function RootLayout({
       publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}
     >
       <html lang="fr">
-        <body className="min-h-screen">
+        <body className="min-h-screen flex flex-col">
           <ThemeProvider
             attribute="class"
             defaultTheme="light"
@@ -54,9 +54,10 @@ export default function RootLayout({
             storageKey="sop-manager-theme"
           >
             <Header />
-            <main className="container mx-auto px-6 py-8">
+            <main className="container mx-auto px-6 py-8 flex-1">
               {children}
             </main>
+            <Footer />
           </ThemeProvider>
         </body>
       </html>

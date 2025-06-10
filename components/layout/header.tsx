@@ -63,16 +63,16 @@ export function Header() {
       <div className="flex items-center gap-4">
         <ThemeToggle />
         <SignedOut>
-          <SignInButton>
+          <Link href="/public-procedures">
             <button className="px-4 py-2 font-meutas font-medium text-foreground hover:text-primary transition-colors">
+              Procédures publiques
+            </button>
+          </Link>
+          <SignInButton>
+            <button className="px-4 py-2 bg-primary hover:bg-primary/90 text-primary-foreground font-meutas font-semibold rounded-md transition-colors border border-border">
               Connexion
             </button>
           </SignInButton>
-          <SignUpButton>
-            <button className="px-4 py-2 bg-primary hover:bg-primary/90 text-primary-foreground font-meutas font-semibold rounded-md transition-colors border border-border">
-              Inscription
-            </button>
-          </SignUpButton>
         </SignedOut>
         <SignedIn>
           <UserButton 

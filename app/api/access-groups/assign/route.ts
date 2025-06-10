@@ -67,6 +67,11 @@ export async function POST(request: NextRequest) {
       return new NextResponse("Groupe d'accès non trouvé", { status: 404 });
     }
 
+    // Empêcher l'assignation d'utilisateurs au groupe "Procédures Publiques"
+    if (accessGroup.name === "Procédures Publiques") {
+      return new NextResponse("Les utilisateurs ne peuvent pas être assignés au groupe des procédures publiques", { status: 403 });
+    }
+
     // Supprimer toutes les assignations existantes pour ce groupe
     await prisma.userAccessGroup.deleteMany({
       where: { accessGroupId },

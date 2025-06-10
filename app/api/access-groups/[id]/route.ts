@@ -76,6 +76,12 @@ export async function PUT(
       return new NextResponse("Groupe non trouvé", { status: 404 });
     }
 
+    // Empêcher la modification du nom des groupes système "Procédures Internes" et "Procédures Publiques"
+    const protectedGroups = ["Procédures Internes", "Procédures Publiques"];
+    if (protectedGroups.includes(existingGroup.name) && name !== existingGroup.name) {
+      return new NextResponse("Le nom de ce groupe système ne peut pas être modifié", { status: 403 });
+    }
+
     const updatedGroup = await prisma.accessGroup.update({
       where: { id: params.id },
       data: {
@@ -142,6 +148,12 @@ export async function DELETE(
 
     if (!existingGroup) {
       return new NextResponse("Groupe non trouvé", { status: 404 });
+    }
+
+    // Empêcher la suppression des groupes système "Procédures Internes" et "Procédures Publiques"
+    const protectedGroups = ["Procédures Internes", "Procédures Publiques"];
+    if (protectedGroups.includes(existingGroup.name)) {
+      return new NextResponse("Ce groupe système ne peut pas être supprimé", { status: 403 });
     }
 
     // Supprimer le groupe (les relations seront supprimées automatiquement grâce aux contraintes CASCADE)
