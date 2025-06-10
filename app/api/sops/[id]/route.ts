@@ -190,7 +190,13 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
  *       404:
  *         description: SOP non trouvé
  */
-export async function DELETE(req: Request, { params }: { params: { id: string } }) {
+export async function DELETE(
+  req: Request,
+  context: { params: { id: string } }
+) {
+  const params = await context.params;
+  const id = params.id;
+
   try {
     // Vérifier l'authentification et les permissions
     const currentUser = await getCurrentUser();
@@ -206,7 +212,7 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
     }
 
     try {
-      await prisma.sop.delete({ where: { id: params.id } });
+      await prisma.sop.delete({ where: { id } });
       return NextResponse.json({ success: true });
     } catch (error) {
       return NextResponse.json({ error: 'SOP non trouvé' }, { status: 404 });

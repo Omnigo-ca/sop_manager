@@ -8,6 +8,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { X, Plus, Trash2 } from "lucide-react"
 import { Label } from "@/components/ui/label"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { DialogFooter } from "@/components/ui/dialog"
 
 interface SopEditDialogProps {
   open: boolean
@@ -35,6 +36,7 @@ export function SopEditDialog({ open, onOpenChange, sop, users, onSubmit }: SopE
   })
 
   const [steps, setSteps] = useState<Step[]>([])
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   useEffect(() => {
     if (sop) {
@@ -47,33 +49,41 @@ export function SopEditDialog({ open, onOpenChange, sop, users, onSubmit }: SopE
         tags: Array.isArray(sop.tags) ? sop.tags.join(", ") : "",
       })
       
-      // Initialiser les étapes à partir de la SOP existante
       setSteps(sop.steps || [])
     }
   }, [sop])
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
+    if (isSubmitting) return
+    
     if (!formData.title || !formData.description) {
       return
     }
 
-    const updatedSop: Partial<SOP> = {
-      title: formData.title,
-      description: formData.description,
-      instructions: formData.instructions,
-      category: formData.category,
-      priority: formData.priority,
-      tags: formData.tags
-        .split(",")
-        .map((tag) => tag.trim())
-        .filter(Boolean),
-      steps: steps.length > 0 ? steps : undefined,
-      // On ne modifie pas l'auteur - il reste celui qui a créé la SOP
-    }
+    setIsSubmitting(true)
+    
+    try {
+      const updatedSop: Partial<SOP> = {
+        title: formData.title,
+        description: formData.description,
+        instructions: formData.instructions,
+        category: formData.category,
+        priority: formData.priority,
+        tags: formData.tags
+          .split(",")
+          .map((tag) => tag.trim())
+          .filter(Boolean),
+        steps: steps.length > 0 ? steps : undefined,
+      }
 
-    onSubmit(updatedSop)
+      await onSubmit(updatedSop)
+    } catch (error) {
+      console.error('Erreur lors de la modification:', error)
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   const handleAddStep = () => {
@@ -106,11 +116,11 @@ export function SopEditDialog({ open, onOpenChange, sop, users, onSubmit }: SopE
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto bg-white border-black">
         <DialogHeader>
-          <DialogTitle className="text-2xl font-meutas font-bold">Modifier la procédure</DialogTitle>
-          <DialogDescription className="text-gray-600 font-meutas font-light">
-            Modifiez les détails de la procédure opérationnelle standardisée
+          <DialogTitle className="text-2xl font-meutas">Modifier la procédure</DialogTitle>
+          <DialogDescription className="text-gray-600">
+            Modifiez les informations de la procédure
           </DialogDescription>
         </DialogHeader>
 
@@ -306,22 +316,24 @@ export function SopEditDialog({ open, onOpenChange, sop, users, onSubmit }: SopE
             </div>
           </div>
 
-          <div className="flex justify-end gap-3">
+          <DialogFooter className="mt-6">
             <Button
               type="button"
               variant="outline"
               onClick={() => onOpenChange(false)}
               className="border-black hover:bg-gray-100"
+              disabled={isSubmitting}
             >
               Annuler
             </Button>
             <Button
               type="submit"
-              className="bg-primary hover:bg-primary-light text-primary-foreground border border-black"
+              className="bg-primary hover:bg-primary-light text-primary-foreground font-meutas border border-black"
+              disabled={isSubmitting}
             >
-              Enregistrer
+              {isSubmitting ? 'Modification en cours...' : 'Enregistrer les modifications'}
             </Button>
-          </div>
+          </DialogFooter>
         </form>
       </DialogContent>
     </Dialog>

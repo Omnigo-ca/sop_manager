@@ -52,6 +52,7 @@ export function SopCreateDialog({ open, onOpenChange, onSubmit }: SopCreateDialo
   const [accessGroups, setAccessGroups] = useState<AccessGroup[]>([])
   const [selectedAccessGroups, setSelectedAccessGroups] = useState<string[]>([])
   const [steps, setSteps] = useState<Step[]>([])
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   // Charger les groupes d'accès
   useEffect(() => {
@@ -79,53 +80,65 @@ export function SopCreateDialog({ open, onOpenChange, onSubmit }: SopCreateDialo
     }
   }, [open])
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
-    if (isMarkdownMode) {
-      if (!markdown) return
-      
-      const parsedSop = parseMarkdownToSop(markdown)
+    if (isSubmitting) return
+    
+    setIsSubmitting(true)
+    
+    try {
+      if (isMarkdownMode) {
+        if (!markdown) {
+          setIsSubmitting(false)
+          return
+        }
+        
+        const parsedSop = parseMarkdownToSop(markdown)
+        const newSOP: Omit<SOP, 'id' | 'createdAt' | 'updatedAt' | 'editedAt'> = {
+          title: parsedSop.title || '',
+          description: parsedSop.description || '',
+          instructions: parsedSop.instructions || '',
+          category: parsedSop.category || '',
+          priority: parsedSop.priority || 'medium',
+          tags: parsedSop.tags || [],
+          steps: parsedSop.steps?.map(step => ({ 
+            text: step.text, 
+            image: step.image || '' 
+          })),
+          authorId: '',
+          author: '',
+        }
+        await onSubmit(newSOP, selectedAccessGroups.length > 0 ? selectedAccessGroups : undefined)
+        return
+      }
+
+      if (!formData.title || !formData.description) {
+        setIsSubmitting(false)
+        return
+      }
+
       const newSOP: Omit<SOP, 'id' | 'createdAt' | 'updatedAt' | 'editedAt'> = {
-        title: parsedSop.title || '',
-        description: parsedSop.description || '',
-        instructions: parsedSop.instructions || '',
-        category: parsedSop.category || '',
-        priority: parsedSop.priority || 'medium',
-        tags: parsedSop.tags || [],
-        steps: parsedSop.steps?.map(step => ({ 
-          text: step.text, 
-          image: step.image || '' 
-        })),
-        // L'autorId sera automatiquement défini côté serveur avec l'utilisateur connecté
+        title: formData.title,
+        description: formData.description,
+        instructions: formData.instructions,
+        category: formData.category,
+        priority: formData.priority,
+        tags: formData.tags
+          .split(",")
+          .map((tag: string) => tag.trim())
+          .filter(Boolean),
+        steps: steps.length > 0 ? steps : undefined,
         authorId: '',
         author: '',
       }
-      onSubmit(newSOP, selectedAccessGroups.length > 0 ? selectedAccessGroups : undefined)
-      return
-    }
 
-    if (!formData.title || !formData.description) {
-      return
+      await onSubmit(newSOP, selectedAccessGroups.length > 0 ? selectedAccessGroups : undefined)
+    } catch (error) {
+      console.error('Erreur lors de la création:', error)
+    } finally {
+      setIsSubmitting(false)
     }
-
-    const newSOP: Omit<SOP, 'id' | 'createdAt' | 'updatedAt' | 'editedAt'> = {
-      title: formData.title,
-      description: formData.description,
-      instructions: formData.instructions,
-      category: formData.category,
-      priority: formData.priority,
-      tags: formData.tags
-        .split(",")
-        .map((tag: string) => tag.trim())
-        .filter(Boolean),
-      steps: steps.length > 0 ? steps : undefined,
-      // L'autorId sera automatiquement défini côté serveur avec l'utilisateur connecté
-      authorId: '',
-      author: '',
-    }
-
-    onSubmit(newSOP, selectedAccessGroups.length > 0 ? selectedAccessGroups : undefined)
   }
 
   const handleAccessGroupToggle = (groupId: string, checked: boolean) => {
@@ -412,14 +425,16 @@ export function SopCreateDialog({ open, onOpenChange, onSubmit }: SopCreateDialo
               variant="outline"
               onClick={() => onOpenChange(false)}
               className="border-black hover:bg-gray-100"
+              disabled={isSubmitting}
             >
               Annuler
             </Button>
             <Button
               type="submit"
               className="bg-primary hover:bg-primary-light text-primary-foreground font-meutas border border-black"
+              disabled={isSubmitting}
             >
-              Créer la procédure
+              {isSubmitting ? 'Création en cours...' : 'Créer la procédure'}
             </Button>
           </DialogFooter>
         </form>
