@@ -301,10 +301,12 @@ export default function PublicProceduresPage() {
                                   {idx + 1}
                                 </div>
                                 <div className="flex-1">
-                                  <div 
-                                    className="font-semibold text-lg mb-4 text-foreground font-meutas"
-                                    dangerouslySetInnerHTML={{ __html: step.text }}
-                                  />
+                                  {step.text && (
+                                    <div 
+                                      className="font-semibold text-lg mb-4 text-foreground font-meutas"
+                                      dangerouslySetInnerHTML={{ __html: step.text }}
+                                    />
+                                  )}
                                   {step.image && (
                                     <div className="mt-4">
                                       <img

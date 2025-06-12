@@ -10,13 +10,15 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Badge } from "@/components/ui/badge"
 import { SOP, User } from "../types"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { parseMarkdownToSop } from "@/lib/parseSopMarkdown"
+import { parseSopMarkdown } from "@/lib/parseSopMarkdown"
 import { fetchAccessGroups, AccessGroup } from "../api"
+import { useUser } from '@clerk/nextjs'
 
 interface SopCreateDialogProps {
   open: boolean
   onOpenChange: (open: boolean) => void
   onSubmit: (newSOP: Omit<SOP, 'id' | 'createdAt' | 'updatedAt' | 'editedAt'>, accessGroupIds?: string[]) => void
+  categories: string[]
 }
 
 type CreateFormData = {
@@ -35,7 +37,7 @@ type Step = {
   image: string
 }
 
-export function SopCreateDialog({ open, onOpenChange, onSubmit }: SopCreateDialogProps) {
+export function SopCreateDialog({ open, onOpenChange, onSubmit, categories }: SopCreateDialogProps) {
   const [formData, setFormData] = useState<CreateFormData>({
     title: '',
     description: '',
@@ -52,6 +54,10 @@ export function SopCreateDialog({ open, onOpenChange, onSubmit }: SopCreateDialo
   const [accessGroups, setAccessGroups] = useState<AccessGroup[]>([])
   const [selectedAccessGroups, setSelectedAccessGroups] = useState<string[]>([])
   const [steps, setSteps] = useState<Step[]>([])
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isNewCategory, setIsNewCategory] = useState(false)
+  const [newCategory, setNewCategory] = useState("")
+  const { user } = useUser();
 
   // Charger les groupes d'accès
   useEffect(() => {
@@ -76,56 +82,75 @@ export function SopCreateDialog({ open, onOpenChange, onSubmit }: SopCreateDialo
       setMarkdown('')
       setSelectedAccessGroups([])
       setSteps([])
+      setIsNewCategory(false)
+      setNewCategory("")
     }
   }, [open])
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
-    if (isMarkdownMode) {
-      if (!markdown) return
-      
-      const parsedSop = parseMarkdownToSop(markdown)
+    if (isSubmitting) return
+    
+    setIsSubmitting(true)
+    
+    try {
+      let finalCategory = formData.category
+      if (isNewCategory && newCategory.trim()) {
+        finalCategory = newCategory.trim()
+      }
+      if (isMarkdownMode) {
+        if (!markdown) {
+          setIsSubmitting(false)
+          return
+        }
+        
+        const authorOverride = user?.fullName || user?.username || user?.emailAddresses?.[0]?.emailAddress || '';
+        const parsedSop = parseSopMarkdown(markdown, finalCategory, formData.priority, authorOverride)
+        const newSOP: Omit<SOP, 'id' | 'createdAt' | 'updatedAt' | 'editedAt'> = {
+          title: parsedSop.title || '',
+          description: parsedSop.description || '',
+          instructions: parsedSop.instructions || '',
+          category: parsedSop.category || finalCategory || '',
+          priority: parsedSop.priority || 'medium',
+          tags: parsedSop.tags || [],
+          steps: parsedSop.steps?.map(step => ({ 
+            text: step.text, 
+            image: step.image || '' 
+          })),
+          authorId: '',
+          author: '',
+        }
+        await onSubmit(newSOP, selectedAccessGroups.length > 0 ? selectedAccessGroups : undefined)
+        return
+      }
+
+      if (!formData.title || !formData.description) {
+        setIsSubmitting(false)
+        return
+      }
+
       const newSOP: Omit<SOP, 'id' | 'createdAt' | 'updatedAt' | 'editedAt'> = {
-        title: parsedSop.title || '',
-        description: parsedSop.description || '',
-        instructions: parsedSop.instructions || '',
-        category: parsedSop.category || '',
-        priority: parsedSop.priority || 'medium',
-        tags: parsedSop.tags || [],
-        steps: parsedSop.steps?.map(step => ({ 
-          text: step.text, 
-          image: step.image || '' 
-        })),
-        // L'autorId sera automatiquement défini côté serveur avec l'utilisateur connecté
+        title: formData.title,
+        description: formData.description,
+        instructions: formData.instructions,
+        category: finalCategory,
+        priority: formData.priority,
+        tags: formData.tags
+          .split(",")
+          .map((tag: string) => tag.trim())
+          .filter(Boolean),
+        steps: steps.length > 0 ? steps : undefined,
         authorId: '',
         author: '',
       }
-      onSubmit(newSOP, selectedAccessGroups.length > 0 ? selectedAccessGroups : undefined)
-      return
-    }
 
-    if (!formData.title || !formData.description) {
-      return
+      await onSubmit(newSOP, selectedAccessGroups.length > 0 ? selectedAccessGroups : undefined)
+    } catch (error) {
+      console.error('Erreur lors de la création:', error)
+    } finally {
+      setIsSubmitting(false)
     }
-
-    const newSOP: Omit<SOP, 'id' | 'createdAt' | 'updatedAt' | 'editedAt'> = {
-      title: formData.title,
-      description: formData.description,
-      instructions: formData.instructions,
-      category: formData.category,
-      priority: formData.priority,
-      tags: formData.tags
-        .split(",")
-        .map((tag: string) => tag.trim())
-        .filter(Boolean),
-      steps: steps.length > 0 ? steps : undefined,
-      // L'autorId sera automatiquement défini côté serveur avec l'utilisateur connecté
-      authorId: '',
-      author: '',
-    }
-
-    onSubmit(newSOP, selectedAccessGroups.length > 0 ? selectedAccessGroups : undefined)
   }
 
   const handleAccessGroupToggle = (groupId: string, checked: boolean) => {
@@ -162,6 +187,16 @@ export function SopCreateDialog({ open, onOpenChange, onSubmit }: SopCreateDialo
     }
   }
 
+  const handleCategoryChange = (value: string) => {
+    if (value === '__new__') {
+      setIsNewCategory(true)
+      setFormData({ ...formData, category: '' })
+    } else {
+      setIsNewCategory(false)
+      setFormData({ ...formData, category: value })
+    }
+  }
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto bg-white border-black">
@@ -189,6 +224,53 @@ export function SopCreateDialog({ open, onOpenChange, onSubmit }: SopCreateDialo
             <div className="space-y-4">
               {isMarkdownMode ? (
                 <>
+                  {/* Sélection catégorie/priorité même en mode markdown */}
+                  <div className="mb-4 flex flex-col gap-4">
+                    <div>
+                      <Label htmlFor="category-md" className="font-meutas">Catégorie</Label>
+                      <Select
+                        value={isNewCategory ? '__new__' : formData.category}
+                        onValueChange={handleCategoryChange}
+                      >
+                        <SelectTrigger className="border-black">
+                          <SelectValue placeholder="Sélectionner une catégorie" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {categories.filter(Boolean).map((cat) => (
+                            <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                          ))}
+                          <SelectItem value="__new__">Nouvelle catégorie...</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      {isNewCategory && (
+                        <Input
+                          id="new-category-md"
+                          value={newCategory}
+                          onChange={e => setNewCategory(e.target.value)}
+                          className="mt-2 border-black focus:ring-primary focus:border-primary"
+                          placeholder="Saisir la nouvelle catégorie"
+                          autoFocus
+                          required
+                        />
+                      )}
+                    </div>
+                    <div>
+                      <Label htmlFor="priority-md" className="font-meutas">Priorité</Label>
+                      <Select
+                        value={formData.priority}
+                        onValueChange={(value: SOP["priority"]) => setFormData({ ...formData, priority: value })}
+                      >
+                        <SelectTrigger className="border-black">
+                          <SelectValue placeholder="Sélectionner une priorité" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="high">Haute</SelectItem>
+                          <SelectItem value="medium">Moyenne</SelectItem>
+                          <SelectItem value="low">Basse</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
                   <div>
                     <Label htmlFor="markdown" className="font-meutas">Contenu Markdown</Label>
                     <Textarea
@@ -196,7 +278,12 @@ export function SopCreateDialog({ open, onOpenChange, onSubmit }: SopCreateDialo
                       value={markdown}
                       onChange={(e) => setMarkdown(e.target.value)}
                       className="min-h-[400px] border-black focus:ring-primary focus:border-primary font-mono"
-                      placeholder="Collez votre contenu markdown ici..."
+                      placeholder={
+                        `Collez votre contenu markdown ici...\n\n` +
+                        `Format attendu pour la catégorie : **Catégorie**: ...\n` +
+                        `Format attendu pour la priorité : **Priorité**: ...\n` +
+                        `Exemple :\n**Catégorie**: SEO\n**Priorité**: haute\n`
+                      }
                       required
                     />
                   </div>
@@ -237,13 +324,31 @@ export function SopCreateDialog({ open, onOpenChange, onSubmit }: SopCreateDialo
 
                   <div>
                     <Label htmlFor="category" className="font-meutas">Catégorie</Label>
-                    <Input
-                      id="category"
-                      value={formData.category}
-                      onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                      className="border-black focus:ring-primary focus:border-primary"
-                      required
-                    />
+                    <Select
+                      value={isNewCategory ? '__new__' : formData.category}
+                      onValueChange={handleCategoryChange}
+                    >
+                      <SelectTrigger className="border-black">
+                        <SelectValue placeholder="Sélectionner une catégorie" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {categories.filter(Boolean).map((cat) => (
+                          <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                        ))}
+                        <SelectItem value="__new__">Nouvelle catégorie...</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    {isNewCategory && (
+                      <Input
+                        id="new-category"
+                        value={newCategory}
+                        onChange={e => setNewCategory(e.target.value)}
+                        className="mt-2 border-black focus:ring-primary focus:border-primary"
+                        placeholder="Saisir la nouvelle catégorie"
+                        autoFocus
+                        required
+                      />
+                    )}
                   </div>
 
                   <div>
@@ -412,14 +517,16 @@ export function SopCreateDialog({ open, onOpenChange, onSubmit }: SopCreateDialo
               variant="outline"
               onClick={() => onOpenChange(false)}
               className="border-black hover:bg-gray-100"
+              disabled={isSubmitting}
             >
               Annuler
             </Button>
             <Button
               type="submit"
               className="bg-primary hover:bg-primary-light text-primary-foreground font-meutas border border-black"
+              disabled={isSubmitting}
             >
-              Créer la procédure
+              {isSubmitting ? 'Création en cours...' : 'Créer la procédure'}
             </Button>
           </DialogFooter>
         </form>

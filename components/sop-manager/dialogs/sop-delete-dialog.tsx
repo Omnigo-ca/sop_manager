@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useState } from "react"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -19,7 +19,22 @@ interface SopDeleteDialogProps {
 }
 
 export function SopDeleteDialog({ open, onOpenChange, sop, onConfirm }: SopDeleteDialogProps) {
+  const [isDeleting, setIsDeleting] = useState(false)
+
   if (!sop) return null
+
+  const handleDelete = async () => {
+    if (isDeleting) return
+    
+    setIsDeleting(true)
+    try {
+      await onConfirm()
+    } catch (error) {
+      console.error('Erreur lors de la suppression:', error)
+    } finally {
+      setIsDeleting(false)
+    }
+  }
 
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
@@ -33,14 +48,18 @@ export function SopDeleteDialog({ open, onOpenChange, sop, onConfirm }: SopDelet
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel className="border-black hover:bg-gray-100">
+          <AlertDialogCancel 
+            className="border-black hover:bg-gray-100"
+            disabled={isDeleting}
+          >
             Annuler
           </AlertDialogCancel>
           <AlertDialogAction 
-            onClick={onConfirm}
+            onClick={handleDelete}
             className="bg-red-500 hover:bg-red-600 text-white font-meutas"
+            disabled={isDeleting}
           >
-            Supprimer
+            {isDeleting ? 'Suppression...' : 'Supprimer'}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
