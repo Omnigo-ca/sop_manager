@@ -110,7 +110,7 @@ export function convertMarkdownLinksToHtml(text: string): string {
  * - ![Texte étape 2](url_image)
  * ...
  */
-export function parseSopMarkdown(markdown: string): ParsedSOP {
+export function parseSopMarkdown(markdown: string, categoryOverride?: string, priorityOverride?: string, authorOverride?: string): ParsedSOP {
   // Nettoyer le markdown en supprimant les lignes "Made with Scribe"
   const cleanedMarkdown = cleanScribeSignature(markdown);
   
@@ -193,10 +193,52 @@ export function parseSopMarkdown(markdown: string): ParsedSOP {
       currentStep.text = convertMarkdownLinksToHtml(currentStep.text);
       steps.push(currentStep);
     }
+  } else {
+    // Fallback : extraire toutes les listes numérotées ou images après le titre
+    const lines = cleanedMarkdown.split(/\r?\n/).map(l => l.trim());
+    let foundTitle = false;
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      if (!foundTitle) {
+        if (line.startsWith('# ')) foundTitle = true;
+        continue;
+      }
+      // Step numéroté (ex: 1. ... ou 1\. ...)
+      const numStep = line.match(/^\d+(?:\\\.|\.)[ \t]+(.+)/);
+      if (numStep) {
+        // Regarder si la ligne suivante est une image
+        const nextLine = lines[i + 1] || '';
+        const imgStep = nextLine.match(/^!\[(.*)\]\((.*)\)/);
+        if (imgStep) {
+          steps.push({ text: convertMarkdownLinksToHtml(numStep[1].trim()), image: imgStep[2].trim() });
+          i++; // On saute la ligne image
+        } else {
+          steps.push({ text: convertMarkdownLinksToHtml(numStep[1].trim()) });
+        }
+        continue;
+      }
+      // Step image seule (non précédée d'un step numéroté)
+      const imgStep = line.match(/^!\[(.*)\]\((.*)\)/);
+      if (imgStep) {
+        // Si le step précédent n'a pas d'image, on l'ajoute à celui-ci
+        if (steps.length > 0 && !steps[steps.length - 1].image) {
+          steps[steps.length - 1].image = imgStep[2].trim();
+        } else {
+          steps.push({ text: '', image: imgStep[2].trim() });
+        }
+        continue;
+      }
+      // Step à puce
+      const bulletStep = line.match(/^[-*][ \t]+(.+)/);
+      if (bulletStep) {
+        steps.push({ text: convertMarkdownLinksToHtml(bulletStep[1].trim()) });
+        continue;
+      }
+    }
   }
 
-  if (!title || !author) {
-    throw new Error('Le markdown ne contient pas tous les champs obligatoires (titre, auteur).');
+  if (!title) {
+    throw new Error('Le markdown ne contient pas le champ obligatoire : titre.');
   }
 
   return {
@@ -204,9 +246,9 @@ export function parseSopMarkdown(markdown: string): ParsedSOP {
     description,
     instructions,
     steps: steps.length > 0 ? steps : undefined,
-    author,
-    category,
-    priority,
+    author: authorOverride && authorOverride.trim() ? authorOverride.trim() : author,
+    category: categoryOverride && categoryOverride.trim() ? categoryOverride.trim() : category,
+    priority: priorityOverride && priorityOverride.trim() ? priorityOverride.trim().toLowerCase() as Priority : priority,
     tags,
   };
 }

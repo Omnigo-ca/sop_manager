@@ -307,6 +307,7 @@ export function SOPManager() {
           open={isCreateDialogOpen}
           onOpenChange={setIsCreateDialogOpen}
           onSubmit={handleCreateSOP}
+          categories={uniqueCategories}
         />
       )}
       
